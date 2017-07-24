@@ -1,0 +1,25 @@
+{
+  "entry": "src/index.js",
+  "env": {
+    "development": {
+      "extraBabelPlugins": [
+        "dva-hmr",
+        "transform-runtime",
+        ["import", { "libraryName": "antd", "style": true }]
+      ]
+    },
+    "production": {
+      "extraBabelPlugins": [
+        "transform-runtime",
+        ["import", { "libraryName": "antd", "style": true }]
+      ]
+    }
+  },
+  "proxy": {
+    "/api": {
+      "target": "http://api.c.cn/",
+      "changeOrigin": true,
+      "pathRewrite": { "^/api" : "" }
+    }
+  }
+}

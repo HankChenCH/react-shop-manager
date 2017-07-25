@@ -1,17 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Radio, Modal, Cascader, Upload, Icon } from 'antd'
-import city from '../../utils/city'
+import { apiPrefix, api } from '../../utils/config'
 import styles from './Modal.css'
 
 const FormItem = Form.Item
 const { TextArea } = Input
-
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
+const { imageCategoryTopic } = api
+const uploadImageApi = `${apiPrefix}/${imageCategoryTopic}`
 
 const formItemLayout = {
   labelCol: {
@@ -24,7 +20,10 @@ const formItemLayout = {
 
 const modal = ({
   item = {},
+  createTempItem,
+  modalType,
   onOk,
+  onUploadSuccess,
   form: {
     getFieldDecorator,
     validateFields,
@@ -48,14 +47,24 @@ const modal = ({
 
   const handleChange = (info) => {
     if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl => this.setState({ imageUrl }));
+      onUploadSuccess(info.file.response.data)
+    }
+  }
+
+  const renderUploader = (modalType) => {
+    if (modalType === 'create') {
+      return createTempItem.img_url ?
+      <img src={createTempItem.img_url} alt="" className={styles.avatar} /> : 
+      <Icon type="plus" className={styles.avatar_uploader_trigger} />
+    } else if(modalType === 'update') {
+      return <img src={item.img.url} alt="" className={styles.avatar} />
     }
   }
 
   const modalOpts = {
     ...modalProps,
     onOk: handleOk,
+    maskClosable: true
   }
 
   return (
@@ -63,7 +72,7 @@ const modal = ({
       <Form layout="horizontal">
         <FormItem label="分类名" hasFeedback {...formItemLayout}>
           {getFieldDecorator('name', {
-            initialValue: item.name,
+            initialValue: modalType=='create' ? createTempItem.name : item.name,
             rules: [
               {
                 required: true,
@@ -73,13 +82,13 @@ const modal = ({
         </FormItem>
         <FormItem label="描述" hasFeedback {...formItemLayout}>
           {getFieldDecorator('description', {
-            initialValue: item.description,
+            initialValue: modalType=='create' ? createTempItem.description : item.description,
             rules: [
               {
                 required: true,
               },
             ],
-          })(<Input />)}
+          })(<Input type='textarea'/>)}
         </FormItem>
         <FormItem label="上传头图" hasFeedback {...formItemLayout}>
           {getFieldDecorator('top_img_id', {
@@ -92,14 +101,12 @@ const modal = ({
           })(
             <Upload
               className={styles.avatar_uploader}
-              name="avatar"
+              name="topicImage"
               showUploadList={false}
-              action=""
+              action={uploadImageApi}
               onChange={handleChange}
             >
-              {
-                  <Icon type="plus" className={styles.avatar_uploader_trigger} />
-              }
+              {renderUploader(modalType)}
             </Upload>
           )}
         </FormItem>

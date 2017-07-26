@@ -8,11 +8,13 @@ import Filter from './Filter'
 import Modal from './Modal'
 
 const Category = ({ location, dispatch, category, loading }) => {
-  const { list, pagination, currentItem, modalVisible, modalType, selectedRowKeys } = category
+  const { list, pagination, currentItem, modalVisible, modalType, selectedRowKeys, createTempItem } = category
   const { pageSize } = pagination
 
   const modalProps = {
     item: modalType === 'create' ? {} : currentItem,
+    modalType: modalType,
+    createTempItem: createTempItem,
     visible: modalVisible,
     maskClosable: false,
     confirmLoading: loading.effects['category/update'],
@@ -22,6 +24,12 @@ const Category = ({ location, dispatch, category, loading }) => {
       dispatch({
         type: `category/${modalType}`,
         payload: data,
+      })
+    },
+    onUploadSuccess(data) {
+      dispatch({
+        type: 'category/uploadSuccess',
+        payload: data
       })
     },
     onCancel () {
@@ -54,6 +62,7 @@ const Category = ({ location, dispatch, category, loading }) => {
       })
     },
     onEditItem (item) {
+      console.log(item)
       dispatch({
         type: 'category/showModal',
         payload: {

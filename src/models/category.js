@@ -12,6 +12,7 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    createTempItem: {},
     modalVisible: false,
     modalType: 'create',
     selectedRowKeys: [],
@@ -92,17 +93,30 @@ export default modelExtend(pageModel, {
       }
     },
 
+    *uploadSuccess ({ payload }, { put }) {
+      yield put({ type: 'insertImage', payload })
+    }
+
   },
 
   reducers: {
 
     showModal (state, { payload }) {
-      return { ...state, ...{ payload }, modalVisible: true }
+      return { ...state, ...payload, modalVisible: true }
     },
 
     hideModal (state) {
       return { ...state, modalVisible: false }
     },
+
+    insertImage (state, { payload }) {
+      let { createTempItem } = state;
+      createTempItem.topic_img_id = payload.id
+      createTempItem.img_url = payload.url
+      // state.createTempItem = createTempItem
+      // console.log(state)
+      return {...state,createTempItem: createTempItem}
+    }
 
   },
 })

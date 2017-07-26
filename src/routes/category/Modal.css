@@ -1,14 +1,19 @@
 .avatar_uploader,
-.avatar_uploader_trigger,
-.avatar {
+.avatar_uploader_trigger{
   width: 150px;
   height: 150px;
 }
+.avatar{
+  max-width: 146px;
+  max-height: 146px;
+}
 .avatar_uploader {
-  display: block;
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .avatar_uploader_trigger {
   display: table-cell;

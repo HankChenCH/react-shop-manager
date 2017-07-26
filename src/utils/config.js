@@ -19,5 +19,6 @@ module.exports = {
     posts: '/posts',
     user: '/user/:id',
     dashboard: '/dashboard',
+    imageCategoryTopic: 'image/category_topic_img',
   },
 }

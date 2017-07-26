@@ -58,6 +58,7 @@ export default {
     }, { call, put }) {
       const data = yield call(logout, parse(payload))
       if (data.success) {
+        yield localStorage.removeItem(`${prefix}admin`)
         yield put({ type: 'query' })
       } else {
         throw (data)

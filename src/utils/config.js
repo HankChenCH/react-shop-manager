@@ -11,14 +11,13 @@ module.exports = {
   openPages: ['/login'],
   apiPrefix: '/api/v1',
   api: {
+    dashboard: '/home',
     userLogin: '/token/admin',
-    userLogout: '/user/logout',
-    userInfo: '/userInfo',
-    users: '/users',
+    userLogout: '/token/admin',
     category: '/category/all',
     posts: '/posts',
-    user: '/user/:id',
-    dashboard: '/dashboard',
+    users: '/user',
+    userInfo: '/user/:id',
     imageCategoryTopic: 'image/category_topic_img',
   },
 }

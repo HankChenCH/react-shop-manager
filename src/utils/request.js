@@ -106,7 +106,7 @@ export default function request (options) {
       const { data, statusText } = response
       otherData = data
       status = response.status
-      msg = data.message || statusText
+      msg = data.msg || statusText
     } else {
       status = 600
       msg = 'Network Error'

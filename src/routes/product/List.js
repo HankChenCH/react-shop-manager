@@ -78,7 +78,7 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
         {...tableProps}
         className={classnames({ [styles.table]: true, [styles.motion]: isMotion })}
         bordered
-        scroll={{ x: 1250 }}
+        scroll={{ x: 900 }}
         columns={columns}
         simple
         rowKey={record => record.id}

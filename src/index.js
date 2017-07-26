@@ -12,7 +12,9 @@ const app = dva({
   }),
   history: browserHistory,
   onError (error) {
-    message.error(error.message)
+  	if (error.success === false) {
+	    message.error(error.message)
+  	}
   },
 })
 

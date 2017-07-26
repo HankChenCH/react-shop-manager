@@ -7,7 +7,7 @@ const { prefix } = config
 export default {
   namespace: 'app',
   state: {
-    user: {},
+    user: JSON.parse(localStorage.getItem(`${prefix}admin`)) || {},
     menuPopoverVisible: false,
     siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
     darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
@@ -17,7 +17,7 @@ export default {
   subscriptions: {
 
     setup ({ dispatch }) {
-      // dispatch({ type: 'query' })
+      dispatch({ type: 'checkTokenExpire' })
       let tid
       window.onresize = () => {
         clearTimeout(tid)
@@ -73,6 +73,24 @@ export default {
         yield put({ type: 'handleNavbar', payload: isNavbar })
       }
     },
+
+    *checkTokenExpire ({
+      payload
+    }, { put, select }) {
+      const { user } = yield(select(_=>_.app))
+      let nowTime = Date.parse(new Date()) / 1000;
+      //过期时间比现在相差小于1分钟就重新申请令牌
+      if (user.expire - nowTime < 600000 && user.expire - nowTime > 0) {
+        yield put({ type: 'reToken' })
+      }//过期时间比现在相差小于0，代表用户很久没有操作，直接登录过期跳转出去登录页面重新登录
+      else if (user.expire - nowTime < 0) {
+        yield put({ type: 'logout'  })
+        throw {
+          success: false,
+          message: '登录失效，请重新登录！'
+        }
+      }
+    }
 
   },
   reducers: {

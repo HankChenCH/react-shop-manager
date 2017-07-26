@@ -1,10 +1,9 @@
 import modelExtend from 'dva-model-extend'
-import { create, remove, update } from '../services/category'
 import * as categoryService from '../services/category'
 import { pageModel } from './common'
 import { config } from '../utils'
 
-const { query } = categoryService
+const { query, create, remove, update } = categoryService
 const { prefix } = config
 
 export default modelExtend(pageModel, {

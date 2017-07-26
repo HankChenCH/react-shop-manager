@@ -11,17 +11,35 @@ export async function login (params) {
 }
 
 export async function logout (params) {
-  return request({
-    url: userLogout,
-    method: 'get',
-    data: params,
-  })
+  return {
+    success: true
+  }
+  // return request({
+  //   url: userLogout,
+  //   method: 'get',
+  //   data: params,
+  // })
+}
+
+export async function reToken (params) {
+  return {
+    success: false
+  }
 }
 
 export async function query (params) {
-  return request({
-    url: user.replace('/:id', ''),
-    method: 'get',
-    data: params,
-  })
+  if (params.token) {
+    return {
+      success: true,
+      user: params,
+    }
+  }
+  return {
+    success: false
+  }
+  // return request({
+  //   url: user.replace('/:id', ''),
+  //   method: 'get',
+  //   data: params,
+  // })
 }

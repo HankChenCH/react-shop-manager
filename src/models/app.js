@@ -1,4 +1,4 @@
-import { query, logout } from '../services/app'
+import { query, logout, reToken } from '../services/app'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import { config } from '../utils'
@@ -68,6 +68,7 @@ export default {
       payload,
     }, { put, select }) {
       const { app } = yield(select(_ => _))
+      //当客户端宽度少于769认为是移动设备浏览，隐藏侧边菜单栏改用头部菜单
       const isNavbar = document.body.clientWidth < 769
       if (isNavbar !== app.isNavbar) {
         yield put({ type: 'handleNavbar', payload: isNavbar })
@@ -79,16 +80,28 @@ export default {
     }, { put, select }) {
       const { user } = yield(select(_=>_.app))
       let nowTime = Date.parse(new Date()) / 1000;
-      //过期时间比现在相差小于1分钟就重新申请令牌
-      if (user.expire - nowTime < 600000 && user.expire - nowTime > 0) {
+      //过期时间比现在相差小于10分钟就重新申请令牌
+      if (user.exprie_in - nowTime < 6000000 && user.exprie_in - nowTime > 0) {
         yield put({ type: 'reToken' })
       }//过期时间比现在相差小于0，代表用户很久没有操作，直接登录过期跳转出去登录页面重新登录
-      else if (user.expire - nowTime < 0) {
+      else if (user.exprie_in - nowTime < 0) {
         yield put({ type: 'logout'  })
+        //手动抛出错误提示给框架捕获
         throw {
           success: false,
           message: '登录失效，请重新登录！'
         }
+      }
+    },
+
+    *reToken ({ 
+      payload 
+    }, { put, call, select }) {
+      const { user } = yield(select(_=>_.app))
+      //以旧令牌换取新令牌
+      const data = yield call(reToken, user.token);
+      if (data.success && data.user) {
+        yield put({ type: 'querySuccess', payload: data.user })
       }
     }
 

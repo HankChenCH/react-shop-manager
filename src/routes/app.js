@@ -74,7 +74,7 @@ const App = ({ children, location, dispatch, app, loading }) => {
   return (
     <div>
       <Helmet>
-        <title>食探商城后台</title>
+        <title>{config.name}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href={logo} type="image/x-icon" />
         {iconFontJS && <script src={iconFontJS}></script>}

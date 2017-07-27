@@ -82,7 +82,7 @@ const Filter = ({
     <Row gutter={24}>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }} sm={{ span: 12 }}>
         <FilterItem label="商品名称">
-          {getFieldDecorator('title', { initialValue: name })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
+          {getFieldDecorator('title', { initialValue: name })(<Search placeholder="输入商品名搜索" size="large" onSearch={handleSubmit} />)}
         </FilterItem>
       </Col>
       <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
@@ -94,14 +94,8 @@ const Filter = ({
       </Col>
       <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
         <Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>搜索</Button>
-        <Button size="large" onClick={handleReset}>清空搜索项</Button>
-      </Col>
-      <Col {...TwoColProps} xl={{ span: 10 }} md={{ span: 24 }} sm={{ span: 24 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div>
-            <Button size="large" type="ghost" onClick={onAdd}>创建</Button>
-          </div>
-        </div>
+        <Button size="large" className="margin-right" onClick={handleReset}>清空搜索项</Button>
+        <Button size="large" type="ghost" onClick={onAdd}>创建</Button>
       </Col>
     </Row>
   )

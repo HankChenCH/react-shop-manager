@@ -33,7 +33,7 @@ const Routers = function ({ history, app }) {
           path: 'product',
           getComponent (nextState, cb) {
             require.ensure([], require => {
-              registerModel(app, require('./models/user'))
+              registerModel(app, require('./models/product'))
               cb(null, require('./routes/product/'))
             }, 'product')
           },

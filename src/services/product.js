@@ -1,6 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
-const { list, info, productManager } = api.category
+const { list, info } = api.product
 
 export async function query (params) {
   return request({
@@ -31,13 +31,5 @@ export async function update (params) {
     url: info,
     method: 'put',
     data: params,
-  })
-}
-
-export async function manager (params) {
-  return request({
-    url: productManager,
-    method: 'post',
-    data: params
   })
 }

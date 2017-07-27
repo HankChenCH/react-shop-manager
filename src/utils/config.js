@@ -1,7 +1,7 @@
 module.exports = {
   name: '探小店后台',
   prefix: 'tan_shop_',
-  footerText: '探小店后台   © 2017 中山食探工作室',
+  footerText: '探小店后台  © 2017 中山食探工作室',
   logo: '/st.jpg',
   iconFontCSS: '/iconfont.css',
   iconFontJS: '/iconfont.js',
@@ -18,12 +18,15 @@ module.exports = {
     dashboard: {
       home: '/home'
     },
+    product: {
+      list: '/product/recent',
+      info: '/product/:id',
+    },
     category: {
       list: '/category/all',
       info: '/category/:id',
-      cproductManager: '/category/:id/product'
+      productManager: '/category/:id/product'
     },
-    posts: '/posts',
     user:{
       list: '/user',
       info: '/user/:id',
@@ -35,6 +38,7 @@ module.exports = {
     },
     image: {
       categoryTopic: 'image/category_topic_img',
-    }
+    },
+    posts: '/posts',
   },
 }

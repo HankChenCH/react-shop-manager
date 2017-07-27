@@ -1,10 +1,10 @@
 import { request, config } from '../utils'
 const { api } = config
-const { category } = api
+const { list, info, cproductManager } = api.category
 
 export async function query (params) {
   return request({
-    url: category,
+    url: list,
     method: 'get',
     data: params,
   })
@@ -12,7 +12,7 @@ export async function query (params) {
 
 export async function create (params) {
   return request({
-    url: category.replace('/:id', ''),
+    url: info.replace('/:id', ''),
     method: 'post',
     data: params,
   })
@@ -20,7 +20,7 @@ export async function create (params) {
 
 export async function remove (params) {
   return request({
-    url: category,
+    url: info,
     method: 'delete',
     data: params,
   })
@@ -28,8 +28,16 @@ export async function remove (params) {
 
 export async function update (params) {
   return request({
-    url: category,
-    method: 'patch',
+    url: info,
+    method: 'put',
     data: params,
+  })
+}
+
+export async function productManager (params) {
+  return request({
+    url: cproductManager,
+    method: 'post',
+    data: params
   })
 }

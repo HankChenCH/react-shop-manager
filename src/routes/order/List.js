@@ -3,6 +3,10 @@ import { Table } from 'antd'
 import styles from './List.less'
 
 const List = ({ ...tableProps }) => {
+  const handleMenuClick = (e) => {
+    console.log(e)
+  }
+
   const columns = [
     {
       title: 'Image',
@@ -11,30 +15,30 @@ const List = ({ ...tableProps }) => {
       width: 64,
       render: (text) => <img alt="Feture" width={26} src={text} />,
     }, {
-      title: 'Title',
-      dataIndex: 'title',
+      title: '订单号',
+      dataIndex: 'order_no',
     }, {
-      title: 'Author',
+      title: '用户',
       dataIndex: 'author',
     }, {
-      title: 'Categories',
-      dataIndex: 'categories',
+      title: '订单快照',
+      dataIndex: 'snap_item',
     }, {
-      title: 'Tags',
-      dataIndex: 'tags',
+      title: '总金额',
+      dataIndex: 'total_price'
     }, {
-      title: 'Visibility',
-      dataIndex: 'visibility',
+      title: '下单时间',
+      dataIndex: 'create_time',
     }, {
-      title: 'Comments',
-      dataIndex: 'comments',
+      title: '状态',
+      dataIndex: 'status',
     }, {
-      title: 'Views',
-      dataIndex: 'views',
-    }, {
-      title: 'Date',
-      dataIndex: 'date',
-    },
+      title: '操作',
+      dataIndex: 'opteration',
+      render: (text, record) => {
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '商品管理' }, { key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
+      }
+    }
   ]
 
   return (

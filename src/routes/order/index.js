@@ -8,19 +8,19 @@ import List from './List'
 const TabPane = Tabs.TabPane
 
 const EnumPostStatus = {
-  UNPUBLISH: 1,
-  PUBLISHED: 2,
+  DELIVERY: 1,
+  UNDELIVERY: 2,
 }
 
 
-const Index = ({ post, dispatch, loading, location }) => {
-  const { list, pagination } = post
+const Index = ({ order, dispatch, loading, location }) => {
+  const { list, pagination } = order
   const { query = {}, pathname } = location
 
   const listProps = {
     pagination,
     dataSource: list,
-    loading: loading.effects['post/query'],
+    loading: loading.effects['order/query'],
     onChange (page) {
       dispatch(routerRedux.push({
         pathname,
@@ -44,11 +44,11 @@ const Index = ({ post, dispatch, loading, location }) => {
 
 
   return (<div className="content-inner">
-    <Tabs activeKey={query.status === String(EnumPostStatus.UNPUBLISH) ? String(EnumPostStatus.UNPUBLISH) : String(EnumPostStatus.PUBLISHED)} onTabClick={handleTabClick}>
-      <TabPane tab="Publised" key={String(EnumPostStatus.PUBLISHED)}>
+    <Tabs activeKey={query.status === String(EnumPostStatus.DELIVERY) ? String(EnumPostStatus.DELIVERY) : String(EnumPostStatus.UNDELIVERY)} onTabClick={handleTabClick}>
+      <TabPane tab="未发货" key={String(EnumPostStatus.UNDELIVERY)}>
         <List {...listProps} />
       </TabPane>
-      <TabPane tab="Unpublish" key={String(EnumPostStatus.UNPUBLISH)}>
+      <TabPane tab="以发货" key={String(EnumPostStatus.DELIVERY)}>
         <List {...listProps} />
       </TabPane>
     </Tabs>
@@ -56,10 +56,10 @@ const Index = ({ post, dispatch, loading, location }) => {
 }
 
 Index.propTypes = {
-  post: PropTypes.object,
+  order: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
 }
 
-export default connect(({ post, loading }) => ({ post, loading }))(Index)
+export default connect(({ order, loading }) => ({ order, loading }))(Index)

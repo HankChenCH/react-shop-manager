@@ -1,10 +1,10 @@
 import { request, config } from '../utils'
 const { api } = config
-const { posts } = api
+const { list } = api.order
 
 export async function query (params) {
   return request({
-    url: posts,
+    url: list,
     method: 'get',
     data: params,
   })

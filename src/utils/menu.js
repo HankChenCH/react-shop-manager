@@ -24,7 +24,7 @@ module.exports = [
     bpid: 1,
     name: '订单管理',
     icon: 'shopping-cart',
-    router: '/post',
+    router: '/order',
   },
   {
     id: 2,

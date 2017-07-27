@@ -6,8 +6,8 @@ import styles from './Modal.css'
 
 const FormItem = Form.Item
 const { TextArea } = Input
-const { imageCategoryTopic } = api
-const uploadImageApi = `${apiPrefix}/${imageCategoryTopic}`
+const { categoryTopic } = api.image
+const uploadImageApi = `${apiPrefix}/${categoryTopic}`
 
 const formItemLayout = {
   labelCol: {
@@ -64,7 +64,6 @@ const modal = ({
   const modalOpts = {
     ...modalProps,
     onOk: handleOk,
-    maskClosable: true
   }
 
   return (

@@ -57,8 +57,6 @@ const List = ({ onDeleteItem, onEditItem, location, ...tableProps }) => {
     current: tableProps.pagination.current,
   }
 
-  const getBodyWrapper = body => { return  body }
-
   return (
     <div>
       <Table
@@ -70,7 +68,6 @@ const List = ({ onDeleteItem, onEditItem, location, ...tableProps }) => {
         simple
         size="small" 
         rowKey={record => record.id}
-        getBodyWrapper={getBodyWrapper}
       />
     </div>
   )

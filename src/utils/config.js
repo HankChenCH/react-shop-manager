@@ -11,13 +11,30 @@ module.exports = {
   openPages: ['/login'],
   apiPrefix: '/api/v1',
   api: {
-    dashboard: '/home',
-    userLogin: '/token/admin',
-    userLogout: '/token/admin',
-    category: '/category/all',
+    system: {
+      alogin: '/token/admin',
+      alogout: '/token/admin',
+    },
+    dashboard: {
+      home: '/home'
+    },
+    category: {
+      list: '/category/all',
+      info: '/category/:id',
+      cproductManager: '/category/:id/product'
+    },
     posts: '/posts',
-    users: '/user',
-    userInfo: '/user/:id',
-    imageCategoryTopic: 'image/category_topic_img',
+    user:{
+      list: '/user',
+      info: '/user/:id',
+    }, 
+    order:{
+      list: '/order/by_admin',
+      info: '/order/by_admin/:id',
+      delivery: '/order/delivery/:id',
+    },
+    image: {
+      categoryTopic: 'image/category_topic_img',
+    }
   },
 }

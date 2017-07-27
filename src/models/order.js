@@ -1,15 +1,15 @@
 import modelExtend from 'dva-model-extend'
-import { query } from '../services/posts'
+import { query } from '../services/order'
 import { pageModel } from './common'
 
 export default modelExtend(pageModel, {
 
-  namespace: 'post',
+  namespace: 'order',
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen(location => {
-        if (location.pathname === '/post') {
+        if (location.pathname === '/order') {
           dispatch({ type: 'query', payload: {
             status: 2,
             ...location.query,

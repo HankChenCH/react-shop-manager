@@ -1,10 +1,12 @@
 import { request, config } from '../utils'
 const { api } = config
-const { user, userLogout, userLogin } = api
+const { user, system } = api
+const { alogin, alogout } = system
+const { list } = user
 
 export async function login (params) {
   return request({
-    url: userLogin,
+    url: alogin,
     method: 'post',
     data: params,
   })
@@ -15,7 +17,7 @@ export async function logout (params) {
     success: true
   }
   // return request({
-  //   url: userLogout,
+  //   url: alogout,
   //   method: 'get',
   //   data: params,
   // })
@@ -38,7 +40,7 @@ export async function query (params) {
     success: false
   }
   // return request({
-  //   url: user.replace('/:id', ''),
+  //   url: list,
   //   method: 'get',
   //   data: params,
   // })

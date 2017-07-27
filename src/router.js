@@ -53,7 +53,15 @@ const Routers = function ({ history, app }) {
               cb(null, require('./routes/category/'))
             }, 'category')
           },
-        },{
+        }, {
+          path: 'order',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/order'))
+              cb(null, require('./routes/order/'))
+            }, 'order')
+          },
+        }, {
           path: 'user',
           getComponent (nextState, cb) {
             require.ensure([], require => {
@@ -146,14 +154,6 @@ const Routers = function ({ history, app }) {
             require.ensure([], require => {
               cb(null, require('./routes/chart/areaChart/'))
             }, 'chart-areaChart')
-          },
-        }, {
-          path: 'post',
-          getComponent (nextState, cb) {
-            require.ensure([], require => {
-              registerModel(app, require('./models/post'))
-              cb(null, require('./routes/post/'))
-            }, 'post')
           },
         }, {
           path: '*',

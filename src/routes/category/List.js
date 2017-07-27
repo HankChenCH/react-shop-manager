@@ -15,7 +15,7 @@ const List = ({ onDeleteItem, onEditItem, location, ...tableProps }) => {
       onEditItem(record)
     } else if (e.key === '3') {
       confirm({
-        title: '确定要删除这条分类吗?',
+        title: '确定要删除分类 ' + record.name + ' ?',
         onOk () {
           onDeleteItem(record.id)
         },

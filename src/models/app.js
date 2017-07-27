@@ -81,6 +81,10 @@ export default {
     }, { put, select }) {
       const { user } = yield(select(_=>_.app))
       let nowTime = Date.parse(new Date()) / 1000;
+      if (typeof user.token === 'undefined') {
+        yield put({ type: 'logout'  })        
+      }
+
       //过期时间比现在相差小于10分钟就重新申请令牌
       if (user.exprie_in - nowTime < 6000000 && user.exprie_in - nowTime > 0) {
         yield put({ type: 'reToken' })

@@ -25,7 +25,7 @@ module.exports = {
     category: {
       list: '/category/all',
       info: '/category/:id',
-      productManager: '/category/:id/product'
+      productManager: '/product/by_category'
     },
     user:{
       list: '/user',

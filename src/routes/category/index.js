@@ -21,10 +21,11 @@ const Category = ({ location, dispatch, category, loading }) => {
     title: `${modalType === 'create' ? '创建分类' : '更新分类'}`,
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
-      dispatch({
-        type: `category/${modalType}`,
-        payload: data,
-      })
+      console.log(data)
+      // dispatch({
+      //   type: `category/${modalType}`,
+      //   payload: data,
+      // })
     },
     onUploadSuccess(data) {
       dispatch({
@@ -133,11 +134,11 @@ const Category = ({ location, dispatch, category, loading }) => {
       <Filter {...filterProps} />
       {
          selectedRowKeys.length > 0 &&
-           <Row style={{ marginBottom: 24, textAlign: 'right', fontSize: 13 }}>
+           <Row style={{ marginBottom: 18, textAlign: 'right', fontSize: 13 }}>
              <Col>
                {`选择了 ${selectedRowKeys.length} 条分类 `}
-               <Popconfirm title={'确定要删除选中的分类?'} placement="left" onConfirm={handleDeleteItems}>
-                 <Button type="primary" size="large" style={{ marginLeft: 8 }}>批量删除</Button>
+               <Popconfirm title={'确定要删除选中的分类?'} placement="bottomRight" onConfirm={handleDeleteItems}>
+                 <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
                </Popconfirm>
              </Col>
            </Row>

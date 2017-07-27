@@ -19,7 +19,7 @@ const formItemLayout = {
 }
 
 const modal = ({
-  item = {},
+  item,
   createTempItem,
   modalType,
   onOk,
@@ -40,25 +40,26 @@ const modal = ({
         ...getFieldsValue(),
         key: item.key,
       }
-      data.address = data.address.join(' ')
       onOk(data)
     })
   }
 
   const handleChange = (info) => {
     if (info.file.status === 'done') {
-      onUploadSuccess(info.file.response.data)
+      onUploadSuccess(info.file.response)
     }
   }
 
   const renderUploader = (modalType) => {
+    let imageContent
     if (modalType === 'create') {
-      return createTempItem.img_url ?
+      imageContent = createTempItem.img_url ?
       <img src={createTempItem.img_url} alt="" className={styles.avatar} /> : 
       <Icon type="plus" className={styles.avatar_uploader_trigger} />
     } else if(modalType === 'update') {
-      return <img src={item.img.url} alt="" className={styles.avatar} />
+      imageContent = <img src={item.img.url} alt="" className={styles.avatar} />
     }
+    return <div>{imageContent}</div>
   }
 
   const modalOpts = {
@@ -71,7 +72,7 @@ const modal = ({
       <Form layout="horizontal">
         <FormItem label="分类名" hasFeedback {...formItemLayout}>
           {getFieldDecorator('name', {
-            initialValue: modalType=='create' ? createTempItem.name : item.name,
+            initialValue: item.name,
             rules: [
               {
                 required: true,
@@ -81,7 +82,7 @@ const modal = ({
         </FormItem>
         <FormItem label="描述" hasFeedback {...formItemLayout}>
           {getFieldDecorator('description', {
-            initialValue: modalType=='create' ? createTempItem.description : item.description,
+            initialValue: item.description,
             rules: [
               {
                 required: true,
@@ -90,24 +91,25 @@ const modal = ({
           })(<Input type='textarea'/>)}
         </FormItem>
         <FormItem label="上传头图" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('top_img_id', {
-            initialValue: item.top_img_id,
+          {getFieldDecorator('topic_img_id', {
+            initialValue: item.topic_img_id || createTempItem.topic_img_id,
             rules: [
               {
                 required: true,
               },
             ],
           })(
-            <Upload
-              className={styles.avatar_uploader}
-              name="topicImage"
-              showUploadList={false}
-              action={uploadImageApi}
-              onChange={handleChange}
-            >
-              {renderUploader(modalType)}
-            </Upload>
+            <Input type='hidden' />
           )}
+          <Upload
+            className={styles.avatar_uploader}
+            name="topicImage"
+            showUploadList={false}
+            action={uploadImageApi}
+            onChange={handleChange}
+          >
+            {renderUploader(modalType)}
+          </Upload>
         </FormItem>
       </Form>
     </Modal>

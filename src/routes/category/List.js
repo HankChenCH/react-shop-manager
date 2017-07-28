@@ -9,9 +9,11 @@ import { Link } from 'dva/router'
 
 const confirm = Modal.confirm
 
-const List = ({ onDeleteItem, onEditItem, location, ...tableProps }) => {
+const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
-    if (e.key === '2') {
+    if (e.key === '1') {
+      onManagerItem(record)
+    } else if(e.key === '2') {
       onEditItem(record)
     } else if (e.key === '3') {
       confirm({

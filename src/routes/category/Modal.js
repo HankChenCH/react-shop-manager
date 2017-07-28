@@ -20,7 +20,6 @@ const formItemLayout = {
 
 const modal = ({
   item,
-  createTempItem,
   modalType,
   onOk,
   onUploadSuccess,
@@ -47,19 +46,24 @@ const modal = ({
   const handleChange = (info) => {
     if (info.file.status === 'done') {
       onUploadSuccess(info.file.response)
+    } else if(info.file.status === 'error') {
+      throw {
+        success: false,
+        message: response.msg
+      }
     }
   }
 
   const renderUploader = (modalType) => {
     let imageContent
     if (modalType === 'create') {
-      imageContent = createTempItem.img_url ?
-      <img src={createTempItem.img_url} alt="" className={styles.avatar} /> : 
+      imageContent = item.img_url ?
+      <img src={item.img_url} alt="" className={styles.avatar} /> : 
       <Icon type="plus" className={styles.avatar_uploader_trigger} />
     } else if(modalType === 'update') {
-      imageContent = <img src={item.img.url} alt="" className={styles.avatar} />
+      imageContent = item.img_url ? <img src={item.img_url} alt="" className={styles.avatar} /> : <img src={item.img.url} alt="" className={styles.avatar} />
     }
-    return <div>{imageContent}</div>
+    return imageContent
   }
 
   const modalOpts = {
@@ -76,6 +80,7 @@ const modal = ({
             rules: [
               {
                 required: true,
+                message: '请输入分类名称'
               },
             ],
           })(<Input />)}
@@ -86,16 +91,18 @@ const modal = ({
             rules: [
               {
                 required: true,
+                message: '请输入分类描述'
               },
             ],
           })(<Input type='textarea'/>)}
         </FormItem>
         <FormItem label="上传头图" hasFeedback {...formItemLayout}>
           {getFieldDecorator('topic_img_id', {
-            initialValue: item.topic_img_id || createTempItem.topic_img_id,
+            initialValue: item.topic_img_id,
             rules: [
               {
                 required: true,
+                message: '请上传头图'
               },
             ],
           })(

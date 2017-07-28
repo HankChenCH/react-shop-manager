@@ -3,7 +3,7 @@ import * as categoryService from '../services/category'
 import { pageModel } from './common'
 import { config } from '../utils'
 
-const { query, create, remove, update } = categoryService
+const { query, create, remove, update, queryProductByCategory, updateProductByCategory } = categoryService
 const { prefix } = config
 
 export default modelExtend(pageModel, {
@@ -11,8 +11,12 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
-    createTempItem: {},
+    uploadTempItem: {},
+    tempItem: {},
+    productList: [],
+    currentProductKeyList: [],
     modalVisible: false,
+    managerModalVisible: false,
     modalType: 'create',
     selectedRowKeys: [],
   },
@@ -25,6 +29,7 @@ export default modelExtend(pageModel, {
             type: 'query',
             payload: location.query,
           })
+          dispatch({ type: 'queryProduct' })
         }
       })
     },
@@ -49,52 +54,74 @@ export default modelExtend(pageModel, {
       }
     },
 
+    *queryProduct ({ payload }, { call, put }) {
+        // let productList = res.data.map((item) => {return { key: item.id.toString(), title: item.name }})
+    },
+
     *'delete' ({ payload }, { call, put, select }) {
-      const data = yield call(remove, { id: payload })
+      const res = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.user)
-      if (data.success) {
+      if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
       } else {
-        throw data
+        throw res
       }
     },
 
     *'multiDelete' ({ payload }, { call, put }) {
-      const data = yield call(categoryService.remove, payload)
-      if (data.success) {
+      const res = yield call(categoryService.remove, payload)
+      if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
         yield put({ type: 'query' })
       } else {
-        throw data
+        throw res
       }
     },
 
     *create ({ payload }, { call, put }) {
-      const data = yield call(create, payload)
-      if (data.success) {
+      const res = yield call(create, payload)
+      if (res.success) {
         yield put({ type: 'hideModal' })
         yield put({ type: 'query' })
       } else {
-        throw data
+        throw res
       }
     },
 
     *update ({ payload }, { select, call, put }) {
       const id = yield select(({ category }) => category.currentItem.id)
-      const newUser = { ...payload, id }
-      const data = yield call(update, newUser)
-      if (data.success) {
+      const newCategory = { ...payload, id }
+      const res = yield call(update, newCategory)
+      if (res.success) {
         yield put({ type: 'hideModal' })
         yield put({ type: 'query' })
       } else {
-        throw data
+        throw res
       }
     },
 
     *uploadSuccess ({ payload }, { put }) {
-      yield put({ type: 'insertImage', payload })
-    }
+        yield put({ type: 'uploadImageSuccess', payload })
+    },
+
+    *showProductManager ({ payload }, { put, call }) {
+      const currentItem = payload.currentItem
+      const res = yield call(queryProductByCategory, {id: currentItem.id})
+      if (res.success){
+        let currentProductKeyList = res.data.map((item) => item.id.toString())
+        let productList = res.data.map((item) => {return { key: item.id.toString(), title: item.name, main_img_url: item.main_img_url }})
+        yield put({ type: 'showManagerModal', payload: { currentProductKeyList: currentProductKeyList, currentItem: currentItem} })
+        yield put({ type: 'test', payload: { productList: productList } })
+      } else {
+        throw res
+      }
+    },
+
+    *setProductList ({ payload }, { put, call, select}) {
+      const id = yield select(({ category }) => category.currentItem.id)
+      const res = yield call(updateProductByCategory, {...payload, id: id})
+    },
 
   },
 
@@ -105,16 +132,25 @@ export default modelExtend(pageModel, {
     },
 
     hideModal (state) {
-      return { ...state, modalVisible: false }
+      return { ...state, modalVisible: false, uploadTempItem: {} }
     },
 
-    insertImage (state, { payload }) {
-      let { createTempItem } = state;
-      createTempItem.topic_img_id = payload.id
-      createTempItem.img_url = payload.url
-      // state.createTempItem = createTempItem
-      // console.log(state)
-      return {...state,createTempItem: createTempItem}
+    uploadImageSuccess (state, { payload }) {
+      uploadTempItem.topic_img_id = payload.id
+      uploadTempItem.img_url = payload.url
+      return {...state,uploadTempItem: uploadTempItem}
+    },
+
+    showManagerModal (state, { payload }){
+      return { ...state, ...payload, managerModalVisible: true }
+    },
+
+    hideManagerModal (state) {
+      return  { ...state, managerModalVisible: false, currentProductKeyList: [] }
+    },
+
+    test (state, { payload }) {
+      return { ...state, ...payload }
     }
 
   },

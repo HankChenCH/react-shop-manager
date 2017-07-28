@@ -33,10 +33,10 @@ const Product = ({ location, dispatch, product, loading }) => {
 
   const listProps = {
     dataSource: list,
-    loading: loading.effects['product/query'],
+    loading: loading.effects['product/query','product/updateCurrentItem'],
     pagination,
     location,
-    isMotion,
+    currentItem,
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -81,6 +81,35 @@ const Product = ({ location, dispatch, product, loading }) => {
           }
         })
       }
+    },
+    onShowEidt (item, e){
+      dispatch({
+        type: 'product/updateState',
+        payload: {
+          currentItem: item
+        }
+      })
+    },
+    onChangeItemStock (value) {
+      dispatch({
+        type: 'product/chageCurrentItem',
+        payload: {
+          stock: value
+        }
+      })
+    },
+    onChangeItemPrice (value) {
+      dispatch({
+        type: 'product/chageCurrentItem',
+        payload: {
+          price: value
+        }
+      })
+    },
+    onUpdateItem () {
+      dispatch({
+        type: 'product/updateCurrentItem',
+      })
     },
     rowSelection: {
       selectedRowKeys,
@@ -170,13 +199,13 @@ const Product = ({ location, dispatch, product, loading }) => {
              <Col>
                {`选中了 ${selectedRowKeys.length} 件商品 `}
                <Popconfirm title={'确定上架选中的商品？'} placement="bottomLeft" onConfirm={handlePullOnItems}>
-                 <Button size="small" style={{ marginLeft: 8 }}>上架</Button>
+                 <Button size="small" style={{ marginLeft: 8 }}>批量上架</Button>
                </Popconfirm>
                <Popconfirm title={'确定下架选中的商品？'} placement="bottom" onConfirm={handlePullOffItems}>
-                 <Button size="small" style={{ marginLeft: 8 }}>下架</Button>
+                 <Button size="small" style={{ marginLeft: 8 }}>批量下架</Button>
                </Popconfirm>
                <Popconfirm title={'确定删除选中的商品？'} placement="bottomRight" onConfirm={handleDeleteItems}>
-                 <Button type="danger" size="small" style={{ marginLeft: 8 }}>删除</Button>
+                 <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
                </Popconfirm>
              </Col>
            </Row>

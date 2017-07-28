@@ -21,3 +21,14 @@
   font-size: 28px;
   color: #999;
 }
+.transfer_item{
+  display: inline-block;
+  line-height: 25px;
+}
+.transfer_item_img{
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  padding-right: 5px;
+  vertical-align: middle;
+}

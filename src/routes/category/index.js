@@ -6,18 +6,18 @@ import { Row, Col, Button, Popconfirm } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
+import ManagerModal from './ManagerModal'
 
 const Category = ({ location, dispatch, category, loading }) => {
-  const { list, pagination, currentItem, modalVisible, modalType, selectedRowKeys, createTempItem } = category
+  const { list, pagination, currentItem, modalVisible, managerModalVisible, productList, currentProductKeyList, modalType, selectedRowKeys, uploadTempItem } = category
   const { pageSize } = pagination
 
   const modalProps = {
-    item: modalType === 'create' ? {} : currentItem,
+    item: Object.assign((modalType === 'create' ? {} : currentItem), uploadTempItem),
     modalType: modalType,
-    createTempItem: createTempItem,
     visible: modalVisible,
     maskClosable: false,
-    confirmLoading: loading.effects['category/update'],
+    confirmLoading: loading.effects[`category/${modalType}`],
     title: `${modalType === 'create' ? '创建分类' : '更新分类'}`,
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
@@ -40,6 +40,35 @@ const Category = ({ location, dispatch, category, loading }) => {
     },
   }
 
+  const managerModalProps = {
+    productList,
+    currentProductKeyList,
+    visible: managerModalVisible,
+    maskClosable: false,
+    confirmLoading: loading.effects['category/setProductList'],
+    title: `${currentItem.name}--商品管理`,
+    wrapClassName: 'vertical-center-modal',
+    onOk (data) {
+      dispatch({
+        type: 'category/setProductList',
+        payload: data
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'category/hideManagerModal',
+      })
+    },
+    onChangeProductItem (nextTargetKeys) {
+      dispatch({
+        type: 'category/updateState',
+        payload: {
+          currentProductKeyList: nextTargetKeys
+        }
+      })
+    }
+  }
+
   const listProps = {
     dataSource: list,
     loading: loading.effects['category/query'],
@@ -56,6 +85,14 @@ const Category = ({ location, dispatch, category, loading }) => {
         },
       }))
     },
+    onManagerItem (item) {
+      dispatch({
+        type: 'category/showProductManager',
+        payload: {
+          currentItem: item,
+        }
+      })
+    },
     onDeleteItem (id) {
       dispatch({
         type: 'category/delete',
@@ -63,7 +100,6 @@ const Category = ({ location, dispatch, category, loading }) => {
       })
     },
     onEditItem (item) {
-      console.log(item)
       dispatch({
         type: 'category/showModal',
         payload: {
@@ -145,6 +181,7 @@ const Category = ({ location, dispatch, category, loading }) => {
       }
       <List {...listProps} />
       {modalVisible && <Modal {...modalProps} />}
+      {managerModalVisible && <ManagerModal {...managerModalProps} />}
     </div>
   )
 }

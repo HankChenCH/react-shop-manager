@@ -19,13 +19,15 @@ module.exports = {
       home: '/home'
     },
     product: {
+      all: '/product/all',
       list: '/product/recent',
       info: '/product/:id',
     },
     category: {
       list: '/category/all',
       info: '/category/:id',
-      productManager: '/product/by_category'
+      products: '/product/by_category',
+      setProducts: 'category/:id/product'
     },
     user:{
       list: '/user',

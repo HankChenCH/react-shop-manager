@@ -1,12 +1,29 @@
 import { request, config } from '../utils'
 const { api } = config
-const { list, info, productManager } = api.category
+const { list, info, products, setProducts } = api.category
+const { all } = api.product
 
 export async function query (params) {
   return request({
     url: list,
     method: 'get',
     data: params,
+  })
+}
+
+export async function queryAll (params) {
+  return request({
+    url: all,
+    method: 'get',
+    data: params,
+  })
+}
+
+export async function queryProductByCategory (params) {
+  return request({
+    url: products,
+    method: 'get',
+    data: params
   })
 }
 
@@ -34,10 +51,10 @@ export async function update (params) {
   })
 }
 
-export async function manager (params) {
+export async function updateProductByCategory (params) {
   return request({
-    url: productManager,
-    method: 'post',
-    data: params
+    url: setProducts,
+    method: 'put',
+    data: params,
   })
 }

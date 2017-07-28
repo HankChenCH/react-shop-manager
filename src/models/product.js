@@ -107,6 +107,12 @@ export default modelExtend(pageModel, {
 
     },
 
+    *updateCurrentItem ({ payload }, { put, call, select }){
+      const currentItem = yield select(({ product }) => product.currentItem)
+      console.log(currentItem)
+      yield put({ type: 'resetCurrentItem' })
+    }
+
   },
 
   reducers: {
@@ -118,6 +124,15 @@ export default modelExtend(pageModel, {
     hideModal (state) {
       return { ...state, modalVisible: false }
     },
+
+    chageCurrentItem (state, { payload }) {
+      const { currentItem } = state
+      return {...state, currentItem: Object.assign(currentItem, payload)}
+    },
+
+    resetCurrentItem (state) {
+      return {...state, currentItem: {}}
+    }
     
   },
 })

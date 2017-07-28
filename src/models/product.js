@@ -91,12 +91,8 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *putOn ({ payload }, { put, call }) {
-
-    },
-
-    *putOff ({ payload }, { put, call }) {
-
+    *putItem ({ payload }, { put, call }) {
+        // yield put({ type: '' })
     },
 
     *multiOn ({ payload }, { put, call }) {

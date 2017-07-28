@@ -64,23 +64,13 @@ const Product = ({ location, dispatch, product, loading }) => {
       })
     },
     onPullShelvesItem (id, is_on){
-      if (is_on) {
-        dispatch({
-          type: 'product/pullOn',
-          payload: {
-            id: id,
-            is_on: 1
-          }
-        })
-      } else {
-        dispatch({
-          type: 'product/pullOff',
-          payload: {
-            id: id,
-            is_on: 0
-          }
-        })
-      }
+      dispatch({
+        type: 'product/pullItem',
+        payload: {
+          currentItem: item,
+          is_on: is_on
+        }
+      })
     },
     onShowEidt (item, e){
       dispatch({

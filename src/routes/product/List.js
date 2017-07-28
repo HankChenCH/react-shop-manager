@@ -24,7 +24,7 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
   }
 
   const handleSwitchChange = (record, checked) => {
-    onPullShelvesItem(record.id, checked)
+    onPullShelvesItem(record, checked)
   }
 
   const handleDbClick = (record, e) => {
@@ -102,7 +102,7 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       title: '上架',
       dataIndex: 'isOn',
       key: 'isOn',
-      render: (text, record) => <Switch checked={text ? true : false} checkedChildren="下架" unCheckedChildren="上架" onChange={checked => handleSwitchChange(record, checked)}/>,
+      render: (text, record) => <Switch style={{width: '65px'}} checked={text ? true : false} checkedChildren="下架" unCheckedChildren="上架" onChange={checked => handleSwitchChange(record, checked)}/>,
     }, {
       title: '操作',
       key: 'operation',

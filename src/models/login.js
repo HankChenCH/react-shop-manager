@@ -20,7 +20,7 @@ export default {
         res.data.data.username = payload.username//由于api没有返回用户名暂时以这个代替
         localStorage.setItem(`${prefix}admin`, JSON.stringify(res.data.data))
         const from = queryURL('from')
-        yield put({ type: 'app/query', payload: res.data.data })
+        yield put({ type: 'app/registerUser', payload: res.data.data })
         if (from) {
           yield put(routerRedux.push(from))
         } else {

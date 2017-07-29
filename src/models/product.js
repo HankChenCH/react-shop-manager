@@ -91,8 +91,12 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *putItem ({ payload }, { put, call }) {
-        // yield put({ type: '' })
+    *pullItem ({ payload }, { put, call, select }) {
+      // const res = yield call(update, payload)
+      let list = yield select(({ product }) => product.list)
+      let newList = list.map((item) => item.id === payload.id ? {...item, is_on: payload.is_on ? 1 : 0} : item)
+      // console.log(newList)
+      yield put({ type: 'updateState', payload: {list: newList} })
     },
 
     *multiOn ({ payload }, { put, call }) {
@@ -128,7 +132,7 @@ export default modelExtend(pageModel, {
 
     resetCurrentItem (state) {
       return {...state, currentItem: {}}
-    }
+    },
     
   },
 })

@@ -30,57 +30,29 @@ export default {
   },
   effects: {
 
-    *query ({
-      payload,
-    }, { call, put }) {
-      const data = yield call(query, parse(payload))
-      if (data.success && data.user) {
-        yield put({
-          type: 'querySuccess',
-          payload: data.user,
-        })
-        if (location.pathname === '/login') {
-          yield put(routerRedux.push('/dashboard'))
-        }
-      } else {
-        if (location.pathname !== '/login') {
-          let from = location.pathname
-          if (location.pathname === '/dashboard') {
-            from = '/dashboard'
-          }
-          window.location = `${location.origin}/login?from=${from}`
-        }
-      }
-    },
-
-    *logout ({
-      payload,
-    }, { call, put }) {
-      const data = yield call(logout, parse(payload))
-      if (data.success) {
-        yield localStorage.removeItem(`${prefix}admin`)
-        yield put({ type: 'query' })
-      } else {
-        throw (data)
-      }
-    },
-
-    *changeNavbar ({
-      payload,
-    }, { put, select }) {
-      const { app } = yield(select(_ => _))
-      //当客户端宽度少于769认为是移动设备浏览，隐藏侧边菜单栏改用头部菜单
-      const isNavbar = document.body.clientWidth < 769
-      if (isNavbar !== app.isNavbar) {
-        yield put({ type: 'handleNavbar', payload: isNavbar })
-      }
-    },
+    // *query ({
+    //   payload,
+    // }, { call, put }) {
+    //   // const data = yield call(query, parse(payload))
+    //   // if (data.success && data.user) {
+    //   //   yield put({
+    //   //     type: 'registerUser',
+    //   //     payload: data.user,
+    //   //   })
+    //   //   if (location.pathname === '/login') {
+    //   //     yield put(routerRedux.push('/dashboard'))
+    //   //   }
+    //   // } else {
+        
+    //   // }
+    // },
 
     *checkTokenExpire ({
       payload
     }, { put, select }) {
       const { user } = yield(select(_=>_.app))
       let nowTime = Date.parse(new Date()) / 1000;
+      //票据为空代表没有登录，直接返回登录页面
       if (typeof user.token === 'undefined') {
         yield put({ type: 'logout'  })        
       }
@@ -88,7 +60,7 @@ export default {
       //过期时间比现在相差小于10分钟就重新申请令牌
       if (user.exprie_in - nowTime < 6000000 && user.exprie_in - nowTime > 0) {
         yield put({ type: 'reToken' })
-      }//过期时间比现在相差小于0，代表用户很久没有操作，直接登录过期跳转出去登录页面重新登录
+      }//过期时间比现在相差小于0，代表用户10分钟内没有操作，直接登录过期跳转出去登录页面重新登录
       else if (user.exprie_in - nowTime < 0) {
         yield put({ type: 'logout'  })
         //手动抛出错误提示给框架捕获
@@ -106,13 +78,42 @@ export default {
       //以旧令牌换取新令牌
       const data = yield call(reToken, user.token);
       if (data.success && data.user) {
-        yield put({ type: 'querySuccess', payload: data.user })
+        yield put({ type: 'registerUser', payload: data.user })
       }
-    }
+    },
+
+    *logout ({
+      payload,
+    }, { call, put }) {
+      const data = yield call(logout, parse(payload))
+      if (data.success) {
+        yield localStorage.removeItem(`${prefix}admin`)
+        if (location.pathname !== '/login') {
+          let from = location.pathname
+          if (location.pathname === '/dashboard') {
+            from = '/dashboard'
+          }
+          window.location = `${location.origin}/login?from=${from}`
+        }
+      } else {
+        throw (data)
+      }
+    },
+
+    *changeNavbar ({
+      payload,
+    }, { put, select }) {
+      const { app } = yield(select(_ => _))
+      //当客户端宽度少于769认为是移动设备浏览，隐藏侧边菜单栏改用头部菜单
+      const isNavbar = document.body.clientWidth < 769
+      if (isNavbar !== app.isNavbar) {
+        yield put({ type: 'handleNavbar', payload: isNavbar })
+      }
+    },
 
   },
   reducers: {
-    querySuccess (state, { payload: user }) {
+    registerUser (state, { payload: user }) {
       return {
         ...state,
         user,

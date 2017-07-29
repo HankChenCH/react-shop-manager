@@ -11,8 +11,10 @@ const confirm = Modal.confirm
 
 const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChangeItemPrice, onDeleteItem, onEditItem, onPullShelvesItem, location, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
-    if (e.key === '2') {
+    if (e.key === '1') {
       onEditItem(record)
+    } else if (e.key === '2') {
+
     } else if (e.key === '3') {
       confirm({
         title: '确定要删除商品 ' + record.name + ' ?',
@@ -24,7 +26,7 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
   }
 
   const handleSwitchChange = (record, checked) => {
-    onPullShelvesItem(record, checked)
+    onPullShelvesItem(record.id, checked)
   }
 
   const handleDbClick = (record, e) => {
@@ -100,9 +102,9 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       key: 'createTime',
     }, {
       title: '上架',
-      dataIndex: 'isOn',
-      key: 'isOn',
-      render: (text, record) => <Switch style={{width: '65px'}} checked={text ? true : false} checkedChildren="下架" unCheckedChildren="上架" onChange={checked => handleSwitchChange(record, checked)}/>,
+      dataIndex: 'is_on',
+      key: 'is_on',
+      render: (text, record) => <Switch checked={text ? true : false} checkedChildren="Off" unCheckedChildren="On" onChange={checked => handleSwitchChange(record, checked)}/>,
     }, {
       title: '操作',
       key: 'operation',
@@ -112,11 +114,6 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       },
     },
   ]
-
-  const getBodyWrapperProps = {
-    page: location.query.page,
-    current: tableProps.pagination.current,
-  }
 
   return (
     <div>

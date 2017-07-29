@@ -67,7 +67,7 @@ const Product = ({ location, dispatch, product, loading }) => {
       dispatch({
         type: 'product/pullItem',
         payload: {
-          currentItem: item,
+          id: id,
           is_on: is_on
         }
       })

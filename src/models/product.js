@@ -1,9 +1,10 @@
 import modelExtend from 'dva-model-extend'
+import { message } from 'antd'
 import * as productService from '../services/product'
 import { pageModel } from './common'
 import { config } from '../utils'
 
-const { query, create, update, remove } = productService
+const { query, create, update, updateStockAndPrice, pullOnOff, remove } = productService
 const { prefix } = config
 
 export default modelExtend(pageModel, {
@@ -32,16 +33,16 @@ export default modelExtend(pageModel, {
   effects: {
 
     *query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
-      if (data) {
+      const res = yield call(query, payload)
+      if (res.success) {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data,
+            list: res.data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
+              total: res.data.total,
             },
           },
         })
@@ -53,6 +54,7 @@ export default modelExtend(pageModel, {
       const { selectedRowKeys } = yield select(_ => _.product)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
+        message.success('删除商品成功')
         yield put({ type: 'query' })
       } else {
         throw data
@@ -92,11 +94,17 @@ export default modelExtend(pageModel, {
     },
 
     *pullItem ({ payload }, { put, call, select }) {
-      // const res = yield call(update, payload)
-      let list = yield select(({ product }) => product.list)
-      let newList = list.map((item) => item.id === payload.id ? {...item, is_on: payload.is_on ? 1 : 0} : item)
-      // console.log(newList)
-      yield put({ type: 'updateState', payload: {list: newList} })
+      const res = yield call(pullOnOff, { id: payload.id, is_on: payload.is_on ? '1' : '0' })
+      if (res.success) {
+        let list = yield select(({ product }) => product.list)
+        let newList = list.map((item) => item.id === payload.id ? {...item, is_on: payload.is_on ? '1' : '0'} : item)
+        // console.log(newList)
+        yield put({ type: 'updateState', payload: {list: newList} })
+        message.success((payload.is_on ? '上架' : '下架') + '成功')
+      } else {
+        throw res
+      }
+      
     },
 
     *multiOn ({ payload }, { put, call }) {
@@ -109,8 +117,14 @@ export default modelExtend(pageModel, {
 
     *updateCurrentItem ({ payload }, { put, call, select }){
       const currentItem = yield select(({ product }) => product.currentItem)
-      console.log(currentItem)
-      yield put({ type: 'resetCurrentItem' })
+      const res = yield call(updateStockAndPrice, currentItem);
+      if (res.success) {
+        yield put({ type: 'resetCurrentItem' })
+        message.success('更新商品成功')
+      } else {
+        yield put({ type: 'query' })
+        throw res
+      }
     }
 
   },

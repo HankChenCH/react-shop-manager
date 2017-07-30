@@ -9,12 +9,6 @@ const List = ({ ...tableProps }) => {
 
   const columns = [
     {
-      title: 'Image',
-      dataIndex: 'image',
-      className: styles.image,
-      width: 64,
-      render: (text) => <img alt="Feture" width={26} src={text} />,
-    }, {
       title: '订单号',
       dataIndex: 'order_no',
     }, {

@@ -1,10 +1,18 @@
 import { request, config } from '../utils'
 const { api } = config
-const { list, info } = api.product
+const { all, list, info, stockAndPrice, pull } = api.product
 
 export async function query (params) {
   return request({
     url: list,
+    method: 'get',
+    data: params,
+  })
+}
+
+export async function queryAll (params) {
+  return request({
+    url: all,
     method: 'get',
     data: params,
   })
@@ -29,6 +37,22 @@ export async function remove (params) {
 export async function update (params) {
   return request({
     url: info,
+    method: 'put',
+    data: params,
+  })
+}
+
+export async function updateStockAndPrice (params) {
+  return request({
+    url: stockAndPrice,
+    method: 'put',
+    data: params,
+  })
+}
+
+export async function pullOnOff (params) {
+  return request({
+    url: pull,
     method: 'put',
     data: params,
   })

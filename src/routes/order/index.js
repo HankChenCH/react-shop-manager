@@ -8,13 +8,14 @@ import List from './List'
 const TabPane = Tabs.TabPane
 
 const EnumPostStatus = {
-  DELIVERY: 1,
-  UNDELIVERY: 2,
+  UNPAY: 1,
+  DELIVERY: 2,
+  UNDELIVERY: 3,
 }
 
 
 const Index = ({ order, dispatch, loading, location }) => {
-  const { list, pagination } = order
+  const { list, pagination, selectedRowKeys } = order
   const { query = {}, pathname } = location
 
   const listProps = {
@@ -31,6 +32,17 @@ const Index = ({ order, dispatch, loading, location }) => {
         },
       }))
     },
+    rowSelection: {
+      selectedRowKeys,
+      onChange: (keys) => {
+        dispatch({
+          type: 'order/updateState',
+          payload: {
+            selectedRowKeys: keys,
+          },
+        })
+      },
+    },
   }
 
   const handleTabClick = (key) => {
@@ -42,13 +54,18 @@ const Index = ({ order, dispatch, loading, location }) => {
     }))
   }
 
-
   return (<div className="content-inner">
-    <Tabs activeKey={query.status === String(EnumPostStatus.DELIVERY) ? String(EnumPostStatus.DELIVERY) : String(EnumPostStatus.UNDELIVERY)} onTabClick={handleTabClick}>
-      <TabPane tab="未发货" key={String(EnumPostStatus.UNDELIVERY)}>
+    <Tabs activeKey={query.status} onTabClick={handleTabClick}>
+      <TabPane tab="未付款" key={String(EnumPostStatus.UNPAY)}>
+        <div>1</div>
         <List {...listProps} />
       </TabPane>
-      <TabPane tab="以发货" key={String(EnumPostStatus.DELIVERY)}>
+      <TabPane tab="未发货" key={String(EnumPostStatus.UNDELIVERY)}>
+        <div>2</div>
+        <List {...listProps} />
+      </TabPane>
+      <TabPane tab="已发货" key={String(EnumPostStatus.DELIVERY)}>
+        <div>3</div>
         <List {...listProps} />
       </TabPane>
     </Tabs>

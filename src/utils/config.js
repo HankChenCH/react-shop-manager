@@ -19,13 +19,17 @@ module.exports = {
       home: '/home'
     },
     product: {
-      all: '/product/all',
-      list: '/product/recent',
+      all: '/product/in_category/all',
+      list: '/product',
       info: '/product/:id',
+      stockAndPrice: '/product/:id/stock_and_price',
+      pull: 'product/:id/pullOnOff',
+      recent: '/product/recent',
     },
     category: {
       list: '/category/all',
       info: '/category/:id',
+      batch: '/category/batch',
       products: '/product/by_category',
       setProducts: 'category/:id/product'
     },

@@ -21,15 +21,14 @@ const Category = ({ location, dispatch, category, loading }) => {
     title: `${modalType === 'create' ? '创建分类' : '更新分类'}`,
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
-      console.log(data)
-      // dispatch({
-      //   type: `category/${modalType}`,
-      //   payload: data,
-      // })
+      dispatch({
+        type: `category/${modalType}`,
+        payload: data,
+      })
     },
     onUploadSuccess(data) {
       dispatch({
-        type: 'category/uploadSuccess',
+        type: 'category/uploadImageSuccess',
         payload: data
       })
     },

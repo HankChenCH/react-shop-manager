@@ -1,6 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
-const { list, info, products, setProducts } = api.category
+const { list, info, batch, products, setProducts } = api.category
 const { all } = api.product
 
 export async function query (params) {
@@ -19,7 +19,7 @@ export async function queryAll (params) {
   })
 }
 
-export async function queryProductByCategory (params) {
+export async function queryProducts (params) {
   return request({
     url: products,
     method: 'get',
@@ -51,10 +51,26 @@ export async function update (params) {
   })
 }
 
-export async function updateProductByCategory (params) {
+export async function batchRemove (params) {
+  return request({
+    url: batch,
+    method: 'delete',
+    data: params,
+  })
+}
+
+export async function updateProducts (params) {
   return request({
     url: setProducts,
     method: 'put',
+    data: params,
+  })
+}
+
+export async function removeAllProducts (params) {
+  return request({
+    url: setProducts,
+    method: 'delete',
     data: params,
   })
 }

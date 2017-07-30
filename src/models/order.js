@@ -6,6 +6,12 @@ export default modelExtend(pageModel, {
 
   namespace: 'order',
 
+  state: {
+    currentItem: {},
+    modalVisible: false,
+    selectedRowKeys: [],
+  },
+
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen(location => {

@@ -1,9 +1,12 @@
 import modelExtend from 'dva-model-extend'
+import { message } from 'antd'
 import * as categoryService from '../services/category'
+import * as productService from '../services/product'
 import { pageModel } from './common'
 import { config } from '../utils'
 
-const { query, create, remove, update, queryProductByCategory, updateProductByCategory } = categoryService
+const { query, create, remove, update, batchRemove, queryProducts, updateProducts, removeAllProducts } = categoryService
+const { queryAll } = productService
 const { prefix } = config
 
 export default modelExtend(pageModel, {
@@ -55,14 +58,21 @@ export default modelExtend(pageModel, {
     },
 
     *queryProduct ({ payload }, { call, put }) {
-        // let productList = res.data.map((item) => {return { key: item.id.toString(), title: item.name }})
+        const res = yield call(queryAll, payload)
+        if (res.success) {
+          let productList = res.data.map((item) => {return { key: item.id.toString(), title: item.name, main_img_url: item.main_img_url }})
+          yield put({ type: 'updateState', payload: { productList: productList }})
+        } else {
+          throw res
+        }
     },
 
     *'delete' ({ payload }, { call, put, select }) {
       const res = yield call(remove, { id: payload })
-      const { selectedRowKeys } = yield select(_ => _.user)
+      const { selectedRowKeys } = yield select(_ => _.category)
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
+        message.success('删除分类成功')
         yield put({ type: 'query' })
       } else {
         throw res
@@ -70,9 +80,10 @@ export default modelExtend(pageModel, {
     },
 
     *'multiDelete' ({ payload }, { call, put }) {
-      const res = yield call(categoryService.remove, payload)
+      const res = yield call(batchRemove, { ids: payload.ids.join(',') })
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
+        message.success('批量删除分类成功')
         yield put({ type: 'query' })
       } else {
         throw res
@@ -83,6 +94,7 @@ export default modelExtend(pageModel, {
       const res = yield call(create, payload)
       if (res.success) {
         yield put({ type: 'hideModal' })
+        message.success('创建分类成功')
         yield put({ type: 'query' })
       } else {
         throw res
@@ -95,6 +107,7 @@ export default modelExtend(pageModel, {
       const res = yield call(update, newCategory)
       if (res.success) {
         yield put({ type: 'hideModal' })
+        message.success('更新分类成功')
         yield put({ type: 'query' })
       } else {
         throw res
@@ -107,12 +120,11 @@ export default modelExtend(pageModel, {
 
     *showProductManager ({ payload }, { put, call }) {
       const currentItem = payload.currentItem
-      const res = yield call(queryProductByCategory, {id: currentItem.id})
+      const res = yield call(queryProducts, {id: currentItem.id})
       if (res.success){
         let currentProductKeyList = res.data.map((item) => item.id.toString())
-        let productList = res.data.map((item) => {return { key: item.id.toString(), title: item.name, main_img_url: item.main_img_url }})
         yield put({ type: 'showManagerModal', payload: { currentProductKeyList: currentProductKeyList, currentItem: currentItem} })
-        yield put({ type: 'test', payload: { productList: productList } })
+        // yield put({ type: 'test', payload: { productList: productList } })
       } else {
         throw res
       }
@@ -120,7 +132,13 @@ export default modelExtend(pageModel, {
 
     *setProductList ({ payload }, { put, call, select}) {
       const id = yield select(({ category }) => category.currentItem.id)
-      const res = yield call(updateProductByCategory, {...payload, id: id})
+      const res = payload.product_id === '' ? yield call(removeAllProducts, { id: id }) : yield call(updateProducts, {...payload, id: id})
+      if (res.success) {
+        yield put({ type: 'hideManagerModal' })
+        message.success('更新商品列表成功')
+      } else {
+        throw res
+      }
     },
 
   },
@@ -136,6 +154,7 @@ export default modelExtend(pageModel, {
     },
 
     uploadImageSuccess (state, { payload }) {
+      const { uploadTempItem } = state
       uploadTempItem.topic_img_id = payload.id
       uploadTempItem.img_url = payload.url
       return {...state,uploadTempItem: uploadTempItem}
@@ -148,10 +167,6 @@ export default modelExtend(pageModel, {
     hideManagerModal (state) {
       return  { ...state, managerModalVisible: false, currentProductKeyList: [] }
     },
-
-    test (state, { payload }) {
-      return { ...state, ...payload }
-    }
 
   },
 })

@@ -61,6 +61,10 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       key: 'title',
       render: (text, record) => <Link to={`product/${record.id}`}>{text}</Link>,
     }, {
+      title: '商品摘要',
+      dataIndex: 'summary',
+      key: 'summary',
+    }, {
       title: '单价',
       dataIndex: 'price',
       key: 'price',
@@ -97,14 +101,14 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
         <span onDoubleClick={e => handleDbClick(record, e)}>{text}</span>  
       }
     }, {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      key: 'createTime',
-    }, {
       title: '上架',
       dataIndex: 'is_on',
       key: 'is_on',
-      render: (text, record) => <Switch checked={text ? true : false} checkedChildren="Off" unCheckedChildren="On" onChange={checked => handleSwitchChange(record, checked)}/>,
+      render: (text, record) => <Switch checked={text === '1' ? true : false} checkedChildren="Off" unCheckedChildren="On" onChange={checked => handleSwitchChange(record, checked)}/>,
+    }, {
+      title: '创建时间',
+      dataIndex: 'create_time',
+      key: 'createTime',
     }, {
       title: '操作',
       key: 'operation',

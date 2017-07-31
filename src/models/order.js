@@ -8,6 +8,7 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    tempItem: {},
     modalVisible: false,
     selectedRowKeys: [],
   },

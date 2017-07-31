@@ -9,8 +9,8 @@ const TabPane = Tabs.TabPane
 
 const EnumPostStatus = {
   UNPAY: 1,
-  DELIVERY: 2,
-  UNDELIVERY: 3,
+  UNDELIVERY: 2,
+  DELIVERY: 3,
 }
 
 
@@ -57,15 +57,12 @@ const Index = ({ order, dispatch, loading, location }) => {
   return (<div className="content-inner">
     <Tabs activeKey={query.status} onTabClick={handleTabClick}>
       <TabPane tab="未付款" key={String(EnumPostStatus.UNPAY)}>
-        <div>1</div>
         <List {...listProps} />
       </TabPane>
       <TabPane tab="未发货" key={String(EnumPostStatus.UNDELIVERY)}>
-        <div>2</div>
         <List {...listProps} />
       </TabPane>
       <TabPane tab="已发货" key={String(EnumPostStatus.DELIVERY)}>
-        <div>3</div>
         <List {...listProps} />
       </TabPane>
     </Tabs>

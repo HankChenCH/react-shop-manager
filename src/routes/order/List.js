@@ -1,5 +1,6 @@
 import React from 'react'
 import { Table } from 'antd'
+import { DropOption } from '../../components'
 import styles from './List.less'
 
 const List = ({ ...tableProps }) => {
@@ -13,19 +14,19 @@ const List = ({ ...tableProps }) => {
       dataIndex: 'order_no',
     }, {
       title: '用户',
-      dataIndex: 'author',
+      dataIndex: 'user.nickname',
     }, {
       title: '订单快照',
       dataIndex: 'snap_item',
+      render: (text, record) => {
+        return <div><img width={32} src={record.snap_img}/><span>{record.snap_name}</span></div>
+      }
     }, {
       title: '总金额',
       dataIndex: 'total_price'
     }, {
       title: '下单时间',
       dataIndex: 'create_time',
-    }, {
-      title: '状态',
-      dataIndex: 'status',
     }, {
       title: '操作',
       dataIndex: 'opteration',

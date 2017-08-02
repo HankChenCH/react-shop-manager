@@ -4,7 +4,7 @@ import * as productService from '../services/product'
 import { pageModel } from './common'
 import { config } from '../utils'
 
-const { query, create, update, updateStockAndPrice, pullOnOff, remove } = productService
+const { query, create, update, updateStockAndPrice, pullOnOff, batchOnOff, batchRemove, remove } = productService
 const { prefix } = config
 
 export default modelExtend(pageModel, {
@@ -62,7 +62,7 @@ export default modelExtend(pageModel, {
     },
 
     *'multiDelete' ({ payload }, { call, put }) {
-      const data = yield call(remove, payload)
+      const data = yield call(batchRemove, { ids: payload.ids.join(',') })
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
         yield put({ type: 'query' })
@@ -98,7 +98,6 @@ export default modelExtend(pageModel, {
       if (res.success) {
         let list = yield select(({ product }) => product.list)
         let newList = list.map((item) => item.id === payload.id ? {...item, is_on: payload.is_on ? '1' : '0'} : item)
-        // console.log(newList)
         yield put({ type: 'updateState', payload: {list: newList} })
         message.success((payload.is_on ? '上架' : '下架') + '成功')
       } else {
@@ -107,12 +106,23 @@ export default modelExtend(pageModel, {
       
     },
 
-    *multiOn ({ payload }, { put, call }) {
+    *multiOnOff ({ payload }, { put, call, select }) {
+      const { list, selectedRowKeys } = yield select(({ product }) => product)
+      const res = yield call(batchOnOff, { ids: payload.ids.join(','), is_on: payload.is_on })
+      if (res.success) {
+        let newList = list.map(item => { 
+          if(selectedRowKeys.indexOf(item.id) !== -1){
+            return { ...item, is_on: res.data.is_on }
+          }
 
-    },
-
-    *multiOff ({ payload }, { put, call }) {
-
+          return item
+        })
+        yield put({ type: 'updateState', payload: { list: newList, selectedRowKeys: [] } })
+        message.success('批量' + (res.data.is_on === '1' ? '上' : '下') + '架成功')
+      } else {
+        yield put({ type: 'query' })
+        throw res
+      }
     },
 
     *updateCurrentItem ({ payload }, { put, call, select }){

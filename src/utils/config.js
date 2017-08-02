@@ -22,6 +22,7 @@ module.exports = {
       all: '/product/in_category/all',
       list: '/product',
       info: '/product/:id',
+      batch: '/product/batch',
       stockAndPrice: '/product/:id/stock_and_price',
       pull: 'product/:id/pullOnOff',
       recent: '/product/recent',

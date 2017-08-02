@@ -164,18 +164,20 @@ const Product = ({ location, dispatch, product, loading }) => {
 
   const handlePullOnItems = () => {
     dispatch({
-      type: 'product/multiOn',
+      type: 'product/multiOnOff',
       payload: {
         ids: selectedRowKeys,
+        is_on: '1'
       },
     })
   }
 
   const handlePullOffItems = () => {
     dispatch({
-      type: 'product/multiOff',
+      type: 'product/multiOnOff',
       payload: {
         ids: selectedRowKeys,
+        is_on: '0'
       },
     })
   }

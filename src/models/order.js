@@ -18,7 +18,7 @@ export default modelExtend(pageModel, {
       history.listen(location => {
         if (location.pathname === '/order') {
           dispatch({ type: 'query', payload: {
-            status: 2,
+            status: 1,
             ...location.query,
           } })
         }
@@ -44,6 +44,12 @@ export default modelExtend(pageModel, {
           },
         })
       } else {
+        yield put({
+          type: 'updateState',
+          payload: {
+            list: [], 
+          }
+        })
         throw res
       }
     },

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Tabs } from 'antd'
+import { Tabs, Row, Col, Popconfirm, Button } from 'antd'
 import { routerRedux } from 'dva/router'
 import List from './List'
 
@@ -19,6 +19,7 @@ const Index = ({ order, dispatch, loading, location }) => {
   const { query = {}, pathname } = location
 
   const listProps = {
+    queryStatus: query.status || '1',
     pagination,
     dataSource: list,
     loading: loading.effects['order/query'],
@@ -45,6 +46,15 @@ const Index = ({ order, dispatch, loading, location }) => {
     },
   }
 
+  const handleDeleteItems = () => {
+    dispatch({
+      type: 'order/multiDelete',
+      payload: {
+        ids: selectedRowKeys,
+      },
+    })
+  }
+
   const handleTabClick = (key) => {
     dispatch(routerRedux.push({
       pathname,
@@ -55,8 +65,19 @@ const Index = ({ order, dispatch, loading, location }) => {
   }
 
   return (<div className="content-inner">
-    <Tabs activeKey={query.status} onTabClick={handleTabClick}>
+    <Tabs activeKey={query.status || '1'} onTabClick={handleTabClick}>
       <TabPane tab="未付款" key={String(EnumPostStatus.UNPAY)}>
+        {
+           selectedRowKeys.length > 0 &&
+             <Row style={{ marginBottom: 16, textAlign: 'right', fontSize: 13 }}>
+               <Col>
+                 {`选中了 ${selectedRowKeys.length} 条订单 `}
+                 <Popconfirm title={'确定删除选中的订单？'} placement="bottomRight" onConfirm={handleDeleteItems}>
+                   <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
+                 </Popconfirm>
+               </Col>
+             </Row>
+        }
         <List {...listProps} />
       </TabPane>
       <TabPane tab="未发货" key={String(EnumPostStatus.UNDELIVERY)}>

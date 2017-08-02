@@ -3,9 +3,26 @@ import { Table } from 'antd'
 import { DropOption } from '../../components'
 import styles from './List.less'
 
-const List = ({ ...tableProps }) => {
+const List = ({ queryStatus, ...tableProps }) => {
   const handleMenuClick = (e) => {
+    console.log(queryStatus)
     console.log(e)
+  }
+
+  const renderMenuByStatus = () => {
+    let menu
+    switch (queryStatus){
+      case '1':
+          menu = [{ key: '1', name: '订单改价' },{ key: '2', name: '删除订单' }]
+        break
+      case '2':
+          menu = [{ key: '3', name: '订单发货' }]
+        break
+      case '3':
+          menu = [{ key: '4', name: '查看订单' }]
+        break
+    }
+    return menu
   }
 
   const columns = [
@@ -31,7 +48,8 @@ const List = ({ ...tableProps }) => {
       title: '操作',
       dataIndex: 'opteration',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '商品管理' }, { key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
+        let menuOptions = renderMenuByStatus()
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
       }
     }
   ]

@@ -119,7 +119,7 @@ export default modelExtend(pageModel, {
       const currentItem = yield select(({ product }) => product.currentItem)
       const res = yield call(updateStockAndPrice, currentItem);
       if (res.success) {
-        yield put({ type: 'resetCurrentItem' })
+        yield put({ type: 'updateState', payload: {currentItem: {}} })
         message.success('更新商品成功')
       } else {
         yield put({ type: 'query' })
@@ -142,10 +142,6 @@ export default modelExtend(pageModel, {
     chageCurrentItem (state, { payload }) {
       const { currentItem } = state
       return {...state, currentItem: Object.assign(currentItem, payload)}
-    },
-
-    resetCurrentItem (state) {
-      return {...state, currentItem: {}}
     },
     
   },

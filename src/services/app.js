@@ -13,14 +13,11 @@ export async function login (params) {
 }
 
 export async function logout (params) {
-  return {
-    success: true
-  }
-  // return request({
-  //   url: alogout,
-  //   method: 'get',
-  //   data: params,
-  // })
+  return request({
+    url: alogout,
+    method: 'delete',
+    data: params,
+  })
 }
 
 export async function reToken (params) {

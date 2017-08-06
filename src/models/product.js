@@ -12,7 +12,9 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
+    uploadTempItem: {},
     modalVisible: false,
+    currentStep: 0,
     modalType: 'create',
     selectedRowKeys: [],
   },
@@ -149,10 +151,22 @@ export default modelExtend(pageModel, {
       return { ...state, modalVisible: false }
     },
 
+    uploadImageSuccess (state, { payload }) {
+      const { uploadTempItem } = state
+      uploadTempItem.img_id = payload.id
+      uploadTempItem.main_img_url = payload.url
+      return {...state,uploadTempItem: uploadTempItem}
+    },
+
     chageCurrentItem (state, { payload }) {
       const { currentItem } = state
-      return {...state, currentItem: Object.assign(currentItem, payload)}
+      return { ...state, currentItem: Object.assign(currentItem, payload) }
     },
+
+    changeStep (state, { payload }) {
+      const { currentStep } = state
+      return { ...state, currentStep: currentStep + payload.step }
+    }
     
   },
 })

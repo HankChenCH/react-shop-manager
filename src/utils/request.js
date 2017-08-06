@@ -54,21 +54,31 @@ const fetch = (options) => {
     data = null
   }
 
+  let headersOption = typeof data.token !== 'undefined' ? { "token": data.token } : {}
+
   switch (method.toLowerCase()) {
     case 'get':
       return axios.get(url, {
         params: cloneData,
+        headers: headersOption,
       })
     case 'delete':
       return axios.delete(url, {
         data: cloneData,
+        headers: headersOption,
       })
     case 'post':
-      return axios.post(url, cloneData)
+      return axios.post(url, cloneData, {
+        headers: headersOption,
+      })
     case 'put':
-      return axios.put(url, cloneData)
+      return axios.put(url, cloneData, {
+        headers: headersOption,
+      })
     case 'patch':
-      return axios.patch(url, cloneData)
+      return axios.patch(url, cloneData, {
+        headers: headersOption,
+      })
     default:
       return axios(options)
   }

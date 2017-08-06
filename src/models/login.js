@@ -1,4 +1,5 @@
 import { login } from '../services/login'
+import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { queryURL, config } from '../utils'
 const { prefix } = config
@@ -17,10 +18,10 @@ export default {
       const res = yield call(login, payload)
       yield put({ type: 'hideLoginLoading' })
       if (res.success) {
-        res.data.data.username = payload.username//由于api没有返回用户名暂时以这个代替
-        localStorage.setItem(`${prefix}admin`, JSON.stringify(res.data.data))
+        message.success('登录成功')
+        localStorage.setItem(`${prefix}admin`, JSON.stringify(res.data))
         const from = queryURL('from')
-        yield put({ type: 'app/registerUser', payload: res.data.data })
+        yield put({ type: 'app/registerUser', payload: res.data })
         if (from) {
           yield put(routerRedux.push(from))
         } else {

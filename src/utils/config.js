@@ -13,6 +13,7 @@ module.exports = {
   api: {
     system: {
       alogin: '/token/admin',
+      relogin: '/token/admin/relogin',
       alogout: '/token/admin',
     },
     dashboard: {
@@ -45,6 +46,7 @@ module.exports = {
     },
     image: {
       categoryTopic: 'image/category_topic_img',
+      productMain: 'image/product_main_img'
     },
     posts: '/posts',
   },

@@ -57,8 +57,9 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *queryProduct ({ payload }, { call, put }) {
-        const res = yield call(queryAll, payload)
+    *queryProduct ({ payload }, { call, put, select }) {
+        const user = yield select(({ app }) => app.user)
+        const res = yield call(queryAll, { ...payload, token: user.token })
         if (res.success) {
           let productList = res.data.map((item) => {return { key: item.id.toString(), title: item.name, main_img_url: item.main_img_url }})
           yield put({ type: 'updateState', payload: { productList: productList }})
@@ -112,10 +113,6 @@ export default modelExtend(pageModel, {
       } else {
         throw res
       }
-    },
-
-    *uploadSuccess ({ payload }, { put }) {
-        yield put({ type: 'uploadImageSuccess', payload })
     },
 
     *showProductManager ({ payload }, { put, call }) {

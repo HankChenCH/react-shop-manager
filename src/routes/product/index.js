@@ -8,15 +8,17 @@ import Filter from './Filter'
 import Modal from './Modal'
 
 const Product = ({ location, dispatch, product, loading }) => {
-  const { list, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys } = product
+  const { list, pagination, currentStep, currentItem, uploadTempItem, modalVisible, modalType, selectedRowKeys } = product
   const { pageSize } = pagination
 
   const modalProps = {
-    item: modalType === 'create' ? {} : currentItem,
+    item: Object.assign((modalType === 'create' ? {} : currentItem), uploadTempItem),
+    modalType: modalType,
     visible: modalVisible,
     maskClosable: false,
-    confirmLoading: loading.effects['product/update'],
-    title: `${modalType === 'create' ? '新建产品' : '更新产品'}`,
+    currentStep: currentStep,
+    confirmLoading: loading.effects['product/${modalType}'],
+    title: `${modalType === 'create' ? '新建商品' : '更新商品'}`,
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
       dispatch({
@@ -29,6 +31,20 @@ const Product = ({ location, dispatch, product, loading }) => {
         type: 'product/hideModal',
       })
     },
+    onUploadSuccess(data) {
+      dispatch({
+        type: 'product/uploadImageSuccess',
+        payload: data
+      })
+    },
+    onChangeStep (step) {
+      dispatch({
+        type: 'product/changeStep',
+        payload: {
+          step: step
+        }
+      })
+    }
   }
 
   const listProps = {
@@ -115,7 +131,6 @@ const Product = ({ location, dispatch, product, loading }) => {
   }
 
   const filterProps = {
-    isMotion,
     filter: {
       ...location.query,
     },

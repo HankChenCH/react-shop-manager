@@ -1,4 +1,5 @@
 import { query, logout, reToken } from '../services/app'
+import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import { config } from '../utils'
@@ -54,7 +55,7 @@ export default {
       let nowTime = Date.parse(new Date()) / 1000;
       //票据为空代表没有登录，直接返回登录页面
       if (typeof user.token === 'undefined') {
-        yield put({ type: 'logout'  })        
+        yield put({ type: 'logoutSuccess' })        
       }
 
       //过期时间比现在相差小于10分钟就重新申请令牌
@@ -62,7 +63,7 @@ export default {
         yield put({ type: 'reToken' })
       }//过期时间比现在相差小于0，代表用户10分钟内没有操作，直接登录过期跳转出去登录页面重新登录
       else if (user.exprie_in - nowTime < 0) {
-        yield put({ type: 'logout'  })
+        yield put({ type: 'logoutSuccess' })
         //手动抛出错误提示给框架捕获
         throw {
           success: false,
@@ -84,19 +85,28 @@ export default {
 
     *logout ({
       payload,
-    }, { call, put }) {
-      const data = yield call(logout, parse(payload))
+    }, { call, put, select }) {
+      const user = yield select(({ app }) => app.user)
+      console.log(user.token)
+      const data = yield call(logout, { token: user.token })
       if (data.success) {
-        yield localStorage.removeItem(`${prefix}admin`)
-        if (location.pathname !== '/login') {
-          let from = location.pathname
-          if (location.pathname === '/dashboard') {
-            from = '/dashboard'
-          }
-          window.location = `${location.origin}/login?from=${from}`
-        }
+        message.success('登出成功')
+        yield put({ type: 'logoutSuccess' })
       } else {
         throw (data)
+      }
+    },
+
+    *logoutSuccess ({
+      payload
+    }, { put }) { 
+      yield localStorage.removeItem(`${prefix}admin`)
+      if (location.pathname !== '/login') {
+        let from = location.pathname
+        if (location.pathname === '/dashboard') {
+          from = '/dashboard'
+        }
+        window.location = `${location.origin}/login?from=${from}`
       }
     },
 

@@ -1,0 +1,38 @@
+.steps_content {
+  margin-top: 16px;
+  border: 1px dashed #e9e9e9;
+  border-radius: 6px;
+  background-color: #fafafa;
+  min-height: 200px;
+  text-align: center;
+  padding-top: 80px;
+}
+
+.steps_action {
+  margin-top: 24px;
+  float: right;
+}
+
+.img_uploader,
+.img_uploader_trigger{
+  width: 150px;
+  height: 150px;
+}
+.img{
+  max-width: 146px;
+  max-height: 146px;
+}
+.img_uploader {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.img_uploader_trigger {
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 28px;
+  color: #999;
+}

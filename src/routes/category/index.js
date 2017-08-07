@@ -166,7 +166,7 @@ const Category = ({ location, dispatch, category, loading }) => {
 
   return (
     <div className="content-inner">
-      {/*<Filter {...filterProps} />*/}
+      <Filter {...filterProps} />
       {
          selectedRowKeys.length > 0 &&
            <Row style={{ marginBottom: 18, textAlign: 'right', fontSize: 13 }}>

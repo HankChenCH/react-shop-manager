@@ -52,46 +52,59 @@ export default modelExtend(pageModel, {
     },
 
     *'delete' ({ payload }, { call, put, select }) {
-      const data = yield call(remove, { id: payload })
-      const { selectedRowKeys } = yield select(_ => _.product)
-      if (data.success) {
+      const res = yield call(remove, { id: payload })
+      const { selectedRowKeys, pagination } = yield select(_ => _.product)
+      if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         message.success('删除商品成功')
-        yield put({ type: 'query' })
+        yield put({ type: 'query', payload: { page: pagination.current, pageSize: pagination.pageSize } })
       } else {
-        throw data
+        throw res
       }
     },
 
-    *'multiDelete' ({ payload }, { call, put }) {
-      const data = yield call(batchRemove, { ids: payload.ids.join(',') })
-      if (data.success) {
+    *'multiDelete' ({ payload }, { call, put, select }) {
+      const { pagination } = yield select(_ => _.product)
+      const res = yield call(batchRemove, { ids: payload.ids.join(',') })
+      if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
-        yield put({ type: 'query' })
+        yield put({ type: 'query', payload: { page: pagination.current, pageSize: pagination.pageSize } })
       } else {
-        throw data
+        throw res
       }
     },
 
-    *create ({ payload }, { call, put }) {
-      const data = yield call(create, payload)
-      if (data.success) {
-        yield put({ type: 'hideModal' })
-        yield put({ type: 'query' })
+    *create ({ payload }, { call, put, select }) {
+      const { currentStep, uploadTempItem } = yield select(({ product }) => product)
+      const newPayload = Object.assign(payload, uploadTempItem)
+      const res = yield call(create, { ...newPayload, is_on: '0' })
+      if (res.success) {
+        if (currentStep === 3) {
+          yield put({ type: 'hideModal' })
+          yield put({ type: 'query' })
+        } else {
+          yield put({ type: 'updateState', payload: { 
+              currentStep: currentStep + 1, 
+              modalType: 'update', 
+              currentItem: res.data, 
+              uploadTempItem: {} 
+            } 
+          })
+        }
       } else {
-        throw data
+        throw res
       }
     },
 
     *update ({ payload }, { select, call, put }) {
       const id = yield select(({ product }) => product.currentItem.id)
       const newUser = { ...payload, id }
-      const data = yield call(update, newUser)
-      if (data.success) {
+      const res = yield call(update, newUser)
+      if (res.success) {
         yield put({ type: 'hideModal' })
         yield put({ type: 'query' })
       } else {
-        throw data
+        throw res
       }
     },
 
@@ -155,6 +168,7 @@ export default modelExtend(pageModel, {
       const { uploadTempItem } = state
       uploadTempItem.img_id = payload.id
       uploadTempItem.main_img_url = payload.url
+      uploadTempItem.from = payload.from
       return {...state,uploadTempItem: uploadTempItem}
     },
 

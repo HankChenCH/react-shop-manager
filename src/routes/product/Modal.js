@@ -50,8 +50,10 @@ const modal = ({
       if (errors) {
         return
       }
-
-      onChangeStep(1)
+      const data = {
+        ...getFieldsValue(),
+      }
+      onOk(data)
     })
   }
 
@@ -144,8 +146,8 @@ const modal = ({
                 })(<Input />)}
               </FormItem>
               <FormItem label="商品描述" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('description', {
-                  initialValue: item.description,
+                {getFieldDecorator('summary', {
+                  initialValue: item.summary,
                   rules: [
                     {
                       required: true,

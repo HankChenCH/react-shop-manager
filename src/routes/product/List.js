@@ -110,7 +110,7 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
     }, {
       title: '创建时间',
       dataIndex: 'create_time',
-      key: 'createTime',
+      key: 'create_time',
     }, {
       title: '操作',
       key: 'operation',

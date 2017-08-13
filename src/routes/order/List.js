@@ -1,12 +1,24 @@
 import React from 'react'
-import { Table } from 'antd'
+import { Table, Modal } from 'antd'
 import { DropOption } from '../../components'
 import styles from './List.less'
 
-const List = ({ queryStatus, ...tableProps }) => {
-  const handleMenuClick = (e) => {
-    console.log(queryStatus)
-    console.log(e)
+const confirm = Modal.confirm
+
+const List = ({ queryStatus, onChangeItemPrice, onDeleteItem, onDeliveryItem, ...tableProps }) => {
+  const handleMenuClick = (record, e) => {
+    if (e.key === '1') {
+      onChangeItemPrice(record)
+    } else if(e.key === '2') {
+      confirm({
+        title: '确定要删除订单 ' + record.order_no + ' ?',
+        onOk () {
+          onDeleteItem(record.id)
+        },
+      })
+    } else if (e.key === '3') {
+      onDeliveryItem(record)
+    }
   }
 
   const renderMenuByStatus = () => {

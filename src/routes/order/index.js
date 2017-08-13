@@ -1,13 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Tabs, Row, Col, Popconfirm, Button } from 'antd'
+import { Tabs, Row, Col, Popconfirm, Button, Modal, Form } from 'antd'
+import PriceModal from './PriceModal'
+import DeliveryModal from './DeliveryModal'
 import { routerRedux } from 'dva/router'
 import List from './List'
 
 const TabPane = Tabs.TabPane
 
-const EnumPostStatus = {
+const EnumOrderStatus = {
   UNPAY: 1,
   UNDELIVERY: 2,
   DELIVERY: 3,
@@ -15,11 +17,11 @@ const EnumPostStatus = {
 
 
 const Index = ({ order, dispatch, loading, location }) => {
-  const { list, pagination, selectedRowKeys } = order
+  const { list, pagination, selectedRowKeys, currentItem, priceModalVisible, deliveryModalVisible, queryStatus } = order
   const { query = {}, pathname } = location
 
   const listProps = {
-    queryStatus: query.status || '1',
+    queryStatus: queryStatus || '1',
     pagination,
     dataSource: list,
     loading: loading.effects['order/query'],
@@ -33,6 +35,28 @@ const Index = ({ order, dispatch, loading, location }) => {
         },
       }))
     },
+    onChangeItemPrice (item) {
+      dispatch({
+        type: 'order/showPriceModal',
+        payload: {
+          currentItem: item
+        }
+      })
+    },
+    onDeleteItem (id) {
+      dispatch({
+        type: 'order/delete',
+        payload: id
+      })
+    },
+    onDeliveryItem (item) {
+      dispatch({
+        type: 'order/showDeliveryModal',
+        payload: {
+          currentItem: item,
+        }
+      })
+    },
     rowSelection: {
       selectedRowKeys,
       onChange: (keys) => {
@@ -43,6 +67,46 @@ const Index = ({ order, dispatch, loading, location }) => {
           },
         })
       },
+    },
+  }
+
+  const priceModalProps = {
+    item: currentItem,
+    visible: priceModalVisible,
+    maskClosable: false,
+    confirmLoading: loading.effects['order/updatePrice'],
+    title: '订单改价',
+    wrapClassName: 'vertical-center-modal',
+    onOk (data) {
+      dispatch({
+        type: `order/updatePrice`,
+        payload: data,
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'order/hideModal',
+      })
+    },
+  }
+
+  const deliveryModalProps = {
+    item: currentItem,
+    visible: deliveryModalVisible,
+    maskClosable: false,
+    confirmLoading: loading.effects['order/deliveryItem'],
+    title: '订单改价',
+    wrapClassName: 'vertical-center-modal',
+    onOk (data) {
+      dispatch({
+        type: `order/deliveryItem`,
+        payload: data,
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'order/hideModal',
+      })
     },
   }
 
@@ -65,8 +129,8 @@ const Index = ({ order, dispatch, loading, location }) => {
   }
 
   return (<div className="content-inner">
-    <Tabs activeKey={query.status || '1'} onTabClick={handleTabClick}>
-      <TabPane tab="未付款" key={String(EnumPostStatus.UNPAY)}>
+    <Tabs activeKey={queryStatus || '1'} onTabClick={handleTabClick}>
+      <TabPane tab="未付款" key={String(EnumOrderStatus.UNPAY)}>
         {
            selectedRowKeys.length > 0 &&
              <Row style={{ marginBottom: 16, textAlign: 'right', fontSize: 13 }}>
@@ -80,13 +144,15 @@ const Index = ({ order, dispatch, loading, location }) => {
         }
         <List {...listProps} />
       </TabPane>
-      <TabPane tab="未发货" key={String(EnumPostStatus.UNDELIVERY)}>
+      <TabPane tab="待发货" key={String(EnumOrderStatus.UNDELIVERY)}>
         <List {...listProps} />
       </TabPane>
-      <TabPane tab="已发货" key={String(EnumPostStatus.DELIVERY)}>
+      <TabPane tab="已发货" key={String(EnumOrderStatus.DELIVERY)}>
         <List {...listProps} />
       </TabPane>
     </Tabs>
+    {priceModalVisible && <PriceModal {...priceModalProps}/>}
+    {deliveryModalVisible && <DeliveryModal {...deliveryModalProps}/>}
   </div>)
 }
 

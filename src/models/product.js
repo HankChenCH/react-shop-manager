@@ -4,7 +4,7 @@ import * as productService from '../services/product'
 import { pageModel } from './common'
 import { config } from '../utils'
 
-const { query, create, update, updateStockAndPrice, pullOnOff, batchOnOff, batchRemove, remove } = productService
+const { query, create, update, queryDetail, updateStockAndPrice, pullOnOff, batchOnOff, batchRemove, remove } = productService
 const { prefix } = config
 
 export default modelExtend(pageModel, {
@@ -51,6 +51,11 @@ export default modelExtend(pageModel, {
       }
     },
 
+    *reloadList({ payload = {} }, { call, select }) {
+      const { pagination } = yield select(_ => _.product)
+      yield put({ type: 'query', payload: { page: pagination.current, pageSize: pagination.pageSize } })
+    },
+
     *'delete' ({ payload }, { call, put, select }) {
       const res = yield call(remove, { id: payload })
       const { selectedRowKeys, pagination } = yield select(_ => _.product)
@@ -68,6 +73,7 @@ export default modelExtend(pageModel, {
       const res = yield call(batchRemove, { ids: payload.ids.join(',') })
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
+        message.success('删除商品成功')
         yield put({ type: 'query', payload: { page: pagination.current, pageSize: pagination.pageSize } })
       } else {
         throw res
@@ -91,18 +97,29 @@ export default modelExtend(pageModel, {
             } 
           })
         }
+        message.success('保存商品成功')
       } else {
         throw res
       }
     },
 
     *update ({ payload }, { select, call, put }) {
-      const id = yield select(({ product }) => product.currentItem.id)
-      const newUser = { ...payload, id }
+      const { currentStep, uploadTempItem, currentItem } = yield select(({ product }) => product)
+      const newUser = { ...payload, id: currentItem.id }
       const res = yield call(update, newUser)
       if (res.success) {
-        yield put({ type: 'hideModal' })
-        yield put({ type: 'query' })
+        if (currentStep === 3) {
+          yield put({ type: 'hideModal' })
+          yield put({ type: 'query' })
+        } else {
+          yield put({ type: 'updateState', payload: { 
+              currentStep: currentStep + 1,
+              currentItem: { ...currentItem, ...res.data}, 
+              uploadTempItem: {} 
+            } 
+          })
+        }
+        message.success('保存商品成功')
       } else {
         throw res
       }
@@ -150,6 +167,28 @@ export default modelExtend(pageModel, {
         yield put({ type: 'query' })
         throw res
       }
+    },
+
+    *showEditModal ({ payload }, { put, call }) {
+      const res = yield call(queryDetail, { id: payload.currentItem.id })
+      if (res.success) {
+        yield put({ type: 'showModal', payload: { ...payload, currentItem: res.data } })
+      } else {
+        throw res
+      }
+    },
+
+    *changeDetail ({ payload }, { put, call, select }){
+      const currentItem = yield select(({ product }) => product.currentItem)
+      yield put({ 
+        type: 'updateState', 
+        payload: { 
+          currentItem: { 
+            ...currentItem, 
+            detail: payload 
+          } 
+        } 
+      })
     }
 
   },
@@ -157,11 +196,11 @@ export default modelExtend(pageModel, {
   reducers: {
 
     showModal (state, { payload }) {
-      return { ...state, ...{ payload }, modalVisible: true }
+      return { ...state, ...payload, modalVisible: true }
     },
 
     hideModal (state) {
-      return { ...state, modalVisible: false }
+      return { ...state, currentItem: {},modalVisible: false }
     },
 
     uploadImageSuccess (state, { payload }) {
@@ -180,7 +219,7 @@ export default modelExtend(pageModel, {
     changeStep (state, { payload }) {
       const { currentStep } = state
       return { ...state, currentStep: currentStep + payload.step }
-    }
+    },
     
   },
 })

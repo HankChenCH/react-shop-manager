@@ -1,21 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Editor } from '../../components'
 import { Form, Input, InputNumber, Modal, Steps, Button, Upload, Icon } from 'antd'
 import { apiPrefix, api } from '../../utils/config'
+import draftToHtml from 'draftjs-to-html';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import styles from './Modal.css'
 
 const FormItem = Form.Item
 const Step = Steps.Step;
-const Dragger = Upload.Dragger;
 const { productMain } = api.image
 const uploadImageApi = `${apiPrefix}/${productMain}`
 
 const formItemLayout = {
   labelCol: {
-    span: 6,
+    span: 4,
   },
   wrapperCol: {
-    span: 14,
+    span: 16,
   },
 }
 
@@ -25,6 +27,7 @@ const modal = ({
   onUploadSuccess,
   currentStep,
   onChangeStep,
+  onEditorStateChange,
   modalType,
   form: {
     getFieldDecorator,
@@ -96,35 +99,18 @@ const modal = ({
       <img src={item.main_img_url} alt="" className={styles.img} /> : 
       <Icon type="plus" className={styles.img_uploader_trigger} />
     } else if(modalType === 'update') {
-      imageContent = item.img_url ? <img src={item.img_url} alt="" className={styles.img} /> : <img src={item.img.url} alt="" className={styles.img} />
+      imageContent = item.main_img_url ? <img src={item.main_img_url} alt="" className={styles.img} /> : <img src={item.img.url} alt="" className={styles.img} />
     }
     return imageContent
   }
 
-  const DraggerProps = {
-    name: 'detail_img',
-    multiple: true,
-    showUploadList: false,
-    action: '//jsonplaceholder.typicode.com/posts/',
-    onChange(info) {
-      const status = info.file.status;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-  };
-
-  const addField = () => {
-
+  const handleEditorStateChange = (editorState) => {
+    console.log(editorState)
+    onEditorStateChange(editorState)
   }
 
   return (
-    <Modal width={800} {...modalOpts}>
+    <Modal width={900} {...modalOpts}>
       <Form layout="horizontal">
         <Steps current={currentStep}>
           {steps.map(item => <Step key={item.title} title={item.title} icon={item.icon}/>)}
@@ -206,25 +192,29 @@ const modal = ({
             currentStep === 1
             &&
             <div>
-              <FormItem label="上传商品详情图片" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('product_img_id', {
-                  initialValue: item.product_img_id,
+              <FormItem label="商品详情" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('detail', {
+                  initialValue: item.detail,
                   rules: [
                     {
                       required: true,
-                      message: '请上传商品详情图片'
+                      message: '请填写商品详情'
                     },
                   ],
-                })(
-                  <Input type='hidden' />
-                )}
-                <Dragger {...DraggerProps}>
-                  <p className="ant-upload-drag-icon">
-                    <Icon type="inbox" />
-                  </p>
-                  <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                  <p className="ant-upload-hint">Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files</p>
-                </Dragger>
+                })(<Input type="hidden"/>)}
+                <Editor
+                  wrapperStyle={{
+                    minWidth: 660
+                  }}
+                  editorStyle={{
+                    maxHeight: 370,
+                    overFlow: 'hidden',
+                    minWidth: 660,
+                    backgroundColor: '#fff'
+                  }}
+                  editorState={item.detail}
+                  onEditorStateChange={onEditorStateChange}
+                />
               </FormItem>
             </div>
           }
@@ -242,9 +232,7 @@ const modal = ({
                     },
                   ],
                 })(
-                  <Button type="dashed" onClick={addField} style={{ width: '60%' }}>
-                    <Icon type="plus" /> 增加参数
-                  </Button>
+                  <Input />
                 )}
               </FormItem>
             </div>

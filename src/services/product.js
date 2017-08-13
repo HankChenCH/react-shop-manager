@@ -10,6 +10,14 @@ export async function query (params) {
   })
 }
 
+export async function queryDetail (params) {
+  return request({
+    url: info,
+    method: 'get',
+    data: params,
+  })
+}
+
 export async function queryAll (params) {
   return request({
     url: all,

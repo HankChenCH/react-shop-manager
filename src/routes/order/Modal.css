@@ -1,0 +1,19 @@
+.snap_item_list{
+	display: flex;
+	flex-direction: row;
+}
+
+.goods_item{
+	display: flex;
+	flex-direction: column;
+	border: 1px solid #d9d9d9;
+	border-radius: 6px;
+	margin-right: 15px;
+	text-align: center;
+	align-items: center;
+}
+
+.goods_item .goods_img{
+	max-width: 146px;
+	max-height: 146px;
+}

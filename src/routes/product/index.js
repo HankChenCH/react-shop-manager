@@ -28,6 +28,9 @@ const Product = ({ location, dispatch, product, loading }) => {
     },
     onCancel () {
       dispatch({
+        type: 'product/reloadList',
+      })
+      dispatch({
         type: 'product/hideModal',
       })
     },
@@ -43,6 +46,12 @@ const Product = ({ location, dispatch, product, loading }) => {
         payload: {
           step: step
         }
+      })
+    },
+    onEditorStateChange (content) {
+      dispatch({
+        type: 'product/changeDetail',
+        payload: content
       })
     }
   }
@@ -70,12 +79,13 @@ const Product = ({ location, dispatch, product, loading }) => {
         payload: id,
       })
     },
-    onEditItem (item) {
+    onEditItem (item, step) {
       dispatch({
-        type: 'product/showModal',
+        type: 'product/showEditModal',
         payload: {
           modalType: 'update',
           currentItem: item,
+          currentStep: step - 1,
         },
       })
     },
@@ -160,6 +170,9 @@ const Product = ({ location, dispatch, product, loading }) => {
         type: 'product/showModal',
         payload: {
           modalType: 'create',
+          uploadTempItem: {},
+          currentItem: {},
+          currentStep: 0,
         },
       })
     },

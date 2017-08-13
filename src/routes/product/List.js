@@ -12,11 +12,11 @@ const confirm = Modal.confirm
 const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChangeItemPrice, onDeleteItem, onEditItem, onPullShelvesItem, location, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
-      onEditItem(record)
+      onEditItem(record, e.key)
     } else if (e.key === '2') {
-      onEditItem(record)
+      onEditItem(record, e.key)
     } else if (e.key === '3') {
-      onEditItem(record)
+      onEditItem(record, e.key)
     } else if (e.key === '4') {
       confirm({
         title: '确定要删除商品 ' + record.name + ' ?',
@@ -116,7 +116,7 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       key: 'operation',
       width: 100,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '更新基础信息' }, { key: '2', name: '更新详情图片' }, { key: '3', name: '更新规格参数'}, { key: '4', name: '删除' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '更新基础信息' }, { key: '2', name: '更新详情信息' }, { key: '3', name: '更新规格参数'}, { key: '4', name: '删除' }]} />
       },
     },
   ]

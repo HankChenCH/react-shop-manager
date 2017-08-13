@@ -42,11 +42,13 @@ module.exports = {
     order:{
       list: '/order/by_admin',
       info: '/order/by_admin/:id',
-      delivery: '/order/delivery/:id',
+      price: '/order/by_admin/price/:id',
+      delivery: '/order/by_admin/delivery/:id',
+      batch: '/order/by_admin/batch',
     },
     image: {
       categoryTopic: 'image/category_topic_img',
-      productMain: 'image/product_main_img'
+      productMain: 'image/product_main_img',
     },
     posts: '/posts',
   },

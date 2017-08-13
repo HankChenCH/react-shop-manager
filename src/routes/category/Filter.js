@@ -70,23 +70,15 @@ const Filter = ({
   }
   const { name, address } = filter
 
-  let initialCreateTime = []
-  if (filter.createTime && filter.createTime[0]) {
-    initialCreateTime[0] = moment(filter.createTime[0])
-  }
-  if (filter.createTime && filter.createTime[1]) {
-    initialCreateTime[1] = moment(filter.createTime[1])
-  }
-
   return (
     <Row gutter={24}>
-      <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
+      {/*<Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
         {getFieldDecorator('name', { initialValue: name })(<Search placeholder="输入分类名搜索" size="large" onSearch={handleSubmit} />)}
-      </Col>
+      </Col>*/}
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
         <div >
-          <Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>搜索</Button>
-          <Button size="large" className="margin-right" onClick={handleReset}>重置搜索</Button>
+          {/*<Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>搜索</Button>
+          <Button size="large" className="margin-right" onClick={handleReset}>重置搜索</Button>*/}
           <Button size="large" type="ghost" onClick={onAdd}>创建分类</Button>
         </div>
       </Col>

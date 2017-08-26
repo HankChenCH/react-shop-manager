@@ -26,6 +26,12 @@ const Product = ({ location, dispatch, product, loading }) => {
         payload: data,
       })
     },
+    onDetailsOk (data) {
+      dispatch({
+        type: 'product/updateDetail',
+        payload: data,
+      })
+    },
     onCancel () {
       dispatch({
         type: 'product/reloadList',
@@ -53,7 +59,7 @@ const Product = ({ location, dispatch, product, loading }) => {
         type: 'product/changeDetail',
         payload: content
       })
-    }
+    },
   }
 
   const listProps = {

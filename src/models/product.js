@@ -4,7 +4,7 @@ import * as productService from '../services/product'
 import { pageModel } from './common'
 import { config } from '../utils'
 
-const { query, create, update, queryDetail, updateStockAndPrice, pullOnOff, batchOnOff, batchRemove, remove } = productService
+const { query, create, update, queryDetail, updateDetail, updateStockAndPrice, pullOnOff, batchOnOff, batchRemove, remove } = productService
 const { prefix } = config
 
 export default modelExtend(pageModel, {
@@ -105,8 +105,9 @@ export default modelExtend(pageModel, {
 
     *update ({ payload }, { select, call, put }) {
       const { currentStep, uploadTempItem, currentItem } = yield select(({ product }) => product)
-      const newUser = { ...payload, id: currentItem.id }
-      const res = yield call(update, newUser)
+      const newProduct = { ...payload, id: currentItem.id }
+      console.log(newProduct)
+      const res = yield call(update, newProduct)
       if (res.success) {
         if (currentStep === 3) {
           yield put({ type: 'hideModal' })
@@ -119,7 +120,25 @@ export default modelExtend(pageModel, {
             } 
           })
         }
-        message.success('保存商品成功')
+        message.success('保存商品基础信息成功')
+      } else {
+        throw res
+      }
+    },
+
+    *updateDetail ({ payload }, { put, call, select }) {
+      const { currentStep, uploadTempItem, currentItem } = yield select(({ product }) => product)
+      const newProduct = { ...payload, id: currentItem.id }
+      console.log(newProduct)
+      const res = yield call(updateDetail, newProduct)
+      if (res.success) {
+        currentItem.details = res.data
+        yield put({ type: 'updateState', payload: { 
+            currentStep: currentStep + 1,
+            currentItem: currentItem, 
+          } 
+        })
+        message.success('保存商品详情信息成功')
       } else {
         throw res
       }
@@ -189,7 +208,7 @@ export default modelExtend(pageModel, {
           } 
         } 
       })
-    }
+    },
 
   },
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Editor } from '../../components'
-import { Form, Input, InputNumber, Modal, Steps, Button, Upload, Icon } from 'antd'
+import { Form, Input, InputNumber, Modal, Steps, Button, Upload, Icon, message } from 'antd'
 import { apiPrefix, api } from '../../utils/config'
 import draftToHtml from 'draftjs-to-html';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
@@ -9,6 +9,7 @@ import styles from './Modal.css'
 
 const FormItem = Form.Item
 const Step = Steps.Step;
+const HtmlEditor = Editor.HtmlEditor
 const { productMain } = api.image
 const uploadImageApi = `${apiPrefix}/${productMain}`
 
@@ -24,10 +25,10 @@ const formItemLayout = {
 const modal = ({
   item = {},
   onOk,
+  onDetailsOk,
   onUploadSuccess,
   currentStep,
   onChangeStep,
-  onEditorStateChange,
   modalType,
   form: {
     getFieldDecorator,
@@ -56,7 +57,12 @@ const modal = ({
       const data = {
         ...getFieldsValue(),
       }
-      onOk(data)
+      if (currentStep === 1) {
+        data.detail = draftToHtml(data.detail)
+        onDetailsOk(data)
+      } else {
+        onOk(data)
+      }
     })
   }
 
@@ -92,6 +98,10 @@ const modal = ({
     }
   }
 
+  const handleUploadError = (msg) => {
+      message.error(msg)
+  }
+
   const renderUploader = (modalType) => {
     let imageContent
     if (modalType === 'create') {
@@ -102,11 +112,6 @@ const modal = ({
       imageContent = item.main_img_url ? <img src={item.main_img_url} alt="" className={styles.img} /> : <img src={item.img.url} alt="" className={styles.img} />
     }
     return imageContent
-  }
-
-  const handleEditorStateChange = (editorState) => {
-    console.log(editorState)
-    onEditorStateChange(editorState)
   }
 
   return (
@@ -194,27 +199,27 @@ const modal = ({
             <div>
               <FormItem label="商品详情" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('detail', {
-                  initialValue: item.detail,
+                  initialValue: (item.details !== null) ? item.details.detail : '',
                   rules: [
                     {
                       required: true,
                       message: '请填写商品详情'
                     },
                   ],
-                })(<Input type="hidden"/>)}
-                <Editor
-                  wrapperStyle={{
-                    minWidth: 660
-                  }}
-                  editorStyle={{
-                    maxHeight: 370,
-                    overFlow: 'hidden',
-                    minWidth: 660,
-                    backgroundColor: '#fff'
-                  }}
-                  editorState={item.detail}
-                  onEditorStateChange={onEditorStateChange}
-                />
+                })(<HtmlEditor
+                    wrapperStyle={{
+                      minWidth: 375
+                    }}
+                    editorStyle={{
+                      maxHeight: 300,
+                      overFlow: 'hidden',
+                      minWidth: 375,
+                      backgroundColor: '#fff'
+                    }}
+                    fileName="detailImage"
+                    action="http://localhost:3050/api/v1/image/product_detail_image"
+                    onUploadError={handleUploadError}
+                />)}
               </FormItem>
             </div>
           }

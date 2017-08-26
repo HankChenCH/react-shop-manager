@@ -13,13 +13,6 @@ module.exports = [
     router: '/product',
   },
   {
-    id: 4,
-    bpid: 1,
-    name: '功能',
-    icon: 'lock',
-    router: '/UIElement/editor',
-  },
-  {
     id: 5,
     bpid: 1,
     name: '分类管理',

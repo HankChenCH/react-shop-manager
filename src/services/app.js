@@ -1,7 +1,7 @@
 import { request, config } from '../utils'
 const { api } = config
 const { user, system } = api
-const { alogin, alogout } = system
+const { alogin, alogout, relogin } = system
 const { list } = user
 
 export async function login (params) {
@@ -21,9 +21,11 @@ export async function logout (params) {
 }
 
 export async function reToken (params) {
-  return {
-    success: false
-  }
+  return request({
+    url: relogin,
+    method: 'post',
+    data: params,
+  })
 }
 
 export async function query (params) {

@@ -1,10 +1,9 @@
 import modelExtend from 'dva-model-extend'
-import { message } from 'antd'
 import * as productService from '../services/product'
 import { pageModel } from './common'
 import { config } from '../utils'
 
-const { query, create, update, queryDetail, updateDetail, updateStockAndPrice, pullOnOff, batchOnOff, batchRemove, remove } = productService
+const { query, create, update, queryDetail, updateDetail, updateParams, updateStockAndPrice, pullOnOff, batchOnOff, batchRemove, remove } = productService
 const { prefix } = config
 
 export default modelExtend(pageModel, {
@@ -61,7 +60,7 @@ export default modelExtend(pageModel, {
       const { selectedRowKeys, pagination } = yield select(_ => _.product)
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
-        message.success('删除商品成功')
+        yield put({ type: 'notice/messageSuccess', payload:"删除商品成功" })
         yield put({ type: 'query', payload: { page: pagination.current, pageSize: pagination.pageSize } })
       } else {
         throw res
@@ -73,7 +72,7 @@ export default modelExtend(pageModel, {
       const res = yield call(batchRemove, { ids: payload.ids.join(',') })
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
-        message.success('删除商品成功')
+        yield put({ type: 'notice/messageSuccess', payload:"删除商品成功" })
         yield put({ type: 'query', payload: { page: pagination.current, pageSize: pagination.pageSize } })
       } else {
         throw res
@@ -81,55 +80,43 @@ export default modelExtend(pageModel, {
     },
 
     *create ({ payload }, { call, put, select }) {
-      const { currentStep, uploadTempItem } = yield select(({ product }) => product)
-      const newPayload = Object.assign(payload, uploadTempItem)
+      const { currentStep } = yield select(({ product }) => product)
+      const newPayload = Object.assign(payload, { ...payload.img })
+      delete newPayload.img
       const res = yield call(create, { ...newPayload, is_on: '0' })
       if (res.success) {
-        if (currentStep === 3) {
-          yield put({ type: 'hideModal' })
-          yield put({ type: 'query' })
-        } else {
-          yield put({ type: 'updateState', payload: { 
-              currentStep: currentStep + 1, 
-              modalType: 'update', 
-              currentItem: res.data, 
-              uploadTempItem: {} 
-            } 
-          })
-        }
-        message.success('保存商品成功')
+        yield put({ type: 'updateState', payload: { 
+            currentStep: currentStep + 1, 
+            modalType: 'update',
+            currentItem: { ...res.data, details: {detail: ''}, properties: []}
+          } 
+        })
+        yield put({ type: 'notice/messageSuccess', payload:"保存商品成功" })
       } else {
         throw res
       }
     },
 
     *update ({ payload }, { select, call, put }) {
-      const { currentStep, uploadTempItem, currentItem } = yield select(({ product }) => product)
-      const newProduct = { ...payload, id: currentItem.id }
-      console.log(newProduct)
+      const { currentStep, currentItem } = yield select(({ product }) => product)
+      const newProduct = Object.assign(payload, { ...payload.img, id: currentItem.id })
+      delete newProduct.img
       const res = yield call(update, newProduct)
       if (res.success) {
-        if (currentStep === 3) {
-          yield put({ type: 'hideModal' })
-          yield put({ type: 'query' })
-        } else {
-          yield put({ type: 'updateState', payload: { 
-              currentStep: currentStep + 1,
-              currentItem: { ...currentItem, ...res.data}, 
-              uploadTempItem: {} 
-            } 
-          })
-        }
-        message.success('保存商品基础信息成功')
+        yield put({ type: 'updateState', payload: { 
+            currentStep: currentStep + 1,
+            currentItem: { ...currentItem, ...res.data}
+          } 
+        })
+        yield put({ type: 'notice/messageSuccess', payload:"保存商品基础信息成功" })
       } else {
         throw res
       }
     },
 
     *updateDetail ({ payload }, { put, call, select }) {
-      const { currentStep, uploadTempItem, currentItem } = yield select(({ product }) => product)
+      const { currentStep, currentItem } = yield select(({ product }) => product)
       const newProduct = { ...payload, id: currentItem.id }
-      console.log(newProduct)
       const res = yield call(updateDetail, newProduct)
       if (res.success) {
         currentItem.details = res.data
@@ -138,7 +125,24 @@ export default modelExtend(pageModel, {
             currentItem: currentItem, 
           } 
         })
-        message.success('保存商品详情信息成功')
+        yield put({ type: 'notice/messageSuccess', payload:"保存商品详情信息成功" })
+      } else {
+        throw res
+      }
+    },
+
+    *updateParams ({ payload }, { put, call, select }) {
+      const { currentItem } = yield select(({ product }) => product)
+      const newProduct = { properties: payload, id: currentItem.id }
+      const res = yield call(updateParams, newProduct)
+      if (res.success) {
+        currentItem.properties = res.data
+        yield put({ type: 'updateState', payload: { 
+            currentItem: currentItem, 
+          } 
+        })
+        yield put({ type: 'notice/messageSuccess', payload:"保存商品规格信息成功" })
+        yield put({ type: 'hideModal' })
       } else {
         throw res
       }
@@ -150,7 +154,7 @@ export default modelExtend(pageModel, {
         let list = yield select(({ product }) => product.list)
         let newList = list.map((item) => item.id === payload.id ? {...item, is_on: payload.is_on ? '1' : '0'} : item)
         yield put({ type: 'updateState', payload: {list: newList} })
-        message.success((payload.is_on ? '上架' : '下架') + '成功')
+        yield put({ type: 'notice/messageSuccess', payload: (payload.is_on ? '上架' : '下架') + '成功' })
       } else {
         throw res
       }
@@ -169,7 +173,7 @@ export default modelExtend(pageModel, {
           return item
         })
         yield put({ type: 'updateState', payload: { list: newList, selectedRowKeys: [] } })
-        message.success('批量' + (res.data.is_on === '1' ? '上' : '下') + '架成功')
+        yield put({ type: 'notice/messageSuccess', payload: '批量' + (res.data.is_on === '1' ? '上' : '下') + '架成功' })
       } else {
         yield put({ type: 'query' })
         throw res
@@ -181,7 +185,7 @@ export default modelExtend(pageModel, {
       const res = yield call(updateStockAndPrice, currentItem);
       if (res.success) {
         yield put({ type: 'updateState', payload: {currentItem: {}} })
-        message.success('更新商品成功')
+        yield put({ type: 'notice/messageSuccess', payload:"更新商品成功" })
       } else {
         yield put({ type: 'query' })
         throw res
@@ -219,7 +223,7 @@ export default modelExtend(pageModel, {
     },
 
     hideModal (state) {
-      return { ...state, currentItem: {},modalVisible: false }
+      return { ...state, currentItem:{}, modalVisible: false }
     },
 
     uploadImageSuccess (state, { payload }) {

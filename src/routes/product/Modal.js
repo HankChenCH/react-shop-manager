@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Editor } from '../../components'
+import { BaseInfoForm, DetailInfoForm, ParamsInfoForm } from './components'
 import { Form, Input, InputNumber, Modal, Steps, Button, Upload, Icon, message } from 'antd'
 import { apiPrefix, api } from '../../utils/config'
 import draftToHtml from 'draftjs-to-html';
@@ -10,266 +11,174 @@ import styles from './Modal.css'
 const FormItem = Form.Item
 const Step = Steps.Step;
 const HtmlEditor = Editor.HtmlEditor
-const { productMain } = api.image
-const uploadImageApi = `${apiPrefix}/${productMain}`
+const { productMain, productDetail } = api.image
+const uploadMainImageApi = `${apiPrefix}/${productMain}`
+const uploadDetailImageApi = `${apiPrefix}/${productDetail}`
 
 const formItemLayout = {
   labelCol: {
-    span: 4,
+    xs: { span: 24 },
+    sm: { span: 4 },
   },
   wrapperCol: {
-    span: 16,
+    xs: { span: 24 },
+    sm: { span: 20 },
   },
 }
 
-const modal = ({
-  item = {},
-  onOk,
-  onDetailsOk,
-  onUploadSuccess,
-  currentStep,
-  onChangeStep,
-  modalType,
-  form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-  },
-  ...modalProps
-}) => {
-  const handleOk = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        ...getFieldsValue(),
-      }
-      onOk(data)
-    })
-  }
-
-  const handleNext = () => {
-    validateFields((errors) => {
-      if (errors) {
-        return
-      }
-      const data = {
-        ...getFieldsValue(),
-      }
-      if (currentStep === 1) {
-        data.detail = draftToHtml(data.detail)
-        onDetailsOk(data)
-      } else {
-        onOk(data)
-      }
-    })
-  }
-
-  const handlePrev = () => {
-    onChangeStep(-1)
-  }
-
-  const modalOpts = {
-    ...modalProps,
-    onOk: handleOk,
-    footer: null
-  }
-
-  const steps = [{
-    title: '商品信息',
-    icon: <Icon type="solution" />
-  }, {
-    title: '商品详情',
-    icon: <Icon type="file-jpg" />
-  }, {
-    title: '商品参数',
-    icon: <Icon type="switcher" />
-  }];
-
-  const handleUploadMainImageChange = (info) => {
-    if (info.file.status === 'done') {
-      onUploadSuccess(info.file.response)
-    } else if(info.file.status === 'error') {
-      throw {
-        success: false,
-        message: response.msg
-      }
+export default class InfoModal extends React.Component
+{
+  constructor(props) {
+    super(props);
+    this.state = {
+      formData: {},
     }
   }
 
-  const handleUploadError = (msg) => {
-      message.error(msg)
-  }
+  render() {
+    const { onOk, onDetailsOk, onParamsOk, onUploadSuccess, currentStep, onChangeStep, modalType, ...modalProps } = this.props
+    const { item } = this.props
 
-  const renderUploader = (modalType) => {
-    let imageContent
-    if (modalType === 'create') {
-      imageContent = item.main_img_url ?
-      <img src={item.main_img_url} alt="" className={styles.img} /> : 
-      <Icon type="plus" className={styles.img_uploader_trigger} />
-    } else if(modalType === 'update') {
-      imageContent = item.main_img_url ? <img src={item.main_img_url} alt="" className={styles.img} /> : <img src={item.img.url} alt="" className={styles.img} />
+    const handleParamsOk = () => {
+      const { validateFields, getFieldsValue } = this.refs.infoForm
+      validateFields((errors) => {
+        if (errors) {
+          return
+        }
+        const formData = {
+          ...getFieldsValue(),
+        }
+
+        const data = []
+        for (let i in formData) {
+          if (i === 'params') continue
+          data.push(formData[i])
+        }
+
+        onParamsOk(data)
+      })
     }
-    return imageContent
-  }
 
-  return (
-    <Modal width={900} {...modalOpts}>
-      <Form layout="horizontal">
+    const handleNext = () => {
+      const { validateFields, getFieldsValue } = this.refs.infoForm
+      validateFields((errors) => {
+          if (errors) {
+              return
+          }
+          const data = {
+             ...getFieldsValue(),
+          }
+          
+          if (currentStep === 1) {
+            //修复偶尔会出现无法转换成html的bug
+            if (typeof data.detail === 'object' && !('value' in data.detail)) {
+              data.detail = draftToHtml(data.detail)
+            }
+
+            onDetailsOk(data)
+          } else {
+            onOk(data)
+          }
+      })
+    }
+
+    const handlePrev = () => {
+        onChangeStep(-1)
+    }
+
+    const modalOpts = {
+      ...modalProps,
+      footer: null
+    }
+
+    const steps = [{
+      title: '商品信息',
+      icon: <Icon type="solution" />
+    }, {
+      title: '商品详情',
+      icon: <Icon type="file-jpg" />
+    }, {
+      title: '商品参数',
+      icon: <Icon type="switcher" />
+    }];
+
+    const baseFormProps = {
+      item,
+      modalType,
+      ref: 'infoForm',
+      formItemLayout,
+      onUploadSuccess,
+      onOk
+    }
+
+    const detailFormProps = {
+      item,
+      formItemLayout,
+      ref: 'infoForm',
+      onDetailsOk,
+      onChangeStep
+    }
+
+    const paramsFormProps = {
+      item,
+      formItemLayout,
+      ref: 'infoForm',
+      onOk,
+      onChangeStep
+    }
+
+    return (
+      <Modal width={900} {...modalOpts}>
         <Steps current={currentStep}>
           {steps.map(item => <Step key={item.title} title={item.title} icon={item.icon}/>)}
         </Steps>
-        <div className={styles.steps_content}>
           {
             currentStep === 0
             &&
-            <div>
-              <FormItem label="商品名称" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('name', {
-                  initialValue: item.name,
-                  rules: [
-                    {
-                      required: true,
-                      message: '请输入商品名称'
-                    },
-                  ],
-                })(<Input />)}
-              </FormItem>
-              <FormItem label="商品描述" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('summary', {
-                  initialValue: item.summary,
-                  rules: [
-                    {
-                      required: true,
-                      message: '请输入商品描述'
-                    },
-                  ],
-                })(<Input type='textarea'/>)}
-              </FormItem>
-              <FormItem label="商品单价" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('price', {
-                  initialValue: item.price,
-                  rules: [
-                    {
-                      required: true,
-                      message: '请输入商品单价'
-                    },
-                  ],
-                })(<InputNumber style={{width: '100%'}} step={0.01} min={0}/>)}
-              </FormItem>
-              <FormItem label="商品库存" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('stock', {
-                  initialValue: item.stock,
-                  rules: [
-                    {
-                      required: true,
-                      message: '请输入商品库存'
-                    },
-                  ],
-                })(<InputNumber style={{width: '100%'}} min={0}/>)}
-              </FormItem>
-              <FormItem label="上传商品主图" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('img_id', {
-                  initialValue: item.img_id,
-                  rules: [
-                    {
-                      required: true,
-                      message: '请上传商品图片'
-                    },
-                  ],
-                })(
-                  <Input type='hidden' />
-                )}
-                <Upload
-                  className={styles.img_uploader}
-                  name="mainImage"
-                  showUploadList={false}
-                  action={uploadImageApi}
-                  onChange={handleUploadMainImageChange}
-                >
-                  {renderUploader(modalType)}
-                </Upload>
-              </FormItem>
+            <BaseInfoForm {...baseFormProps}/>
+          }
+          {
+            currentStep === 1
+            &&
+            <DetailInfoForm {...detailFormProps}/>
+          }
+          {
+            currentStep === 2
+            &&
+            <ParamsInfoForm {...paramsFormProps}/>
+          }
+          {
+            currentStep === 0
+            &&
+            <div className={styles.steps_action}>
+              <Button style={{ marginLeft: 8 }} type="primary" onClick={handleNext}>保存并下一步</Button>
             </div>
           }
           {
             currentStep === 1
             &&
-            <div>
-              <FormItem label="商品详情" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('detail', {
-                  initialValue: (item.details !== null) ? item.details.detail : '',
-                  rules: [
-                    {
-                      required: true,
-                      message: '请填写商品详情'
-                    },
-                  ],
-                })(<HtmlEditor
-                    wrapperStyle={{
-                      minWidth: 375
-                    }}
-                    editorStyle={{
-                      maxHeight: 300,
-                      overFlow: 'hidden',
-                      minWidth: 375,
-                      backgroundColor: '#fff'
-                    }}
-                    fileName="detailImage"
-                    action="http://localhost:3050/api/v1/image/product_detail_image"
-                    onUploadError={handleUploadError}
-                />)}
-              </FormItem>
+            <div className={styles.steps_action}>
+              <Button style={{ marginLeft: 8 }} onClick={handlePrev}>上一步</Button>
+              <Button style={{ marginLeft: 8 }} type="primary" onClick={handleNext}>保存并下一步</Button>
             </div>
           }
           {
             currentStep === 2
             &&
-            <div>
-              <FormItem label="商品参数" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('product_property', {
-                  initialValue: item.product_property,
-                  rules: [
-                    {
-                      required: true,
-                      message: '请填写商品参数'
-                    },
-                  ],
-                })(
-                  <Input />
-                )}
-              </FormItem>
+            <div className={styles.steps_action}>
+              <Button style={{ marginLeft: 8 }} onClick={handlePrev}>上一步</Button>
+              <Button style={{ marginLeft: 8 }} type="primary" onClick={handleParamsOk}>完成</Button>
             </div>
           }
-        </div>
-        <div className={styles.steps_action}>
-          {
-            currentStep > 0
-            &&
-            <Button style={{ marginLeft: 8 }} onClick={handlePrev}>上一步</Button>
-          }
-          {
-            currentStep < steps.length - 1
-            &&
-            <Button style={{ marginLeft: 8 }} type="primary" onClick={handleNext}>保存并下一步</Button>
-          }
-          {
-            currentStep === steps.length - 1
-            &&
-            <Button style={{ marginLeft: 8 }} type="primary" onClick={handleOk}>完成</Button>
-          }
-        </div>
-      </Form>
     </Modal>
-  )
+    )
+  }
 }
 
-modal.propTypes = {
-  form: PropTypes.object.isRequired,
+
+InfoModal.propTypes = {
   type: PropTypes.string,
   item: PropTypes.object,
   onOk: PropTypes.func,
 }
 
-export default Form.create()(modal)

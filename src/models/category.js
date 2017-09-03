@@ -1,5 +1,4 @@
 import modelExtend from 'dva-model-extend'
-import { message } from 'antd'
 import * as categoryService from '../services/category'
 import * as productService from '../services/product'
 import { pageModel } from './common'
@@ -73,7 +72,7 @@ export default modelExtend(pageModel, {
       const { selectedRowKeys } = yield select(_ => _.category)
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
-        message.success('删除分类成功')
+        yield put({ type: 'notice/messageSuccess', payload:"删除分类成功" })
         yield put({ type: 'query' })
       } else {
         throw res
@@ -95,7 +94,7 @@ export default modelExtend(pageModel, {
       const res = yield call(create, payload)
       if (res.success) {
         yield put({ type: 'hideModal' })
-        message.success('创建分类成功')
+        yield put({ type: 'notice/messageSuccess', payload:"创建分类成功" })
         yield put({ type: 'query' })
       } else {
         throw res
@@ -108,7 +107,7 @@ export default modelExtend(pageModel, {
       const res = yield call(update, newCategory)
       if (res.success) {
         yield put({ type: 'hideModal' })
-        message.success('更新分类成功')
+        yield put({ type: 'notice/messageSuccess', payload:"更新分类成功" })
         yield put({ type: 'query' })
       } else {
         throw res
@@ -132,7 +131,7 @@ export default modelExtend(pageModel, {
       const res = payload.product_id === '' ? yield call(removeAllProducts, { id: id }) : yield call(updateProducts, {...payload, id: id})
       if (res.success) {
         yield put({ type: 'hideManagerModal' })
-        message.success('更新商品列表成功')
+        yield put({ type: 'notice/messageSuccess', payload:"更新商品列表成功" })
       } else {
         throw res
       }

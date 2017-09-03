@@ -61,11 +61,13 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       title: '商品名',
       dataIndex: 'name',
       key: 'title',
+      width: 250,
       render: (text, record) => <Link to={`product/${record.id}`}>{text}</Link>,
     }, {
       title: '商品摘要',
       dataIndex: 'summary',
       key: 'summary',
+      width: 300
     }, {
       title: '单价',
       dataIndex: 'price',
@@ -111,6 +113,7 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       title: '创建时间',
       dataIndex: 'create_time',
       key: 'create_time',
+      width: 80
     }, {
       title: '操作',
       key: 'operation',

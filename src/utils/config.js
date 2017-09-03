@@ -26,6 +26,7 @@ module.exports = {
       batch: '/product/batch',
       stockAndPrice: '/product/:id/stock_and_price',
       detail: '/product/:id/detail',
+      properties: '/product/:id/properties',
       pull: 'product/:id/pullOnOff',
       recent: '/product/recent',
     },
@@ -50,6 +51,7 @@ module.exports = {
     image: {
       categoryTopic: 'image/category_topic_img',
       productMain: 'image/product_main_img',
+      productDetail: 'image/product_detail_img',
     },
     posts: '/posts',
   },

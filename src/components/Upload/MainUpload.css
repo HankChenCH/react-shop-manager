@@ -1,0 +1,24 @@
+.img_uploader,
+.img_uploader_trigger{
+  width: 150px;
+  height: 150px;
+}
+.img{
+  max-width: 148px;
+  max-height: 140px;
+  margin-top: 10px;
+}
+.img_uploader {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.img_uploader_trigger {
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 28px;
+  color: #999;
+}

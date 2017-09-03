@@ -1,5 +1,4 @@
 import { query, logout, reToken } from '../services/app'
-import { message } from 'antd'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import { config } from '../utils'
@@ -77,9 +76,9 @@ export default {
     }, { put, call, select }) {
       const { user } = yield(select(_=>_.app))
       //以旧令牌换取新令牌
-      const data = yield call(reToken, user.token);
-      if (data.success && data.user) {
-        yield put({ type: 'registerUser', payload: data.user })
+      const res = yield call(reToken, { token: user.token });
+      if (res.success && res.data) {
+        yield put({ type: 'registerUser', payload: res.data })
       }
     },
 
@@ -90,7 +89,7 @@ export default {
       console.log(user.token)
       const data = yield call(logout, { token: user.token })
       if (data.success) {
-        message.success('登出成功')
+        yield put({ type: 'notice/messageSuccess', payload:"登出成功" })
         yield put({ type: 'logoutSuccess' })
       } else {
         throw (data)

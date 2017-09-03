@@ -5,7 +5,7 @@ import { connect } from 'dva'
 import { Row, Col, Button, Popconfirm } from 'antd'
 import List from './List'
 import Filter from './Filter'
-import Modal from './Modal'
+import InfoModal from './Modal'
 
 const Product = ({ location, dispatch, product, loading }) => {
   const { list, pagination, currentStep, currentItem, uploadTempItem, modalVisible, modalType, selectedRowKeys } = product
@@ -17,7 +17,7 @@ const Product = ({ location, dispatch, product, loading }) => {
     visible: modalVisible,
     maskClosable: false,
     currentStep: currentStep,
-    confirmLoading: loading.effects['product/${modalType}'],
+    confirmLoading: loading.effects['product/${modalType}','product/uploadImageSuccess'],
     title: `${modalType === 'create' ? '新建商品' : '更新商品'}`,
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
@@ -29,6 +29,12 @@ const Product = ({ location, dispatch, product, loading }) => {
     onDetailsOk (data) {
       dispatch({
         type: 'product/updateDetail',
+        payload: data,
+      })
+    },
+    onParamsOk (data) {
+      dispatch({
+        type: 'product/updateParams',
         payload: data,
       })
     },
@@ -237,7 +243,7 @@ const Product = ({ location, dispatch, product, loading }) => {
            </Row>
       }
       <List {...listProps} />
-      {modalVisible && <Modal {...modalProps} />}
+      {modalVisible && <InfoModal {...modalProps} />}
     </div>
   )
 }

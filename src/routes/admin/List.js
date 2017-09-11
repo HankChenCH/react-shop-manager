@@ -49,7 +49,7 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
       title: '启用',
       dataIndex: 'state',
       key: 'state',
-      render: (text, record) => <Switch checked={text === '1' ? true : false} checkedChildren="Off" unCheckedChildren="On" onChange={checked => handleSwitchChange(record, checked)}/>,
+      render: (text, record) => <Switch checked={text === '1' ? true : false} checkedChildren="禁用" unCheckedChildren="启用" onChange={checked => handleSwitchChange(record, checked)}/>,
     }, {
       title: '创建时间',
       dataIndex: 'create_time',

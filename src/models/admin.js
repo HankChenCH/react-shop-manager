@@ -48,10 +48,12 @@ export default modelExtend(pageModel, {
     },
 
     *'delete' ({ payload }, { call, put, select }) {
+      console.log(payload)
       const data = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.admin)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
+        yield put({ type: 'notice/messageSuccess', payload: '删除管理员成功' })
         yield put({ type: 'query' })
       } else {
         throw data
@@ -62,6 +64,7 @@ export default modelExtend(pageModel, {
       const data = yield call(adminsService.remove, payload)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
+        yield put({ type: 'notice/messageSuccess', payload: '删除管理员成功' })
         yield put({ type: 'query' })
       } else {
         throw data

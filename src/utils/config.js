@@ -69,7 +69,7 @@ module.exports = {
   },
   imgStyle: {
     product: {
-      thumb: '?',
+      thumb: '?imageView2/1/w/32/h/32/q/75|imageslim',
     }
   }
 }

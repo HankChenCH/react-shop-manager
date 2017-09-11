@@ -3,11 +3,12 @@ import PropTypes from 'prop-types'
 import { Table, Modal, Switch, InputNumber } from 'antd'
 import styles from './List.less'
 import classnames from 'classnames'
-import AnimTableBody from '../../components/DataTable/AnimTableBody'
+import { config } from '../../utils'
 import { DropOption } from '../../components'
 import { Link } from 'dva/router'
 
 const confirm = Modal.confirm
+const { imgStyle } = config
 
 const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChangeItemPrice, onDeleteItem, onEditItem, onPullShelvesItem, location, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
@@ -56,7 +57,7 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       key: 'productImage',
       width: 64,
       className: styles.avatar,
-      render: (text) => <img alt={'productImage'} width={32} src={text} />,
+      render: (text) => <img alt={'productImage'} width={32} src={text + imgStyle.product.thumb} />,
     }, {
       title: '商品名',
       dataIndex: 'name',
@@ -108,7 +109,7 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       title: '上架',
       dataIndex: 'is_on',
       key: 'is_on',
-      render: (text, record) => <Switch checked={text === '1' ? true : false} checkedChildren="Off" unCheckedChildren="On" onChange={checked => handleSwitchChange(record, checked)}/>,
+      render: (text, record) => <Switch checked={text === '1' ? true : false} checkedChildren="下架" unCheckedChildren="上架" onChange={checked => handleSwitchChange(record, checked)}/>,
     }, {
       title: '创建时间',
       dataIndex: 'create_time',

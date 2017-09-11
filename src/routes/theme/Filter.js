@@ -23,6 +23,8 @@ const TwoColProps = {
 
 const Filter = ({
   onAdd,
+  isMotion,
+  switchIsMotion,
   onFilterChange,
   filter,
   form: {
@@ -68,46 +70,16 @@ const Filter = ({
   }
   const { name, address } = filter
 
-  let initialCreateTime = []
-  if (filter.createTime && filter.createTime[0]) {
-    initialCreateTime[0] = moment(filter.createTime[0])
-  }
-  if (filter.createTime && filter.createTime[1]) {
-    initialCreateTime[1] = moment(filter.createTime[1])
-  }
-
   return (
     <Row gutter={24}>
-      <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
-        {getFieldDecorator('name', { initialValue: name })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
-      </Col>
       {/*<Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('address', { initialValue: address })(
-          <Cascader
-            size="large"
-            style={{ width: '100%' }}
-            options={city}
-            placeholder="Please pick an address"
-            onChange={handleChange.bind(null, 'address')}
-          />)}
+        {getFieldDecorator('name', { initialValue: name })(<Search placeholder="输入分类名搜索" size="large" onSearch={handleSubmit} />)}
       </Col>*/}
-      <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
-        <FilterItem label="注册时间">
-          {getFieldDecorator('createTime', { initialValue: initialCreateTime })(
-            <RangePicker style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createTime')} />
-          )}
-        </FilterItem>
-      </Col>
-      <Col {...TwoColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div >
-            <Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>搜索</Button>
-            <Button size="large" onClick={handleReset}>刷新</Button>
-          </div>
-          {/*<div>
-            <Switch style={{ marginRight: 16 }} size="large" defaultChecked={isMotion} onChange={switchIsMotion} checkedChildren={'Motion'} unCheckedChildren={'Motion'} />
-            <Button size="large" type="ghost" onClick={onAdd}>Create</Button>
-          </div>*/}
+      <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
+        <div >
+          {/*<Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>搜索</Button>
+          <Button size="large" className="margin-right" onClick={handleReset}>重置搜索</Button>*/}
+          <Button size="large" type="ghost" onClick={onAdd}>创建主题</Button>
         </div>
       </Col>
     </Row>

@@ -6,71 +6,34 @@ import { Row, Col, Button, Popconfirm } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
-import ManagerModal from '../components/ManagerModal'
 
-const Category = ({ location, dispatch, category, loading }) => {
-  const { list, pagination, currentItem, modalVisible, managerModalVisible, productList, currentProductKeyList, modalType, selectedRowKeys, uploadTempItem } = category
+const Admin = ({ location, dispatch, admin, loading }) => {
+  const { list, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys } = admin
   const { pageSize } = pagination
 
   const modalProps = {
-    item: Object.assign((modalType === 'create' ? {} : currentItem), uploadTempItem),
-    modalType: modalType,
+    item: modalType === 'create' ? {} : currentItem,
     visible: modalVisible,
     maskClosable: false,
-    confirmLoading: loading.effects[`category/${modalType}`],
-    title: `${modalType === 'create' ? '创建分类' : '更新分类'}`,
+    confirmLoading: loading.effects['admin/update'],
+    title: `${modalType === 'create' ? 'Create admin' : 'Update admin'}`,
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
       dispatch({
-        type: `category/${modalType}`,
+        type: `admin/${modalType}`,
         payload: data,
       })
     },
-    onUploadSuccess(data) {
-      dispatch({
-        type: 'category/uploadImageSuccess',
-        payload: data
-      })
-    },
     onCancel () {
       dispatch({
-        type: 'category/hideModal',
+        type: 'admin/hideModal',
       })
     },
-  }
-
-  const managerModalProps = {
-    productList,
-    currentProductKeyList,
-    visible: managerModalVisible,
-    maskClosable: false,
-    confirmLoading: loading.effects['category/setProductList'],
-    title: `${currentItem.name}--商品管理`,
-    wrapClassName: 'vertical-center-modal',
-    onOk (data) {
-      dispatch({
-        type: 'category/setProductList',
-        payload: data
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'category/hideManagerModal',
-      })
-    },
-    onChangeProductItem (nextTargetKeys) {
-      dispatch({
-        type: 'category/updateState',
-        payload: {
-          currentProductKeyList: nextTargetKeys
-        }
-      })
-    }
   }
 
   const listProps = {
     dataSource: list,
-    loading: loading.effects['category/query'],
+    loading: loading.effects['admin/query'],
     pagination,
     location,
     onChange (page) {
@@ -84,23 +47,15 @@ const Category = ({ location, dispatch, category, loading }) => {
         },
       }))
     },
-    onManagerItem (item) {
-      dispatch({
-        type: 'category/showProductManager',
-        payload: {
-          currentItem: item,
-        }
-      })
-    },
     onDeleteItem (id) {
       dispatch({
-        type: 'category/delete',
+        type: 'admin/delete',
         payload: id,
       })
     },
     onEditItem (item) {
       dispatch({
-        type: 'category/showModal',
+        type: 'admin/showModal',
         payload: {
           modalType: 'update',
           currentItem: item,
@@ -111,7 +66,7 @@ const Category = ({ location, dispatch, category, loading }) => {
       selectedRowKeys,
       onChange: (keys) => {
         dispatch({
-          type: 'category/updateState',
+          type: 'admin/updateState',
           payload: {
             selectedRowKeys: keys,
           },
@@ -136,32 +91,43 @@ const Category = ({ location, dispatch, category, loading }) => {
     },
     onSearch (fieldsValue) {
       fieldsValue.keyword.length ? dispatch(routerRedux.push({
-        pathname: '/category',
+        pathname: '/admin',
         query: {
           field: fieldsValue.field,
           keyword: fieldsValue.keyword,
         },
       })) : dispatch(routerRedux.push({
-        pathname: '/category',
+        pathname: '/admin',
       }))
     },
     onAdd () {
       dispatch({
-        type: 'category/showModal',
+        type: 'admin/showModal',
         payload: {
           modalType: 'create',
         },
       })
-    }
+    },
+    switchIsMotion () {
+      dispatch({ type: 'admin/switchIsMotion' })
+    },
   }
 
   const handleDeleteItems = () => {
     dispatch({
-      type: 'category/multiDelete',
+      type: 'admin/multiDelete',
       payload: {
         ids: selectedRowKeys,
       },
     })
+  }
+
+  const handlePullOnItems = () => {
+
+  }
+
+  const handlePullOffItems = () => {
+    
   }
 
   return (
@@ -169,10 +135,16 @@ const Category = ({ location, dispatch, category, loading }) => {
       <Filter {...filterProps} />
       {
          selectedRowKeys.length > 0 &&
-           <Row style={{ marginBottom: 18, textAlign: 'right', fontSize: 13 }}>
+           <Row style={{ marginBottom: 24, textAlign: 'right', fontSize: 13 }}>
              <Col>
-               {`选择了 ${selectedRowKeys.length} 条分类 `}
-               <Popconfirm title={'确定要删除选中的分类?'} placement="bottomRight" onConfirm={handleDeleteItems}>
+               {`选择了 ${selectedRowKeys.length} 个管理员 `}
+               <Popconfirm title={'确定启用选中的商品？'} placement="bottomLeft" onConfirm={handlePullOnItems}>
+                 <Button size="small" style={{ marginLeft: 8 }}>批量启用</Button>
+               </Popconfirm>
+               <Popconfirm title={'确定禁用选中的商品？'} placement="bottom" onConfirm={handlePullOffItems}>
+                 <Button size="small" style={{ marginLeft: 8 }}>批量禁用</Button>
+               </Popconfirm>
+               <Popconfirm title={'确定要删除这些管理员吗?'} placement="left" onConfirm={handleDeleteItems}>
                  <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
                </Popconfirm>
              </Col>
@@ -180,16 +152,15 @@ const Category = ({ location, dispatch, category, loading }) => {
       }
       <List {...listProps} />
       {modalVisible && <Modal {...modalProps} />}
-      {managerModalVisible && <ManagerModal {...managerModalProps} />}
     </div>
   )
 }
 
-Category.propTypes = {
-  user: PropTypes.object,
+Admin.propTypes = {
+  admin: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
 }
 
-export default connect(({ category, loading }) => ({ category, loading }))(Category)
+export default connect(({ admin, loading }) => ({ admin, loading }))(Admin)

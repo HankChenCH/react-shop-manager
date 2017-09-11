@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
+import { Table, Modal, Switch } from 'antd'
 import styles from './List.less'
 import classnames from 'classnames'
 import AnimTableBody from '../../components/DataTable/AnimTableBody'
@@ -15,7 +15,7 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
       onEditItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: 'Are you sure delete this record?',
+        title: '确定要删除这个管理员?',
         onOk () {
           onDeleteItem(record.id)
         },
@@ -23,27 +23,45 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
     }
   }
 
+  const handleSwitchChange = (record, checked) => {
+    // onPullShelvesItem(record.id, checked)
+  }
+
   const columns = [
     {
-      title: '微信昵称',
-      dataIndex: 'nickname',
-      key: 'nickname',
+      title: '用户名',
+      dataIndex: 'user_name',
+      key: 'user_name',
       render: (text, record) => <Link to={`user/${record.id}`}>{text}</Link>,
     }, {
-      title: '性别',
-      dataIndex: 'gender',
-      key: 'gender',
-      render: (text, record) => <div>{record.extend.gender ? '男' : '女'}</div>
+      title: '真实姓名',
+      dataIndex: 'true_name',
+      key: 'true_name',
     }, {
-      title: '所在地址',
-      dataIndex: 'address',
-      key: 'address',
-      render: (text, record) => <div>{record.extend.country} {record.extend.province} {record.extend.city}</div>
+      title: '联系电话',
+      dataIndex: 'phone',
+      key: 'phone',
     }, {
-      title: '注册时间',
+      title: '联系邮箱',
+      dataIndex: 'email',
+      key: 'email',
+    }, {
+      title: '启用',
+      dataIndex: 'state',
+      key: 'state',
+      render: (text, record) => <Switch checked={text === '1' ? true : false} checkedChildren="Off" unCheckedChildren="On" onChange={checked => handleSwitchChange(record, checked)}/>,
+    }, {
+      title: '创建时间',
       dataIndex: 'create_time',
       key: 'create_time',
-    }
+    }, {
+      title: '操作',
+      key: 'operation',
+      width: 100,
+      render: (text, record) => {
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '更新' }, { key: '2', name: '删除'}]} />
+      },
+    },
   ]
 
   return (

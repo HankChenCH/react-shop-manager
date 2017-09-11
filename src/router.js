@@ -46,6 +46,14 @@ const Routers = function ({ history, app }) {
             }, 'product-detail')
           },
         }, {
+          path: 'theme',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/theme'))
+              cb(null, require('./routes/theme/'))
+            }, 'theme')
+          }
+        }, {
           path: 'category',
           getComponent (nextState, cb) {
             require.ensure([], require => {
@@ -76,6 +84,14 @@ const Routers = function ({ history, app }) {
               registerModel(app, require('./models/user/detail'))
               cb(null, require('./routes/user/detail/'))
             }, 'user-detail')
+          },
+        }, {
+          path: 'setting/admin',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/admin'))
+              cb(null, require('./routes/admin'))
+            }, 'admin')
           },
         }, {
           path: 'login',

@@ -79,7 +79,7 @@ const Filter = ({
   return (
     <Row gutter={24}>
       <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
-        {getFieldDecorator('name', { initialValue: name })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
+        {getFieldDecorator('name', { initialValue: name })(<Search placeholder="搜索真实姓名" size="large" onSearch={handleSubmit} />)}
       </Col>
       {/*<Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
         {getFieldDecorator('address', { initialValue: address })(
@@ -92,7 +92,7 @@ const Filter = ({
           />)}
       </Col>*/}
       <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
-        <FilterItem label="注册时间">
+        <FilterItem label="创建时间">
           {getFieldDecorator('createTime', { initialValue: initialCreateTime })(
             <RangePicker style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createTime')} />
           )}
@@ -100,14 +100,11 @@ const Filter = ({
       </Col>
       <Col {...TwoColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div >
+          <div>
             <Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>搜索</Button>
-            <Button size="large" onClick={handleReset}>刷新</Button>
+            <Button size="large" className="margin-right" onClick={handleReset}>刷新</Button>
+            <Button size="large" type="ghost" onClick={onAdd}>创建</Button>
           </div>
-          {/*<div>
-            <Switch style={{ marginRight: 16 }} size="large" defaultChecked={isMotion} onChange={switchIsMotion} checkedChildren={'Motion'} unCheckedChildren={'Motion'} />
-            <Button size="large" type="ghost" onClick={onAdd}>Create</Button>
-          </div>*/}
         </div>
       </Col>
     </Row>

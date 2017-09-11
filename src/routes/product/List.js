@@ -61,13 +61,13 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       title: '商品名',
       dataIndex: 'name',
       key: 'title',
-      width: 250,
+      width: 200,
       render: (text, record) => <Link to={`product/${record.id}`}>{text}</Link>,
     }, {
       title: '商品摘要',
       dataIndex: 'summary',
       key: 'summary',
-      width: 300
+      width: 200
     }, {
       title: '单价',
       dataIndex: 'price',

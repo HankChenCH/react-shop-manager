@@ -48,11 +48,14 @@ const List = ({ queryStatus, onChangeItemPrice, onDeleteItem, onDeliveryItem, ..
       title: '订单快照',
       dataIndex: 'snap_item',
       render: (text, record) => {
-        return <div><img width={32} src={record.snap_img}/><span>{record.snap_name}</span></div>
+        return <div><img width={32} src={record.snap_img} style={{verticalAlign: 'middle'}}/><span>{record.snap_name}</span></div>
       }
     }, {
       title: '总金额',
-      dataIndex: 'total_price'
+      dataIndex: 'total_price',
+      render: (text, record) => {
+        return record.discount_price ? <div><p style={{textDecoration: 'line-through', color: '#930000'}}>{text}</p><p>{record.discount_price}</p></div> : text
+      }
     }, {
       title: '下单时间',
       dataIndex: 'create_time',

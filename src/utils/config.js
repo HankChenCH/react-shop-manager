@@ -20,7 +20,7 @@ module.exports = {
       home: '/home'
     },
     product: {
-      all: '/product/in_category/all',
+      all: '/product/all',
       list: '/product',
       info: '/product/:id',
       batch: '/product/batch',
@@ -37,10 +37,21 @@ module.exports = {
       products: '/product/by_category',
       setProducts: 'category/:id/product'
     },
+    theme: {
+      list: '/theme/all',
+      info: '/theme/:id',
+      batch: '/theme/batch',
+      products: '/theme/:id/product',
+      setProducts: 'theme/:id/product'
+    },
     user:{
       list: '/user',
       info: '/user/:id',
     }, 
+    admin: {
+      list: '/admin',
+      info: '/admin/:id',
+    },
     order:{
       list: '/order/by_admin',
       info: '/order/by_admin/:id',
@@ -49,10 +60,16 @@ module.exports = {
       batch: '/order/by_admin/batch',
     },
     image: {
+      themeTopic: 'image/theme_topic_img',
+      themeHead: 'image/theme_head_img',
       categoryTopic: 'image/category_topic_img',
       productMain: 'image/product_main_img',
       productDetail: 'image/product_detail_img',
     },
-    posts: '/posts',
   },
+  imgStyle: {
+    product: {
+      thumb: '?',
+    }
+  }
 }

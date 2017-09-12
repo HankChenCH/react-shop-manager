@@ -1,6 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
-const { list, info } = api.admin
+const { list, info, status } = api.admin
 
 export async function query (params) {
   return request({
@@ -29,6 +29,14 @@ export async function remove (params) {
 export async function update (params) {
   return request({
     url: info,
+    method: 'put',
+    data: params,
+  })
+}
+
+export async function enableOrDisable(params) {
+  return request({
+    url: status,
     method: 'put',
     data: params,
   })

@@ -51,6 +51,7 @@ module.exports = {
     admin: {
       list: '/admin',
       info: '/admin/:id',
+      status: '/admin/:id/status'
     },
     order:{
       list: '/order/by_admin',

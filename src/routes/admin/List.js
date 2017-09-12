@@ -9,7 +9,7 @@ import { Link } from 'dva/router'
 
 const confirm = Modal.confirm
 
-const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) => {
+const List = ({ onDeleteItem, onEditItem, onAbleItem, location, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onEditItem(record)
@@ -24,7 +24,7 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
   }
 
   const handleSwitchChange = (record, checked) => {
-    // onPullShelvesItem(record.id, checked)
+    onAbleItem(record.id, checked)
   }
 
   const columns = [
@@ -68,7 +68,7 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
     <div>
       <Table
         {...tableProps}
-        className={classnames({ [styles.table]: true, [styles.motion]: isMotion })}
+        className={classnames({ [styles.table]: true})}
         bordered
         scroll={{ x: 900 }}
         columns={columns}

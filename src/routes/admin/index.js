@@ -14,9 +14,10 @@ const Admin = ({ location, dispatch, admin, loading }) => {
   const modalProps = {
     item: modalType === 'create' ? {} : currentItem,
     visible: modalVisible,
+    modalType,
     maskClosable: false,
     confirmLoading: loading.effects['admin/update'],
-    title: `${modalType === 'create' ? 'Create admin' : 'Update admin'}`,
+    title: `${modalType === 'create' ? '创建管理员' : '更新管理员'}`,
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
       dispatch({
@@ -54,12 +55,22 @@ const Admin = ({ location, dispatch, admin, loading }) => {
       })
     },
     onEditItem (item) {
+      console.log(item)
       dispatch({
         type: 'admin/showModal',
         payload: {
           modalType: 'update',
           currentItem: item,
         },
+      })
+    },
+    onAbleItem (id, status) {
+      dispatch({
+        type: 'admin/updateStatus',
+        payload: {
+          id,
+          state: status ? 1 : 0
+        }
       })
     },
     rowSelection: {
@@ -107,10 +118,7 @@ const Admin = ({ location, dispatch, admin, loading }) => {
           modalType: 'create',
         },
       })
-    },
-    switchIsMotion () {
-      dispatch({ type: 'admin/switchIsMotion' })
-    },
+    }
   }
 
   const handleDeleteItems = () => {

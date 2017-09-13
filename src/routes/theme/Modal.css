@@ -1,0 +1,34 @@
+.avatar_uploader,
+.avatar_uploader_trigger{
+  width: 150px;
+  height: 150px;
+}
+.avatar{
+  max-width: 146px;
+  max-height: 146px;
+}
+.avatar_uploader {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.avatar_uploader_trigger {
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 28px;
+  color: #999;
+}
+.transfer_item{
+  display: inline-block;
+  line-height: 25px;
+}
+.transfer_item_img{
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  padding-right: 5px;
+  vertical-align: middle;
+}

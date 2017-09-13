@@ -60,8 +60,8 @@ const PriceModal = ({
           </div>
         </FormItem>
         <FormItem label="订单价格" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('total_price', {
-            initialValue: item.total_price,
+          {getFieldDecorator('discount_price', {
+            initialValue: item.discount_price,
             rules: [
               {
                 required: true,

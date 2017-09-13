@@ -13,9 +13,6 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     modalVisible: false,
-    modalType: 'create',
-    selectedRowKeys: [],
-    isMotion: localStorage.getItem(`${prefix}userIsMotion`) === 'true',
   },
 
   subscriptions: {
@@ -34,8 +31,9 @@ export default modelExtend(pageModel, {
   effects: {
 
     *query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
-      if (data) {
+      const res = yield call(query, payload)
+      if (res.success) {
+        const { data } = res
         yield put({
           type: 'querySuccess',
           payload: {
@@ -54,22 +52,22 @@ export default modelExtend(pageModel, {
       const data = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.user)
       if (data.success) {
-        yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
+        // yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
       } else {
         throw data
       }
     },
 
-    *'multiDelete' ({ payload }, { call, put }) {
-      const data = yield call(usersService.remove, payload)
-      if (data.success) {
-        yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
-        yield put({ type: 'query' })
-      } else {
-        throw data
-      }
-    },
+    // *'multiDelete' ({ payload }, { call, put }) {
+    //   const data = yield call(usersService.remove, payload)
+    //   if (data.success) {
+    //     yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
+    //     yield put({ type: 'query' })
+    //   } else {
+    //     throw data
+    //   }
+    // },
 
     *create ({ payload }, { call, put }) {
       const data = yield call(create, payload)
@@ -103,11 +101,6 @@ export default modelExtend(pageModel, {
 
     hideModal (state) {
       return { ...state, modalVisible: false }
-    },
-
-    switchIsMotion (state) {
-      localStorage.setItem(`${prefix}userIsMotion`, !state.isMotion)
-      return { ...state, isMotion: !state.isMotion }
     },
 
   },

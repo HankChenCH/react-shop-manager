@@ -8,8 +8,8 @@ import Filter from './Filter'
 import Modal from './Modal'
 import ManagerModal from '../components/ManagerModal'
 
-const Category = ({ location, dispatch, category, loading }) => {
-  const { list, pagination, currentItem, modalVisible, managerModalVisible, productList, currentProductKeyList, modalType, selectedRowKeys, uploadTempItem } = category
+const Theme = ({ location, dispatch, theme, loading }) => {
+  const { list, pagination, currentItem, modalVisible, managerModalVisible, productList, currentProductKeyList, modalType, selectedRowKeys, uploadTempItem } = theme
   const { pageSize } = pagination
 
   const modalProps = {
@@ -17,24 +17,24 @@ const Category = ({ location, dispatch, category, loading }) => {
     modalType: modalType,
     visible: modalVisible,
     maskClosable: false,
-    confirmLoading: loading.effects[`category/${modalType}`],
-    title: `${modalType === 'create' ? '创建分类' : '更新分类'}`,
+    confirmLoading: loading.effects[`theme/${modalType}`],
+    title: `${modalType === 'create' ? '创建主题' : '更新主题'}`,
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
       dispatch({
-        type: `category/${modalType}`,
+        type: `theme/${modalType}`,
         payload: data,
       })
     },
     onUploadSuccess(data) {
       dispatch({
-        type: 'category/uploadImageSuccess',
+        type: 'theme/uploadImageSuccess',
         payload: data
       })
     },
     onCancel () {
       dispatch({
-        type: 'category/hideModal',
+        type: 'theme/hideModal',
       })
     },
   }
@@ -44,23 +44,23 @@ const Category = ({ location, dispatch, category, loading }) => {
     currentProductKeyList,
     visible: managerModalVisible,
     maskClosable: false,
-    confirmLoading: loading.effects['category/setProductList'],
+    confirmLoading: loading.effects['theme/setProductList'],
     title: `${currentItem.name}--商品管理`,
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
       dispatch({
-        type: 'category/setProductList',
+        type: 'theme/setProductList',
         payload: data
       })
     },
     onCancel () {
       dispatch({
-        type: 'category/hideManagerModal',
+        type: 'theme/hideManagerModal',
       })
     },
     onChangeProductItem (nextTargetKeys) {
       dispatch({
-        type: 'category/updateState',
+        type: 'theme/updateState',
         payload: {
           currentProductKeyList: nextTargetKeys
         }
@@ -70,7 +70,7 @@ const Category = ({ location, dispatch, category, loading }) => {
 
   const listProps = {
     dataSource: list,
-    loading: loading.effects['category/query'],
+    loading: loading.effects['theme/query'],
     pagination,
     location,
     onChange (page) {
@@ -86,7 +86,7 @@ const Category = ({ location, dispatch, category, loading }) => {
     },
     onManagerItem (item) {
       dispatch({
-        type: 'category/showProductManager',
+        type: 'theme/showProductManager',
         payload: {
           currentItem: item,
         }
@@ -94,13 +94,13 @@ const Category = ({ location, dispatch, category, loading }) => {
     },
     onDeleteItem (id) {
       dispatch({
-        type: 'category/delete',
+        type: 'theme/delete',
         payload: id,
       })
     },
     onEditItem (item) {
       dispatch({
-        type: 'category/showModal',
+        type: 'theme/showModal',
         payload: {
           modalType: 'update',
           currentItem: item,
@@ -111,7 +111,7 @@ const Category = ({ location, dispatch, category, loading }) => {
       selectedRowKeys,
       onChange: (keys) => {
         dispatch({
-          type: 'category/updateState',
+          type: 'theme/updateState',
           payload: {
             selectedRowKeys: keys,
           },
@@ -136,18 +136,18 @@ const Category = ({ location, dispatch, category, loading }) => {
     },
     onSearch (fieldsValue) {
       fieldsValue.keyword.length ? dispatch(routerRedux.push({
-        pathname: '/category',
+        pathname: '/theme',
         query: {
           field: fieldsValue.field,
           keyword: fieldsValue.keyword,
         },
       })) : dispatch(routerRedux.push({
-        pathname: '/category',
+        pathname: '/theme',
       }))
     },
     onAdd () {
       dispatch({
-        type: 'category/showModal',
+        type: 'theme/showModal',
         payload: {
           modalType: 'create',
         },
@@ -157,7 +157,7 @@ const Category = ({ location, dispatch, category, loading }) => {
 
   const handleDeleteItems = () => {
     dispatch({
-      type: 'category/multiDelete',
+      type: 'theme/multiDelete',
       payload: {
         ids: selectedRowKeys,
       },
@@ -171,8 +171,8 @@ const Category = ({ location, dispatch, category, loading }) => {
          selectedRowKeys.length > 0 &&
            <Row style={{ marginBottom: 18, textAlign: 'right', fontSize: 13 }}>
              <Col>
-               {`选择了 ${selectedRowKeys.length} 条分类 `}
-               <Popconfirm title={'确定要删除选中的分类?'} placement="bottomRight" onConfirm={handleDeleteItems}>
+               {`选择了 ${selectedRowKeys.length} 条主题 `}
+               <Popconfirm title={'确定要删除选中的主题?'} placement="bottomRight" onConfirm={handleDeleteItems}>
                  <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
                </Popconfirm>
              </Col>
@@ -185,11 +185,11 @@ const Category = ({ location, dispatch, category, loading }) => {
   )
 }
 
-Category.propTypes = {
+Theme.propTypes = {
   user: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
 }
 
-export default connect(({ category, loading }) => ({ category, loading }))(Category)
+export default connect(({ theme, loading }) => ({ theme, loading }))(Theme)

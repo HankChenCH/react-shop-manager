@@ -36,7 +36,6 @@ const User = ({ location, dispatch, user, loading }) => {
     loading: loading.effects['user/query'],
     pagination,
     location,
-    isMotion,
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -63,21 +62,20 @@ const User = ({ location, dispatch, user, loading }) => {
         },
       })
     },
-    rowSelection: {
-      selectedRowKeys,
-      onChange: (keys) => {
-        dispatch({
-          type: 'user/updateState',
-          payload: {
-            selectedRowKeys: keys,
-          },
-        })
-      },
-    },
+    // rowSelection: {
+    //   selectedRowKeys,
+    //   onChange: (keys) => {
+    //     dispatch({
+    //       type: 'user/updateState',
+    //       payload: {
+    //         selectedRowKeys: keys,
+    //       },
+    //     })
+    //   },
+    // },
   }
 
   const filterProps = {
-    isMotion,
     filter: {
       ...location.query,
     },
@@ -127,7 +125,7 @@ const User = ({ location, dispatch, user, loading }) => {
   return (
     <div className="content-inner">
       <Filter {...filterProps} />
-      {
+      {/*
          selectedRowKeys.length > 0 &&
            <Row style={{ marginBottom: 24, textAlign: 'right', fontSize: 13 }}>
              <Col>
@@ -137,7 +135,7 @@ const User = ({ location, dispatch, user, loading }) => {
                </Popconfirm>
              </Col>
            </Row>
-      }
+      */}
       <List {...listProps} />
       {modalVisible && <Modal {...modalProps} />}
     </div>

@@ -4,7 +4,6 @@ import { Table, Modal, Switch, InputNumber } from 'antd'
 import styles from './List.less'
 import classnames from 'classnames'
 import { config } from '../../utils'
-import AnimTableBody from '../../components/DataTable/AnimTableBody'
 import { DropOption } from '../../components'
 import { Link } from 'dva/router'
 
@@ -110,7 +109,7 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       title: '上架',
       dataIndex: 'is_on',
       key: 'is_on',
-      render: (text, record) => <Switch checked={text === '1' ? true : false} checkedChildren="Off" unCheckedChildren="On" onChange={checked => handleSwitchChange(record, checked)}/>,
+      render: (text, record) => <Switch checked={text === '1' ? true : false} checkedChildren="下架" unCheckedChildren="上架" onChange={checked => handleSwitchChange(record, checked)}/>,
     }, {
       title: '创建时间',
       dataIndex: 'create_time',

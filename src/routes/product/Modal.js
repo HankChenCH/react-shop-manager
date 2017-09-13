@@ -75,6 +75,11 @@ export default class InfoModal extends React.Component
               data.detail = draftToHtml(data.detail)
             }
 
+            if (data.detail.hasOwnProperty('value')) {
+              data.detail = data.detail.value
+              delete data.detail.value
+            }
+
             onDetailsOk(data)
           } else {
             onOk(data)

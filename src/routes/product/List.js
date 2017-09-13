@@ -3,11 +3,13 @@ import PropTypes from 'prop-types'
 import { Table, Modal, Switch, InputNumber } from 'antd'
 import styles from './List.less'
 import classnames from 'classnames'
+import { config } from '../../utils'
 import AnimTableBody from '../../components/DataTable/AnimTableBody'
 import { DropOption } from '../../components'
 import { Link } from 'dva/router'
 
 const confirm = Modal.confirm
+const { imgStyle } = config
 
 const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChangeItemPrice, onDeleteItem, onEditItem, onPullShelvesItem, location, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
@@ -56,18 +58,18 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       key: 'productImage',
       width: 64,
       className: styles.avatar,
-      render: (text) => <img alt={'productImage'} width={32} src={text} />,
+      render: (text) => <img alt={'productImage'} width={32} src={text + imgStyle.product.thumb} />,
     }, {
       title: '商品名',
       dataIndex: 'name',
       key: 'title',
-      width: 250,
+      width: 200,
       render: (text, record) => <Link to={`product/${record.id}`}>{text}</Link>,
     }, {
       title: '商品摘要',
       dataIndex: 'summary',
       key: 'summary',
-      width: 300
+      width: 200
     }, {
       title: '单价',
       dataIndex: 'price',

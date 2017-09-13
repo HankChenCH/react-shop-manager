@@ -55,7 +55,6 @@ const Admin = ({ location, dispatch, admin, loading }) => {
       })
     },
     onEditItem (item) {
-      console.log(item)
       dispatch({
         type: 'admin/showModal',
         payload: {

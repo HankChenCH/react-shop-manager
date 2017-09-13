@@ -107,7 +107,8 @@ export default modelExtend(pageModel, {
           return item 
         })
         yield put({ type: 'updateState', payload: { list: newList } })
-        yield put({ type: 'notice/messageSuccess', payload: "管理员" + res.state ? '启用' : '禁用' + '成功' })
+        const message = "管理员" + (res.state ? '启用' : '禁用') + '成功'
+        yield put({ type: 'notice/messageSuccess', payload: message })
       } else {
         throw res
       }
@@ -117,7 +118,7 @@ export default modelExtend(pageModel, {
   reducers: {
 
     showModal (state, { payload }) {
-      return { ...state, ...{ payload }, modalVisible: true }
+      return { ...state,  ...payload , modalVisible: true }
     },
 
     hideModal (state) {

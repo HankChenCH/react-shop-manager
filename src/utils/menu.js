@@ -1,8 +1,8 @@
 module.exports = [
   {
     id: 1,
-    icon: 'home',
     name: '首页',
+    icon: 'home',
     router: '/dashboard',
   },
   {
@@ -36,7 +36,7 @@ module.exports = [
   {
     id: 2,
     bpid: 1,
-    name: '用户管理',
+    name: '客户管理',
     icon: 'user',
     router: '/user',
   },
@@ -44,7 +44,7 @@ module.exports = [
     id: 21,
     mpid: -1,
     bpid: 2,
-    name: 'User Detail',
+    name: '客户详情',
     router: '/user/:id',
   },
   {
@@ -71,14 +71,14 @@ module.exports = [
     id: 621,
     bpid: 62,
     mpid: 62,
-    name: '分配角色',
+    name: '角色管理',
     router: '/setting/permission/role',
   },
   {
     id: 622,
     bpid: 62,
     mpid: 62,
-    name: '分配权限',
-    router: '/setting/permission/permissions',
+    name: '资源管理',
+    router: '/setting/permission/source',
   },
 ]

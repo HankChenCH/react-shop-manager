@@ -47,7 +47,7 @@ class DetailInfoForm extends React.Component
 			                      maxWidth: 700
 			                    }}
 			                    editorStyle={{
-			                      maxHeight: 500,
+			                      maxHeight: 300,
 			                      minHeight: 300,
 			                      overFlow: 'hidden',
 			                      minWidth: 200,

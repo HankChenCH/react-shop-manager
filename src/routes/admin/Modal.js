@@ -22,6 +22,7 @@ const modal = ({
     getFieldDecorator,
     validateFields,
     getFieldsValue,
+    getFieldValue,
   },
   ...modalProps
 }) => {
@@ -32,9 +33,9 @@ const modal = ({
       }
       const data = {
         ...getFieldsValue(),
-        key: item.key,
+        // key: item.key,
       }
-      data.address = data.address.join(' ')
+
       onOk(data)
     })
   }
@@ -44,30 +45,51 @@ const modal = ({
     onOk: handleOk,
   }
 
-  const passwordRules = modalType === 'create' ? [{ required: true }] : []
+  const handleConfirmPassword = (rule, value, callback) => {
+        const first = getFieldValue('password')
+        if (first && value !== first) {
+            callback('The second password should be same with first!')
+        }
+
+        // Note: 必须总是返回一个 callback，否则 validateFieldsAndScroll 无法响应
+        callback()
+  }
+
+  const pwdMessage = modalType === 'create' ? '请输入密码' : '如不需要更改密码，请勿填写'
 
   return (
     <Modal {...modalOpts}>
       <Form layout="horizontal">
         <FormItem label="用户名" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('user_name', {
-            initialValue: item.user_name,
-            rules: [
-              {
-                required: true,
-              },
-            ],
-          })(<Input />)}
+          {modalType === 'create' ? 
+            getFieldDecorator('user_name', {
+              initialValue: item.user_name,
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input />) :
+            <div>{item.user_name}</div>
+          }
         </FormItem>
         <FormItem label="密码" hasFeedback {...formItemLayout}>
           {getFieldDecorator('password', {
-            rules: passwordRules,
-          })(<Input type="password"/>)}
+            rules: [{
+              required: modalType === 'create',
+              pattern: /^[A-Za-z0-9]{6,14}$/,
+              message: 'The password shoule be mixin number and letter,length between 6 and 14'
+            }],
+          })(<Input type="password" placeholder={pwdMessage}/>)}
         </FormItem>
         <FormItem label="确认密码" hasFeedback {...formItemLayout}>
           {getFieldDecorator('repassword', {
-            rules: passwordRules,
-          })(<Input type="password"/>)}
+            validateTrigger: ['onChange','onBlur'],
+            rules: [{
+              required: modalType === 'create',
+              validator: handleConfirmPassword
+            }],
+          })(<Input type="password" placeholder={pwdMessage}/>)}
         </FormItem>
         <FormItem label="真实姓名" hasFeedback {...formItemLayout}>
           {getFieldDecorator('true_name', {

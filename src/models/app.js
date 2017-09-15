@@ -67,7 +67,6 @@ export default modelExtend(model, {
           const res = yield call(queryProductAll, { ...payload, token: user.token })
           if (res.success) {
             let productAll = res.data.map((item) => {return { key: item.id.toString(), title: item.name, main_img_url: item.main_img_url }})
-            console.log(productAll)
             yield put({ type: 'updateState', payload: { productAll: productAll }})
           } else {
             throw res

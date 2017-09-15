@@ -76,7 +76,7 @@ const modal = ({
         </FormItem>
         <FormItem label="上传头图" hasFeedback {...formItemLayout}>
           {getFieldDecorator('topic_img_id', {
-            initialValue: item.topic_img ? { img_id: item.topic_img_id, img_url: item.img.url } : {},
+            initialValue: item.img ? { img_id: item.topic_img_id, img_url: item.img.url } : {},
             rules: [
               {
                 required: true,

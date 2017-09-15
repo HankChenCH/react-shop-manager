@@ -41,7 +41,7 @@ const Theme = ({ location, dispatch, app, theme, loading }) => {
   }
 
   const managerModalProps = {
-    productList,
+    productAll,
     currentProductKeyList,
     visible: managerModalVisible,
     maskClosable: false,

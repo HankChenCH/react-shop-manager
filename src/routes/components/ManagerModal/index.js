@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Modal, Transfer } from 'antd'
-import styles from './Modal.css'
+import styles from './ManagerModal.css'
 
 const FormItem = Form.Item
 
@@ -15,7 +15,7 @@ const formItemLayout = {
 }
 
 const managerModal = ({
-  productList,
+  productAll,
   currentProductKeyList,
   onOk,
   onChangeProductItem,
@@ -70,7 +70,7 @@ const managerModal = ({
             initialValue: currentProductKeyList.join(',')
           })(<Input type='hidden'/>)}
           <Transfer
-  	        dataSource={productList}
+  	        dataSource={productAll}
             showSearch
   	        titles={['来源', '已选']}
   	        targetKeys={currentProductKeyList}

@@ -17,7 +17,7 @@ export default {
       const res = yield call(login, payload)
       yield put({ type: 'hideLoginLoading' })
       if (res.success) {
-        yield put({ type: 'notice/messageSuccess', payload: '登录成功' })
+        yield put({ type: 'app/messageSuccess', payload: '登录成功' })
         localStorage.setItem(`${prefix}admin`, JSON.stringify(res.data))
         const from = queryURL('from')
         yield put({ type: 'app/registerUser', payload: res.data })

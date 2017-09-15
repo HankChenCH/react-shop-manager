@@ -168,7 +168,7 @@ export default {
   namespace: 'dashboard',
   state: {
     weather: {
-      city: '成都',
+      city: '中山',
       temperature: '5',
       name: '晴',
       icon: 'http://www.zuimeitianqi.com/res/icon/0_big.png',

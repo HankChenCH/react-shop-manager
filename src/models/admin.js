@@ -54,7 +54,7 @@ export default modelExtend(pageModel, {
       const { selectedRowKeys } = yield select(_ => _.admin)
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
-        yield put({ type: 'notice/messageSuccess', payload: '删除管理员成功' })
+        yield put({ type: 'app/messageSuccess', payload: '删除管理员成功' })
         yield put({ type: 'query' })
       } else {
         throw res
@@ -65,7 +65,7 @@ export default modelExtend(pageModel, {
       const res = yield call(adminsService.remove, payload)
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
-        yield put({ type: 'notice/messageSuccess', payload: '删除管理员成功' })
+        yield put({ type: 'app/messageSuccess', payload: '删除管理员成功' })
         yield put({ type: 'query' })
       } else {
         throw res
@@ -108,7 +108,7 @@ export default modelExtend(pageModel, {
         })
         yield put({ type: 'updateState', payload: { list: newList } })
         const message = "管理员" + (res.state ? '启用' : '禁用') + '成功'
-        yield put({ type: 'notice/messageSuccess', payload: message })
+        yield put({ type: 'app/messageSuccess', payload: message })
       } else {
         throw res
       }

@@ -95,7 +95,7 @@ const Index = ({ order, dispatch, loading, location }) => {
     visible: deliveryModalVisible,
     maskClosable: false,
     confirmLoading: loading.effects['order/deliveryItem'],
-    title: '订单改价',
+    title: '订单发货',
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
       dispatch({

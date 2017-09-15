@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Radio, Modal, Cascader, Upload, Icon } from 'antd'
+import { Form, Input, InputNumber, Radio, Modal, Cascader, Icon } from 'antd'
+import { TopicUpload } from '../../components/Upload'
 import { apiPrefix, api } from '../../utils/config'
 import styles from './Modal.css'
 
@@ -43,29 +44,6 @@ const modal = ({
     })
   }
 
-  const handleChange = (info) => {
-    if (info.file.status === 'done') {
-      onUploadSuccess(info.file.response)
-    } else if(info.file.status === 'error') {
-      throw {
-        success: false,
-        message: response.msg
-      }
-    }
-  }
-
-  const renderUploader = (modalType) => {
-    let imageContent
-    if (modalType === 'create') {
-      imageContent = item.img_url ?
-      <img src={item.img_url} alt="" className={styles.avatar} /> : 
-      <Icon type="plus" className={styles.avatar_uploader_trigger} />
-    } else if(modalType === 'update') {
-      imageContent = item.img_url ? <img src={item.img_url} alt="" className={styles.avatar} /> : <img src={item.img.url} alt="" className={styles.avatar} />
-    }
-    return imageContent
-  }
-
   const modalOpts = {
     ...modalProps,
     onOk: handleOk,
@@ -98,7 +76,7 @@ const modal = ({
         </FormItem>
         <FormItem label="上传头图" hasFeedback {...formItemLayout}>
           {getFieldDecorator('topic_img_id', {
-            initialValue: item.topic_img_id,
+            initialValue: item.topic_img ? { img_id: item.topic_img_id, img_url: item.img.url } : {},
             rules: [
               {
                 required: true,
@@ -106,17 +84,12 @@ const modal = ({
               },
             ],
           })(
-            <Input type='hidden' />
+            <TopicUpload
+              className={styles.avatar_uploader}
+              name="topicImage"
+              action={uploadImageApi}
+            />
           )}
-          <Upload
-            className={styles.avatar_uploader}
-            name="topicImage"
-            showUploadList={false}
-            action={uploadImageApi}
-            onChange={handleChange}
-          >
-            {renderUploader(modalType)}
-          </Upload>
         </FormItem>
       </Form>
     </Modal>

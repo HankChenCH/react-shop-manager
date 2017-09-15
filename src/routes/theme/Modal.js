@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Modal, Upload, Icon } from 'antd'
+import { Form, Input, InputNumber, Modal, Icon } from 'antd'
 import { TopicUpload } from '../../components/Upload'
 import { apiPrefix, api } from '../../utils/config'
 import styles from './Modal.css'

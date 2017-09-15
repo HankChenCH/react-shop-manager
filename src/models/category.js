@@ -15,7 +15,6 @@ export default modelExtend(pageModel, {
     currentItem: {},
     uploadTempItem: {},
     tempItem: {},
-    productList: [],
     currentProductKeyList: [],
     modalVisible: false,
     managerModalVisible: false,
@@ -91,10 +90,12 @@ export default modelExtend(pageModel, {
     },
 
     *create ({ payload }, { call, put }) {
-      const res = yield call(create, payload)
+      const newCategory = { ...payload, id, topic_img_id: payload.topic_img.img_id }
+      delete newCategory.topic
+      const res = yield call(create, newCategory)
       if (res.success) {
         yield put({ type: 'hideModal' })
-        yield put({ type: 'notice/messageSuccess', payload:"创建分类成功" })
+        yield put({ type: 'app/messageSuccess', payload:"创建分类成功" })
         yield put({ type: 'query' })
       } else {
         throw res
@@ -103,11 +104,12 @@ export default modelExtend(pageModel, {
 
     *update ({ payload }, { select, call, put }) {
       const id = yield select(({ category }) => category.currentItem.id)
-      const newCategory = { ...payload, id }
+      const newCategory = { ...payload, id, topic_img_id: payload.topic_img.img_id }
+      delete newCategory.topic
       const res = yield call(update, newCategory)
       if (res.success) {
         yield put({ type: 'hideModal' })
-        yield put({ type: 'notice/messageSuccess', payload:"更新分类成功" })
+        yield put({ type: 'app/messageSuccess', payload:"更新分类成功" })
         yield put({ type: 'query' })
       } else {
         throw res
@@ -131,7 +133,7 @@ export default modelExtend(pageModel, {
       const res = payload.product_id === '' ? yield call(removeAllProducts, { id: id }) : yield call(updateProducts, {...payload, id: id})
       if (res.success) {
         yield put({ type: 'hideManagerModal' })
-        yield put({ type: 'notice/messageSuccess', payload:"更新商品列表成功" })
+        yield put({ type: 'app/messageSuccess', payload:"更新商品列表成功" })
       } else {
         throw res
       }

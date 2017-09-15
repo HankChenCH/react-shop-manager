@@ -1,8 +1,10 @@
 import React from 'react'
 import { Table, Modal } from 'antd'
+import moment from 'moment'
 import { DropOption } from '../../components'
 import styles from './List.less'
 
+moment.locale('zh-cn');
 const confirm = Modal.confirm
 
 const List = ({ queryStatus, onChangeItemPrice, onDeleteItem, onDeliveryItem, ...tableProps }) => {
@@ -59,6 +61,7 @@ const List = ({ queryStatus, onChangeItemPrice, onDeleteItem, onDeliveryItem, ..
     }, {
       title: '下单时间',
       dataIndex: 'create_time',
+      render: (text, record) => <div>{ queryStatus == 1 ? moment(text, "YYYY-MM-DD hh:mm:ss").startOf('s').fromNow() : text }</div>
     }, {
       title: '操作',
       dataIndex: 'opteration',

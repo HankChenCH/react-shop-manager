@@ -1,13 +1,17 @@
-import { query, logout, reToken } from '../services/app'
+import modelExtend from 'dva-model-extend'
+import { query, queryProductAll, logout, reToken } from '../services/app'
+import { model } from './common'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import { config } from '../utils'
+import { message } from 'antd'
 const { prefix } = config
 
-export default {
+export default modelExtend(model, {
   namespace: 'app',
   state: {
     user: JSON.parse(localStorage.getItem(`${prefix}admin`)) || {},
+    productAll: [],
     menuPopoverVisible: false,
     siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
     darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
@@ -16,15 +20,22 @@ export default {
   },
   subscriptions: {
 
-    setup ({ dispatch }) {
-      dispatch({ type: 'checkTokenExpire' })
+    setup ({ dispatch, history }) {
       let tid
+
       window.onresize = () => {
         clearTimeout(tid)
         tid = setTimeout(() => {
           dispatch({ type: 'changeNavbar' })
         }, 300)
       }
+
+      history.listen(location => {
+        if (location.pathname !== '/login') {
+          dispatch({ type: 'checkTokenExpire' })
+          dispatch({ type: 'queryProduct' })
+        }
+      })
     },
 
   },
@@ -46,6 +57,23 @@ export default {
         
     //   // }
     // },
+    *messageSuccess ({ payload }) {
+      message.success(payload)
+    },
+
+    *queryProduct ({ payload }, { call, put, select }) {
+        const { user, productAll } = yield select(({ app }) => app)
+        if (productAll.length === 0) {
+          const res = yield call(queryProductAll, { ...payload, token: user.token })
+          if (res.success) {
+            let productAll = res.data.map((item) => {return { key: item.id.toString(), title: item.name, main_img_url: item.main_img_url }})
+            console.log(productAll)
+            yield put({ type: 'updateState', payload: { productAll: productAll }})
+          } else {
+            throw res
+          }
+        }
+    },
 
     *checkTokenExpire ({
       payload
@@ -53,7 +81,7 @@ export default {
       const { user } = yield(select(_=>_.app))
       let nowTime = Date.parse(new Date()) / 1000;
       //票据为空代表没有登录，直接返回登录页面
-      if (typeof user.token === 'undefined') {
+      if (!user.hasOwnProperty("token")) {
         yield put({ type: 'logoutSuccess' })        
       }
 
@@ -86,13 +114,13 @@ export default {
       payload,
     }, { call, put, select }) {
       const user = yield select(({ app }) => app.user)
-      console.log(user.token)
-      const data = yield call(logout, { token: user.token })
-      if (data.success) {
-        yield put({ type: 'notice/messageSuccess', payload:"登出成功" })
+      const res = yield call(logout, { token: user.token })
+      if (res.success) {
+        yield put({ type: 'messageSuccess', payload:"登出成功" })
         yield put({ type: 'logoutSuccess' })
       } else {
-        throw (data)
+        yield put({ type: 'logoutSuccess' })
+        throw (res)
       }
     },
 
@@ -166,4 +194,4 @@ export default {
       }
     },
   },
-}
+})

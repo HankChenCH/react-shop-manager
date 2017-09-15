@@ -17,6 +17,7 @@ const fetch = (options) => {
   } = options
 
   const cloneData = lodash.cloneDeep(data)
+  let headersOption = {}
 
   try {
     let domin = ''
@@ -32,6 +33,11 @@ const fetch = (options) => {
       }
     }
     url = domin + url
+    //将传入的token绑定到请求头里，不作为请求体或url传输
+    if (cloneData.hasOwnProperty("token")) {
+      headersOption = { token: cloneData.token }
+      delete cloneData.token
+    }
   } catch (e) {
     message.error(e.message)
   }
@@ -53,8 +59,6 @@ const fetch = (options) => {
     url = `http://query.yahooapis.com/v1/public/yql?q=select * from json where url='${options.url}?${encodeURIComponent(qs.stringify(options.data))}'&format=json`
     data = null
   }
-
-  let headersOption = typeof data.token !== 'undefined' ? { "token": data.token } : {}
 
   switch (method.toLowerCase()) {
     case 'get':

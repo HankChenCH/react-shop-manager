@@ -6,10 +6,11 @@ import { Row, Col, Button, Popconfirm } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
-import ManagerModal from '../components/ManagerModal'
+import ManagerModal from '../components/ManagerModal/'
 
-const Category = ({ location, dispatch, category, loading }) => {
-  const { list, pagination, currentItem, modalVisible, managerModalVisible, productList, currentProductKeyList, modalType, selectedRowKeys, uploadTempItem } = category
+const Category = ({ location, dispatch, app, category, loading }) => {
+  const { productAll } = app
+  const { list, pagination, currentItem, modalVisible, managerModalVisible, currentProductKeyList, modalType, selectedRowKeys, uploadTempItem } = category
   const { pageSize } = pagination
 
   const modalProps = {
@@ -40,7 +41,7 @@ const Category = ({ location, dispatch, category, loading }) => {
   }
 
   const managerModalProps = {
-    productList,
+    productAll,
     currentProductKeyList,
     visible: managerModalVisible,
     maskClosable: false,
@@ -192,4 +193,4 @@ Category.propTypes = {
   loading: PropTypes.object,
 }
 
-export default connect(({ category, loading }) => ({ category, loading }))(Category)
+export default connect(({ app, category, loading }) => ({ app, category, loading }))(Category)

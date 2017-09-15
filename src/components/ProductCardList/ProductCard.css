@@ -1,0 +1,12 @@
+.product_image img {
+  display: block;
+}
+.product_card {
+  background-color: #292929;
+  padding: 10px 16px;
+}
+.product_card h3,.product_card div {
+  text-align: center;
+  font-size: 8px;
+  color: #fff;
+}

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Modal, Radio } from 'antd'
+import { ProductCardList } from '../../components/ProductCardList'
 import styles from './Modal.css'
 
 const FormItem = Form.Item
@@ -41,8 +42,17 @@ const DeliveryModal = ({
 
   const modalOpts = {
     ...deliveryModalProps,
+    width: 700,
     onOk: handleOk,
   }
+
+  const orderItems = item.snap_items.map( goods => {
+    return {
+      img_url: goods.main_img_url,
+      title: goods.name,
+      description: <div><p>已购 {goods.counts} 件</p><p>共 ￥ {goods.price * goods.counts} 元</p></div>
+    }
+  })
 
   return (
     <Modal {...modalOpts}>
@@ -51,20 +61,11 @@ const DeliveryModal = ({
           {item.order_no}
         </FormItem>
         <FormItem label="订单快照" hasFeedback {...formItemLayout}>
-          <div className={styles.snap_item_list}>
-          {item.snap_items.map(
-            (goods) => <div className={styles.goods_item}>
-              <img className={styles.goods_img} src={goods.main_img_url} alt={goods.name}/>
-              <span>{goods.name}</span>
-              <span>已购{goods.counts}件</span>
-              <span>{goods.price}元</span>
-            </div>
-          )}
-          </div>
+          <ProductCardList data={orderItems} />
         </FormItem>
         <FormItem label="快递公司" hasFeedback {...formItemLayout}>
           {getFieldDecorator('express_company', {
-            initialValue: item.express_company,
+            initialValue: "顺丰",
             rules: [
               {
                 required: true,
@@ -72,7 +73,7 @@ const DeliveryModal = ({
               },
             ],
           })(
-            <RadioGroup defaultValue="顺丰">
+            <RadioGroup>
               <RadioButton value="顺丰">顺丰</RadioButton>
               <RadioButton value="中通">中通</RadioButton>
               <RadioButton value="申通">申通</RadioButton>

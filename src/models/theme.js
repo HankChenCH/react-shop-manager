@@ -13,7 +13,6 @@ export default modelExtend(pageModel, {
 
   state: {
     currentItem: {},
-    productList: [],
     currentProductKeyList: [],
     modalVisible: false,
     managerModalVisible: false,
@@ -70,7 +69,7 @@ export default modelExtend(pageModel, {
       const { selectedRowKeys } = yield select(_ => _.theme)
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
-        yield put({ type: 'notice/messageSuccess', payload:"删除主题成功" })
+        yield put({ type: 'app/messageSuccess', payload:"删除主题成功" })
         yield put({ type: 'query' })
       } else {
         throw res
@@ -94,7 +93,7 @@ export default modelExtend(pageModel, {
       const res = yield call(create, newTheme)
       if (res.success) {
         yield put({ type: 'hideModal' })
-        yield put({ type: 'notice/messageSuccess', payload:"创建主题成功" })
+        yield put({ type: 'app/messageSuccess', payload:"创建主题成功" })
         yield put({ type: 'query' })
       } else {
         throw res
@@ -108,7 +107,7 @@ export default modelExtend(pageModel, {
       const res = yield call(update, newTheme)
       if (res.success) {
         yield put({ type: 'hideModal' })
-        yield put({ type: 'notice/messageSuccess', payload:"更新主题成功" })
+        yield put({ type: 'app/messageSuccess', payload:"更新主题成功" })
         yield put({ type: 'query' })
       } else {
         throw res
@@ -132,7 +131,7 @@ export default modelExtend(pageModel, {
       const res = payload.product_id === '' ? yield call(removeAllProducts, { id: id }) : yield call(updateProducts, {...payload, id: id})
       if (res.success) {
         yield put({ type: 'hideManagerModal' })
-        yield put({ type: 'notice/messageSuccess', payload:"更新商品列表成功" })
+        yield put({ type: 'app/messageSuccess', payload:"更新商品列表成功" })
       } else {
         throw res
       }

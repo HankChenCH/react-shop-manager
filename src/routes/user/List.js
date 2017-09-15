@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
+import moment from 'moment'
 import styles from './List.less'
 import classnames from 'classnames'
 import AnimTableBody from '../../components/DataTable/AnimTableBody'
@@ -33,12 +34,12 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
       title: '性别',
       dataIndex: 'gender',
       key: 'gender',
-      render: (text, record) => <div>{record.extend.gender ? '男' : '女'}</div>
+      render: (text, record) => <div>{ record.extend && record.extend.gender ? '男' : '女'}</div>
     }, {
       title: '所在地址',
       dataIndex: 'address',
       key: 'address',
-      render: (text, record) => <div>{record.extend.country} {record.extend.province} {record.extend.city}</div>
+      render: (text, record) => <div>{ record.extend ? record.extend.country + ' ' + record.extend.province + ' ' + record.extend.city : '-' }</div>
     }, {
       title: '注册时间',
       dataIndex: 'create_time',

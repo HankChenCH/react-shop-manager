@@ -6,9 +6,10 @@ import { Row, Col, Button, Popconfirm } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
-import ManagerModal from '../components/ManagerModal'
+import ManagerModal from '../components/ManagerModal/'
 
-const Theme = ({ location, dispatch, theme, loading }) => {
+const Theme = ({ location, dispatch, app, theme, loading }) => {
+  const { productAll } = app
   const { list, pagination, currentItem, modalVisible, managerModalVisible, productList, currentProductKeyList, modalType, selectedRowKeys, uploadTempItem } = theme
   const { pageSize } = pagination
 
@@ -192,4 +193,4 @@ Theme.propTypes = {
   loading: PropTypes.object,
 }
 
-export default connect(({ theme, loading }) => ({ theme, loading }))(Theme)
+export default connect(({ app, theme, loading }) => ({ app, theme, loading }))(Theme)

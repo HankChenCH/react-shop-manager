@@ -74,7 +74,7 @@ export default modelExtend(pageModel, {
       const { selectedRowKeys, pagination, queryStatus } = yield select(_ => _.order)
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
-        yield put({ type: 'notice/messageSuccess', payload:"删除订单成功" })
+        yield put({ type: 'app/messageSuccess', payload:"删除订单成功" })
         yield put({ type: 'query', payload: { status: queryStatus, page: pagination.current, pageSize: pagination.pageSize } })
       } else {
         throw res
@@ -86,7 +86,7 @@ export default modelExtend(pageModel, {
       const res = yield call(batchRemove, { ids: payload.ids.join(',') })
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
-        yield put({ type: 'notice/messageSuccess', payload:"删除订单成功" })
+        yield put({ type: 'app/messageSuccess', payload:"删除订单成功" })
         yield put({ type: 'query', payload: { status: queryStatus, page: pagination.current, pageSize: pagination.pageSize } })
       } else {
         throw res
@@ -100,7 +100,7 @@ export default modelExtend(pageModel, {
       if (res.success) {
         console.log(queryStatus)
         yield put({ type: 'hideModal' })
-        yield put({ type: 'notice/messageSuccess', payload:"订单修改价格成功" })
+        yield put({ type: 'app/messageSuccess', payload:"订单修改价格成功" })
         yield put({ type: 'query', payload: { status: queryStatus, page: pagination.current, pageSize: pagination.pageSize } })
       } else {
         throw res
@@ -114,7 +114,7 @@ export default modelExtend(pageModel, {
       if (res.success) {
         console.log(queryStatus)
         yield put({ type: 'hideModal' })
-        yield put({ type: 'notice/messageSuccess', payload:"订单发货成功" })
+        yield put({ type: 'app/messageSuccess', payload:"订单发货成功" })
         yield put({ type: 'query', payload: { status: queryStatus, page: pagination.current, pageSize: pagination.pageSize } })
       } else {
         throw res

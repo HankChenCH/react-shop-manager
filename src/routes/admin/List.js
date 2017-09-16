@@ -39,11 +39,11 @@ const List = ({ onDeleteItem, onEditItem, onAbleItem, location, ...tableProps })
       key: 'true_name',
     }, {
       title: '联系电话',
-      dataIndex: 'phone',
+      dataIndex: 'profile.phone',
       key: 'phone',
     }, {
       title: '联系邮箱',
-      dataIndex: 'email',
+      dataIndex: 'profile.email',
       key: 'email',
     }, {
       title: '启用',

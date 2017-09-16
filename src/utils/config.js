@@ -51,7 +51,8 @@ module.exports = {
     admin: {
       list: '/admin',
       info: '/admin/:id',
-      status: '/admin/:id/status'
+      status: '/admin/:id/status',
+      batch: '/admin/batch',
     },
     order:{
       list: '/order/by_admin',

@@ -20,6 +20,7 @@ const Admin = ({ location, dispatch, admin, loading }) => {
     title: `${modalType === 'create' ? '创建管理员' : '更新管理员'}`,
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
+      console.log(data)
       dispatch({
         type: `admin/${modalType}`,
         payload: data,
@@ -130,11 +131,23 @@ const Admin = ({ location, dispatch, admin, loading }) => {
   }
 
   const handlePullOnItems = () => {
-
+    dispatch({
+      type: 'admin/multiUpdateStatus',
+      payload: {
+        ids: selectedRowKeys,
+        state: '1'
+      },
+    })
   }
 
   const handlePullOffItems = () => {
-    
+    dispatch({
+      type: 'admin/multiUpdateStatus',
+      payload: {
+        ids: selectedRowKeys,
+        state: '0'
+      },
+    })
   }
 
   return (

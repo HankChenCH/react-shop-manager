@@ -102,24 +102,23 @@ const modal = ({
           })(<Input />)}
         </FormItem>
         <FormItem label="性别" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('sex', {
-            initialValue: item.sex,
+          {getFieldDecorator('gender', {
+            initialValue: item.profile.gender,
             rules: [
               {
                 required: true,
-                type: 'boolean',
               },
             ],
           })(
             <Radio.Group>
-              <Radio value>男</Radio>
-              <Radio value={false}>女</Radio>
+              <Radio value="1">男</Radio>
+              <Radio value="0">女</Radio>
             </Radio.Group>
           )}
         </FormItem>
         <FormItem label="年龄" hasFeedback {...formItemLayout}>
           {getFieldDecorator('age', {
-            initialValue: item.age,
+            initialValue: item.profile.age,
             rules: [
               {
                 required: true,
@@ -130,7 +129,7 @@ const modal = ({
         </FormItem>
         <FormItem label="联系电话" hasFeedback {...formItemLayout}>
           {getFieldDecorator('phone', {
-            initialValue: item.phone,
+            initialValue: item.profile.phone,
             rules: [
               {
                 pattern: /^1[34578]\d{9}$/,
@@ -141,7 +140,7 @@ const modal = ({
         </FormItem>
         <FormItem label="联系邮箱" hasFeedback {...formItemLayout}>
           {getFieldDecorator('email', {
-            initialValue: item.email,
+            initialValue: item.profile.email,
             rules: [
               {
                 pattern: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,

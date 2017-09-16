@@ -83,9 +83,9 @@ export default modelExtend(model, {
       if (!user.hasOwnProperty("token")) {
         yield put({ type: 'logoutSuccess' })        
       }
-
+      console.log(user.exprie_in,nowTime)
       //过期时间比现在相差小于10分钟就重新申请令牌
-      if (user.exprie_in - nowTime < 6000000 && user.exprie_in - nowTime > 0) {
+      if (user.exprie_in - nowTime < 600 && user.exprie_in - nowTime > 0) {
         yield put({ type: 'reToken' })
       }//过期时间比现在相差小于0，代表用户10分钟内没有操作，直接登录过期跳转出去登录页面重新登录
       else if (user.exprie_in - nowTime < 0) {
@@ -105,6 +105,7 @@ export default modelExtend(model, {
       //以旧令牌换取新令牌
       const res = yield call(reToken, { token: user.token });
       if (res.success && res.data) {
+        localStorage.setItem(`${prefix}admin`, JSON.stringify(res.data))
         yield put({ type: 'registerUser', payload: res.data })
       }
     },

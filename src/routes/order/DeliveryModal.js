@@ -64,7 +64,7 @@ const DeliveryModal = ({
           <ProductCardList data={orderItems} />
         </FormItem>
         <FormItem label="快递公司" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('express_company', {
+          {getFieldDecorator('express_name', {
             initialValue: "顺丰",
             rules: [
               {

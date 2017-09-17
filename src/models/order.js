@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import * as orderService from '../services/order'
 import { pageModel } from './common'
 
-const { query, changePrice, deliveryItem, remove, batchRemove } = orderService
+const { query, changePrice, deliveryGoods, remove, batchRemove } = orderService
 
 export default modelExtend(pageModel, {
 
@@ -110,7 +110,8 @@ export default modelExtend(pageModel, {
     *deliveryItem ({ payload }, { put, call, select }) {
       const user = yield select(({ app }) => app.user)
       const { currentItem, pagination, queryStatus } = yield select(_ => _.order)
-      const res = yield call(deliveryItem, { id: currentItem.id, token: user.token, ...payload })
+      console.log(payload)
+      const res = yield call(deliveryGoods, { id: currentItem.id, token: user.token, ...payload })
       if (res.success) {
         console.log(queryStatus)
         yield put({ type: 'hideModal' })

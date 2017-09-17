@@ -26,7 +26,7 @@ export async function changePrice (params) {
 	})
 }
 
-export async function deliveryItem (params) {
+export async function deliveryGoods (params) {
 	return request({
 		url: delivery,
 		method: 'put',

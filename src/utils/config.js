@@ -29,6 +29,7 @@ module.exports = {
       properties: '/product/:id/properties',
       pull: 'product/:id/pullOnOff',
       recent: '/product/recent',
+      countAllSales: '/product/sales',
     },
     category: {
       list: '/category/all',

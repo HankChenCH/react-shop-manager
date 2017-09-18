@@ -83,7 +83,6 @@ export default modelExtend(model, {
       if (!user.hasOwnProperty("token")) {
         yield put({ type: 'logoutSuccess' })        
       }
-      console.log(user.exprie_in,nowTime)
       //过期时间比现在相差小于10分钟就重新申请令牌
       if (user.exprie_in - nowTime < 600 && user.exprie_in - nowTime > 0) {
         yield put({ type: 'reToken' })

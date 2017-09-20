@@ -15,13 +15,6 @@
       ]
     }
   },
-  "proxy": {
-    "/api": {
-      "target": "http://api.onegledog.cn/",
-      "changeOrigin": true,
-      "pathRewrite": { "^/api" : "" }
-    }
-  },
   "theme": {
     "primary-color": "#292929"
   }

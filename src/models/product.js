@@ -33,8 +33,9 @@ export default modelExtend(pageModel, {
 
   effects: {
 
-    *query ({ payload = {} }, { call, put }) {
-      const res = yield call(query, payload)
+    *query ({ payload = {} }, { call, put, select }) {
+      const { user } = yield select(({ app }) => app)
+      const res = yield call(query, { ...payload, token: user.token })
       if (res.success) {
         yield put({
           type: 'querySuccess',
@@ -44,7 +45,7 @@ export default modelExtend(pageModel, {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
               total: res.data.total,
-            },
+            }
           },
         })
       }
@@ -56,7 +57,8 @@ export default modelExtend(pageModel, {
     },
 
     *'delete' ({ payload }, { call, put, select }) {
-      const res = yield call(remove, { id: payload })
+      const { token } = yield select(({ app }) => app.user)
+      const res = yield call(remove, { id: payload, token: token })
       const { selectedRowKeys, pagination } = yield select(_ => _.product)
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
@@ -68,8 +70,9 @@ export default modelExtend(pageModel, {
     },
 
     *'multiDelete' ({ payload }, { call, put, select }) {
+      const { token } = yield select(({ app }) => app.user)
       const { pagination } = yield select(_ => _.product)
-      const res = yield call(batchRemove, { ids: payload.ids.join(',') })
+      const res = yield call(batchRemove, { ids: payload.ids.join(','), token: token })
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
         yield put({ type: 'app/messageSuccess', payload:"删除商品成功" })
@@ -80,10 +83,11 @@ export default modelExtend(pageModel, {
     },
 
     *create ({ payload }, { call, put, select }) {
+      const { token } = yield select(({ app }) => app.user)
       const { currentStep } = yield select(({ product }) => product)
       const newPayload = Object.assign(payload, { ...payload.img })
       delete newPayload.img
-      const res = yield call(create, { ...newPayload, is_on: '0' })
+      const res = yield call(create, { ...newPayload, is_on: '0', token: token })
       if (res.success) {
         yield put({ type: 'updateState', payload: { 
             currentStep: currentStep + 1, 
@@ -98,10 +102,11 @@ export default modelExtend(pageModel, {
     },
 
     *update ({ payload }, { select, call, put }) {
+      const { token } = yield select(({ app }) => app.user)
       const { currentStep, currentItem } = yield select(({ product }) => product)
       const newProduct = Object.assign(payload, { ...payload.img, id: currentItem.id })
       delete newProduct.img
-      const res = yield call(update, newProduct)
+      const res = yield call(update, { ...newProduct, token: token })
       if (res.success) {
         yield put({ type: 'updateState', payload: { 
             currentStep: currentStep + 1,
@@ -115,8 +120,9 @@ export default modelExtend(pageModel, {
     },
 
     *updateDetail ({ payload }, { put, call, select }) {
+      const { token } = yield select(({ app }) => app.user)
       const { currentStep, currentItem } = yield select(({ product }) => product)
-      const newProduct = { ...payload, id: currentItem.id }
+      const newProduct = { ...payload, id: currentItem.id, token: token }
       const res = yield call(updateDetail, newProduct)
       if (res.success) {
         currentItem.details = res.data
@@ -132,8 +138,9 @@ export default modelExtend(pageModel, {
     },
 
     *updateParams ({ payload }, { put, call, select }) {
+      const { token } = yield select(({ app }) => app.user)
       const { currentItem } = yield select(({ product }) => product)
-      const newProduct = { properties: payload, id: currentItem.id }
+      const newProduct = { properties: payload, id: currentItem.id, token: token }
       const res = yield call(updateParams, newProduct)
       if (res.success) {
         currentItem.properties = res.data
@@ -149,7 +156,8 @@ export default modelExtend(pageModel, {
     },
 
     *pullItem ({ payload }, { put, call, select }) {
-      const res = yield call(pullOnOff, { id: payload.id, is_on: payload.is_on ? '1' : '0' })
+      const { token } = yield select( ({ app }) => app.user)
+      const res = yield call(pullOnOff, { id: payload.id, is_on: payload.is_on ? '1' : '0', token: token })
       if (res.success) {
         let list = yield select(({ product }) => product.list)
         let newList = list.map((item) => item.id === payload.id ? {...item, is_on: payload.is_on ? '1' : '0'} : item)
@@ -163,7 +171,8 @@ export default modelExtend(pageModel, {
 
     *multiOnOff ({ payload }, { put, call, select }) {
       const { list, selectedRowKeys } = yield select(({ product }) => product)
-      const res = yield call(batchOnOff, { ids: payload.ids.join(','), is_on: payload.is_on })
+      const { token } = yield select(({ app }) => app.user)
+      const res = yield call(batchOnOff, { ids: payload.ids.join(','), is_on: payload.is_on, token: token })
       if (res.success) {
         let newList = list.map(item => { 
           if(selectedRowKeys.indexOf(item.id) !== -1){
@@ -181,8 +190,9 @@ export default modelExtend(pageModel, {
     },
 
     *updateCurrentItem ({ payload }, { put, call, select }){
+      const { token } = yield select(({ app }) => app.user)
       const currentItem = yield select(({ product }) => product.currentItem)
-      const res = yield call(updateStockAndPrice, currentItem);
+      const res = yield call(updateStockAndPrice, { ...currentItem, token: token });
       if (res.success) {
         yield put({ type: 'updateState', payload: {currentItem: {}} })
         yield put({ type: 'app/messageSuccess', payload:"更新商品成功" })

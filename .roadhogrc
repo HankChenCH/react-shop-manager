@@ -17,7 +17,7 @@
   },
   "proxy": {
     "/api": {
-      "target": "http://api.c.cn/",
+      "target": "http://api.onegledog.cn/",
       "changeOrigin": true,
       "pathRewrite": { "^/api" : "" }
     }

@@ -15,8 +15,8 @@ export default class TopicUpload extends React.Component
 	}
 
 	handleUploadMainImageChange = (info) => {
+    const { response } = info.file
     if (info.file.status === 'done') {
-      const { response } = info.file
       this.setState({
       	img_id: response.id,
       	img_url: response.url,
@@ -27,9 +27,11 @@ export default class TopicUpload extends React.Component
         img_url: response.url,
       })
     } else if(info.file.status === 'error') {
-      throw {
-        success: false,
-        message: response.msg
+      const { onError } = this.props
+      if (typeof onError === 'function'){
+        onError({
+          msg: response.msg
+        })
       }
     }
   }

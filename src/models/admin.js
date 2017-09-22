@@ -49,7 +49,6 @@ export default modelExtend(pageModel, {
     },
 
     *'delete' ({ payload }, { call, put, select }) {
-      console.log(payload)
       const res = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.admin)
       if (res.success) {

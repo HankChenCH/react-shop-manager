@@ -40,15 +40,8 @@ class ParamsInfoForm extends React.Component
 	}
 
 	render() {
-		const { item, formItemLayout, form } = this.props
+		const { item, formItemLayout, formItemLayoutWithOutLabel, form } = this.props
 		const { getFieldDecorator, getFieldValue } = form
-
-	    const formItemLayoutWithOutLabel = {
-	      wrapperCol: {
-	        xs: { span: 24, offset: 0 },
-	        sm: { span: 20, offset: 4 },
-	      },
-	    }
 
 	    getFieldDecorator('params', { initialValue: item.properties });
 	    const params = getFieldValue('params');
@@ -86,8 +79,8 @@ class ParamsInfoForm extends React.Component
 				<div className={styles.steps_content}>
 					<Form>
 						{formItems}
-				        <FormItem wrapperCol={{xs: { span: 24, offset: 0 },sm: { span: 24, offset: 0 }}}>
-				          <Button type="dashed" onClick={this.add} style={{ width: '84%' }}>
+				        <FormItem {...formItemLayoutWithOutLabel}>
+				          <Button type="dashed" onClick={this.add}>
 				            <Icon type="plus" /> 添加新的规格参数
 				          </Button>
 				        </FormItem>

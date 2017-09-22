@@ -53,35 +53,32 @@ export default modelExtend(pageModel, {
     },
 
     *'delete' ({ payload }, { call, put, select }) {
-      const { token } = yield select(({ app }) => app.user)
-      const res = yield call(remove, { id: payload, token: token })
+      const res = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.category)
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
-        yield put({ type: 'notice/messageSuccess', payload:"删除分类成功" })
+        yield put({ type: 'app/messageSuccess', payload:"删除分类成功" })
         yield put({ type: 'query' })
       } else {
         throw res
       }
     },
-
-    *'multiDelete' ({ payload }, { call, put, select }) {
-      const { token } = yield select(({ app }) => app.user)
-      const res = yield call(batchRemove, { ids: payload.ids.join(','), token: token })
+    
+    *'multiDelete' ({ payload }, { call, put }) {
+      const res = yield call(batchRemove, { ids: payload.ids.join(',') })
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
-        message.success('批量删除分类成功')
+        yield put({ type: 'app/messageSuccess', payload:"批量删除分类成功" })
         yield put({ type: 'query' })
       } else {
         throw res
       }
     },
 
-    *create ({ payload }, { call, put, select }) {
-      const { token } = yield select(({ app }) => app.user)
+    *create ({ payload }, { call, put }) {
       const newCategory = { ...payload, id, topic_img_id: payload.topic_img.img_id }
-      delete newCategory.topic
-      const res = yield call(create, { ...newCategory, token: token })
+      delete newCategory.topic_img
+      const res = yield call(create, newCategory)
       if (res.success) {
         yield put({ type: 'hideModal' })
         yield put({ type: 'app/messageSuccess', payload:"创建分类成功" })
@@ -92,11 +89,10 @@ export default modelExtend(pageModel, {
     },
 
     *update ({ payload }, { select, call, put }) {
-      const { token } = yield select(({ app }) => app.user)
       const id = yield select(({ category }) => category.currentItem.id)
       const newCategory = { ...payload, id, topic_img_id: payload.topic_img.img_id }
-      delete newCategory.topic
-      const res = yield call(update, { ...newCategory, token: token })
+      delete newCategory.topic_img
+      const res = yield call(update, newCategory)
       if (res.success) {
         yield put({ type: 'hideModal' })
         yield put({ type: 'app/messageSuccess', payload:"更新分类成功" })
@@ -119,9 +115,8 @@ export default modelExtend(pageModel, {
     },
 
     *setProductList ({ payload }, { put, call, select}) {
-      const { token } = yield select(({ app }) => app.user)
       const id = yield select(({ category }) => category.currentItem.id)
-      const res = payload.product_id === '' ? yield call(removeAllProducts, { id: id, token: token }) : yield call(updateProducts, {...payload, id: id, token: token })
+      const res = payload.product_id === '' ? yield call(removeAllProducts, { id: id }) : yield call(updateProducts, {...payload, id: id })
       if (res.success) {
         yield put({ type: 'hideManagerModal' })
         yield put({ type: 'app/messageSuccess', payload:"更新商品列表成功" })

@@ -27,6 +27,12 @@ const Theme = ({ location, dispatch, app, theme, loading }) => {
         payload: data,
       })
     },
+    onError (data) {
+      dispatch ({
+        type: 'app/messageError',
+        payload: data,
+      })
+    },
     onUploadSuccess(data) {
       dispatch({
         type: 'theme/uploadImageSuccess',

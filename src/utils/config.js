@@ -5,7 +5,7 @@ module.exports = {
   logo: '/st.jpg',
   iconFontCSS: '/iconfont.css',
   iconFontJS: '/iconfont.js',
-  baseURL: 'http://api.c.cn/v1',
+  baseURL: 'http://api.onegledog.cn/v1',
   YQL: ['http://www.zuimeitianqi.com'],
   CORS: ['https://www.onegledog.cn'],
   openPages: ['/login'],

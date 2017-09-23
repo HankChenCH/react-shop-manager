@@ -71,8 +71,7 @@ export default modelExtend(pageModel, {
     },
 
     *'delete' ({ payload }, { call, put, select }) {
-      const { token } = yield select(({ app }) => app.user)
-      const res = yield call(remove, { id: payload, token: token })
+      const res = yield call(remove, { id: payload })
       const { selectedRowKeys, pagination, queryStatus } = yield select(_ => _.order)
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
@@ -84,9 +83,8 @@ export default modelExtend(pageModel, {
     },
 
     *'multiDelete' ({ payload }, { call, put, select }) {
-      const { token } = yield select(({ app }) => app.user)
       const { pagination, queryStatus } = yield select(_ => _.order)
-      const res = yield call(batchRemove, { ids: payload.ids.join(','), token: token })
+      const res = yield call(batchRemove, { ids: payload.ids.join(',') })
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
         yield put({ type: 'app/messageSuccess', payload:"删除订单成功" })

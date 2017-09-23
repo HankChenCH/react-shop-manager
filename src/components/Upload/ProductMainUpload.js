@@ -16,8 +16,8 @@ export default class ProductMainUpload extends React.Component
 	}
 
 	handleUploadMainImageChange = (info) => {
+    const { response } = info.file
     if (info.file.status === 'done') {
-      const { response } = info.file
       this.setState({
       	img_id: response.id,
       	main_img_url: response.url,

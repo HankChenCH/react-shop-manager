@@ -27,6 +27,12 @@ const Category = ({ location, dispatch, app, category, loading }) => {
         payload: data,
       })
     },
+    onError (data) {
+      dispatch({
+        type: `app/messageError`,
+        payload: data
+      })
+    },
     onUploadSuccess(data) {
       dispatch({
         type: 'category/uploadImageSuccess',

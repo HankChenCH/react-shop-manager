@@ -17,7 +17,7 @@ class BaseInfoForm extends React.Component
 	}
 
 	checkMainImage = (rule, value, callback) => {
-	    if (value.img_id > 0) {
+	    if (Object.keys(value).length > 0) {
 	      callback();
 	      return;
 	    }
@@ -78,7 +78,7 @@ class BaseInfoForm extends React.Component
 		              </FormItem>
 		              <FormItem label="上传商品主图" hasFeedback {...formItemLayout}>
 		                {getFieldDecorator('img', {
-		                  initialValue: { img_id, main_img_url, from },
+		                  initialValue: item.img_id ? { img_id, main_img_url, from } : '',
 		                  rules: [
 		                  	{ required: true, message: '请上传商品图片' },
 		                  	{ validator: this.checkMainImage }

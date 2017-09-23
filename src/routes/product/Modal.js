@@ -22,7 +22,14 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 20 },
+    sm: { span: 18 },
+  },
+}
+
+const formItemLayoutWithOutLabel = {
+  wrapperCol: {
+    xs: { span: 24, offset: 0 },
+    sm: { span: 18, offset: 4 },
   },
 }
 
@@ -127,6 +134,7 @@ export default class InfoModal extends React.Component
     const paramsFormProps = {
       item,
       formItemLayout,
+      formItemLayoutWithOutLabel,
       ref: 'infoForm',
       onOk,
       onChangeStep

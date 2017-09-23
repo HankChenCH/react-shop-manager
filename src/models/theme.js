@@ -35,9 +35,8 @@ export default modelExtend(pageModel, {
 
   effects: {
 
-    *query ({ payload = {} }, { call, put, select }) {
-      const { token } = yield select(({ app }) => app.user)
-      const res = yield call(query, { ...payload, token: token })
+    *query ({ payload = {} }, { call, put }) {
+      const res = yield call(query, payload)
       if (res) {
         yield put({
           type: 'querySuccess',
@@ -54,8 +53,7 @@ export default modelExtend(pageModel, {
     },
 
     *'delete' ({ payload }, { call, put, select }) {
-      const { token } = yield select(({ app }) => app.user)
-      const res = yield call(remove, { id: payload, token: token })
+      const res = yield call(remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.theme)
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
@@ -66,9 +64,8 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *'multiDelete' ({ payload }, { call, put, select }) {
-      const { token } = yield select(({ app }) => app.user)
-      const res = yield call(batchRemove, { ids: payload.ids.join(','), token: token })
+    *'multiDelete' ({ payload }, { call, put }) {
+      const res = yield call(batchRemove, { ids: payload.ids.join(',') })
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
         message.success('批量删除主题成功')
@@ -78,11 +75,10 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *create ({ payload }, { call, put, select }) {
-      const { token } = yield select(({ app }) => app.user)
+    *create ({ payload }, { call, put }) {
       const newTheme = { ...payload, head_img_id: payload.head_img.img_id }
       delete newTheme.head_img
-      const res = yield call(create, { ...newTheme, token: token })
+      const res = yield call(create, newTheme)
       if (res.success) {
         yield put({ type: 'hideModal' })
         yield put({ type: 'app/messageSuccess', payload:"创建主题成功" })
@@ -93,11 +89,10 @@ export default modelExtend(pageModel, {
     },
 
     *update ({ payload }, { select, call, put }) {
-      const { token } = yield select(({ app }) => app.user)
       const id = yield select(({ theme }) => theme.currentItem.id)
       const newTheme = { ...payload, id, head_img_id: payload.head_img.img_id }
       delete newTheme.head_img
-      const res = yield call(update, { ...newTheme, token: token })
+      const res = yield call(update, newTheme)
       if (res.success) {
         yield put({ type: 'hideModal' })
         yield put({ type: 'app/messageSuccess', payload:"更新主题成功" })
@@ -120,9 +115,8 @@ export default modelExtend(pageModel, {
     },
 
     *setProductList ({ payload }, { put, call, select}) {
-      const { token } = yield select(({ app }) => app.user)
       const id = yield select(({ theme }) => theme.currentItem.id)
-      const res = payload.product_id === '' ? yield call(removeAllProducts, { id: id, token: token }) : yield call(updateProducts, {...payload, id: id, token: token })
+      const res = payload.product_id === '' ? yield call(removeAllProducts, { id: id }) : yield call(updateProducts, {...payload, id: id })
       if (res.success) {
         yield put({ type: 'hideManagerModal' })
         yield put({ type: 'app/messageSuccess', payload:"更新商品列表成功" })

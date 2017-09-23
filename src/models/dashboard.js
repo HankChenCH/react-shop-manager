@@ -217,7 +217,7 @@ export default {
       const { token } = yield select(({ app }) => app.user)
       const res = yield call(allSales, { countMonth: 6, token: token })
       if (res.success) {
-        const sales = res.data.map((item) => { return { sales: parseFloat(item.month_sales), counts: parseInt(item.month_counts), date: item.count_date } })
+        const sales = res.data.map((item) => { return { "销售额": parseFloat(item.month_sales), "销售量": parseInt(item.month_counts), date: item.count_date } })
         yield put({ type: 'updateState', payload: { sales: sales } })
       } else {
         throw res

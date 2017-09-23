@@ -61,10 +61,18 @@ export default modelExtend(model, {
       message.success(payload)
     },
 
+    *messageError ({ payload }) {
+      if (typeof payload === 'string'){
+        message.error(payload)
+      } else if (payload instanceof Object) {
+        payload.msg && message.error(payload.msg)
+      }
+    },
+
     *queryProduct ({ payload }, { call, put, select }) {
-        const { user, productAll } = yield select(({ app }) => app)
+        const { productAll } = yield select(({ app }) => app)
         if (productAll.length === 0) {
-          const res = yield call(queryProductAll, { ...payload, token: user.token })
+          const res = yield call(queryProductAll, payload)
           if (res.success) {
             let productAll = res.data.map((item) => {return { key: item.id.toString(), title: item.name, main_img_url: item.main_img_url }})
             yield put({ type: 'updateState', payload: { productAll: productAll }})

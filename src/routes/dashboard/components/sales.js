@@ -18,8 +18,8 @@ function Sales ({ data }) {
           <CartesianGrid vertical={false} stroke={color.borderBase} strokeDasharray="3 3" />
           <Tooltip
           />
-          <Line type="monotone" dataKey="counts" stroke={color.green} strokeWidth={2} dot={{ fill: color.green }} activeDot={{ r: 5, strokeWidth: 0 }} />
-          <Line type="monotone" dataKey="sales" stroke={color.red} strokeWidth={2} dot={{ fill: color.red }} activeDot={{ r: 5, strokeWidth: 0 }} />
+          <Line type="monotone" dataKey="销售量" stroke={color.green} strokeWidth={2} dot={{ fill: color.green }} activeDot={{ r: 5, strokeWidth: 0 }} />
+          <Line type="monotone" dataKey="销售额" stroke={color.red} strokeWidth={2} dot={{ fill: color.red }} activeDot={{ r: 5, strokeWidth: 0 }} />
         </LineChart>
       </ResponsiveContainer>
     </div>

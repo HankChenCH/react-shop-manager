@@ -103,7 +103,7 @@ const modal = ({
         </FormItem>
         <FormItem label="性别" hasFeedback {...formItemLayout}>
           {getFieldDecorator('gender', {
-            initialValue: item.profile.gender,
+            initialValue: item.profile ? item.profile.gender : '',
             rules: [
               {
                 required: true,
@@ -118,7 +118,7 @@ const modal = ({
         </FormItem>
         <FormItem label="年龄" hasFeedback {...formItemLayout}>
           {getFieldDecorator('age', {
-            initialValue: item.profile.age,
+            initialValue: item.profile ? item.profile.age : '',
             rules: [
               {
                 required: true,
@@ -129,7 +129,7 @@ const modal = ({
         </FormItem>
         <FormItem label="联系电话" hasFeedback {...formItemLayout}>
           {getFieldDecorator('phone', {
-            initialValue: item.profile.phone,
+            initialValue: item.profile ? item.profile.phone : '',
             rules: [
               {
                 pattern: /^1[34578]\d{9}$/,
@@ -140,7 +140,7 @@ const modal = ({
         </FormItem>
         <FormItem label="联系邮箱" hasFeedback {...formItemLayout}>
           {getFieldDecorator('email', {
-            initialValue: item.profile.email,
+            initialValue: item.profile ? item.profile.email : '',
             rules: [
               {
                 pattern: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,

@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import * as productService from '../services/product'
 import { pageModel } from './common'
-import { config } from '../utils'
+import { config, deleteProps } from '../utils'
 
 const { query, create, update, queryDetail, updateDetail, updateParams, updateStockAndPrice, pullOnOff, batchOnOff, batchRemove, remove } = productService
 const { prefix } = config
@@ -81,9 +81,12 @@ export default modelExtend(pageModel, {
 
     *create ({ payload }, { call, put, select }) {
       const { currentStep } = yield select(({ product }) => product)
-      const newPayload = Object.assign(payload, { ...payload.img })
-      delete newPayload.img
-      const res = yield call(create, { ...newPayload, is_on: '0' })
+      const newProduct = Object.assign(payload, { ...payload.img })
+      if (!deleteProps(newProduct, ['img'])) {
+        yield put({ type: 'app/messageError', payload: "创建商品失败" })
+      }
+
+      const res = yield call(create, { ...newProduct, is_on: '0' })
       if (res.success) {
         yield put({ type: 'updateState', payload: { 
             currentStep: currentStep + 1, 
@@ -91,7 +94,7 @@ export default modelExtend(pageModel, {
             currentItem: { ...res.data, details: {detail: ''}, properties: []}
           } 
         })
-        yield put({ type: 'app/messageSuccess', payload:"保存商品成功" })
+        yield put({ type: 'app/messageSuccess', payload:"创建商品成功" })
       } else {
         throw res
       }
@@ -100,7 +103,10 @@ export default modelExtend(pageModel, {
     *update ({ payload }, { select, call, put }) {
       const { currentStep, currentItem } = yield select(({ product }) => product)
       const newProduct = Object.assign(payload, { ...payload.img, id: currentItem.id })
-      delete newProduct.img
+      if (!deleteProps(newProduct, ['img'])) {
+        yield put({ type: 'app/messageError', payload: "更新商品基础信息失败" })
+      }
+
       const res = yield call(update, newProduct)
       if (res.success) {
         yield put({ type: 'updateState', payload: { 
@@ -108,7 +114,7 @@ export default modelExtend(pageModel, {
             currentItem: { ...currentItem, ...res.data}
           } 
         })
-        yield put({ type: 'app/messageSuccess', payload:"保存商品基础信息成功" })
+        yield put({ type: 'app/messageSuccess', payload:"更新商品基础信息成功" })
       } else {
         throw res
       }
@@ -224,25 +230,6 @@ export default modelExtend(pageModel, {
 
     hideModal (state) {
       return { ...state, currentItem:{}, modalVisible: false }
-    },
-
-    uploadImageSuccess (state, { payload }) {
-      const { uploadTempItem } = state
-      uploadTempItem.img_id = payload.id
-      uploadTempItem.main_img_url = payload.url
-      uploadTempItem.from = payload.from
-      return {...state,uploadTempItem: uploadTempItem}
-    },
-
-    chageCurrentItem (state, { payload }) {
-      const { currentItem } = state
-      return { ...state, currentItem: Object.assign(currentItem, payload) }
-    },
-
-    changeStep (state, { payload }) {
-      const { currentStep } = state
-      return { ...state, currentStep: currentStep + payload.step }
-    },
-    
+    }, 
   },
 })

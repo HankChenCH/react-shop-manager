@@ -99,6 +99,26 @@ const arrayToTree = (array, id = 'id', pid = 'pid', children = 'children') => {
   return result
 }
 
+/**
+ * 数组格式转树状结构
+ * @param   {obj}     obj
+ * @param   {array}   props
+ * @return  {bool}
+ */
+const deleteProps = (obj, props = []) => {
+  if (!(obj instanceof Object) || !(props instanceof Array)){
+    return false
+  }
+
+  for(let i = 0; i < props.length; i++){
+    if(!Reflect.deleteProperty(obj, props[i])){
+      return false
+    }
+  }
+
+  return true
+}
+
 module.exports = {
   config,
   menu,
@@ -108,4 +128,5 @@ module.exports = {
   queryURL,
   queryArray,
   arrayToTree,
+  deleteProps,
 }

@@ -1,5 +1,6 @@
 {
   "entry": "src/index.js",
+  "hash": true,
   "env": {
     "development": {
       "extraBabelPlugins": [
@@ -13,13 +14,6 @@
         "transform-runtime",
         ["import", { "libraryName": "antd", "style": true }]
       ]
-    }
-  },
-  "proxy": {
-    "/api": {
-      "target": "http://api.onegledog.cn/",
-      "changeOrigin": true,
-      "pathRewrite": { "^/api" : "" }
     }
   },
   "theme": {

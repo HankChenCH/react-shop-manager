@@ -1,44 +1,41 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
+import moment from 'moment'
 import styles from './recentSales.less'
 import { color } from '../../../utils'
 
 const status = {
   1: {
-    color: color.green,
-    text: 'SALE',
+    color: color.blue,
+    text: '未付款',
   },
   2: {
     color: color.yellow,
-    text: 'REJECT',
+    text: '待发货',
   },
   3: {
-    color: color.red,
-    text: 'TAX',
-  },
-  4: {
-    color: color.blue,
-    text: 'EXTENDED',
-  },
+    color: color.green,
+    text: '已发货',
+  }
 }
 
 function RecentSales ({ data }) {
   const columns = [
     {
-      title: 'NAME',
-      dataIndex: 'name',
+      title: '订单号',
+      dataIndex: 'order_no',
     }, {
-      title: 'STATUS',
+      title: '状态',
       dataIndex: 'status',
       render: text => <Tag color={status[text].color}>{status[text].text}</Tag>,
     }, {
-      title: 'DATE',
-      dataIndex: 'date',
-      render: text => new Date(text).format('yyyy-MM-dd'),
+      title: '下单时间',
+      dataIndex: 'create_time',
+      render: text => moment(text, "YYYY-MM-DD hh:mm:ss").startOf('s').fromNow(),
     }, {
-      title: 'PRICE',
-      dataIndex: 'price',
+      title: '订单价格',
+      dataIndex: 'total_price',
       render: (text, it) => <span style={{ color: status[it.status].color }}>${text}</span>,
     },
   ]

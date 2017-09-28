@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import * as categoryService from '../services/category'
 import * as productService from '../services/product'
 import { pageModel } from './common'
-import { config } from '../utils'
+import { config, deleteProps } from '../utils'
 
 const { query, create, remove, update, batchRemove, queryProducts, updateProducts, removeAllProducts } = categoryService
 const { queryAll } = productService
@@ -76,8 +76,12 @@ export default modelExtend(pageModel, {
     },
 
     *create ({ payload }, { call, put }) {
+      
       const newCategory = { ...payload, id, topic_img_id: payload.topic_img.img_id }
-      delete newCategory.topic_img
+      if (!deleteProps(newCategory, ['topic_img'])) {
+        yield put({ type: 'app/messageError', payload:"更新失败" })
+      }
+
       const res = yield call(create, newCategory)
       if (res.success) {
         yield put({ type: 'hideModal' })
@@ -89,9 +93,13 @@ export default modelExtend(pageModel, {
     },
 
     *update ({ payload }, { select, call, put }) {
+
       const id = yield select(({ category }) => category.currentItem.id)
       const newCategory = { ...payload, id, topic_img_id: payload.topic_img.img_id }
-      delete newCategory.topic_img
+      if (!deleteProps(newCategory, ['topic_img'])) {
+        yield put({ type: 'app/messageError', payload:"更新失败" })
+      }
+
       const res = yield call(update, newCategory)
       if (res.success) {
         yield put({ type: 'hideModal' })
@@ -135,13 +143,6 @@ export default modelExtend(pageModel, {
 
     hideModal (state) {
       return { ...state, modalVisible: false, uploadTempItem: {} }
-    },
-
-    uploadImageSuccess (state, { payload }) {
-      const { uploadTempItem } = state
-      uploadTempItem.topic_img_id = payload.id
-      uploadTempItem.img_url = payload.url
-      return {...state,uploadTempItem: uploadTempItem}
     },
 
     showManagerModal (state, { payload }){

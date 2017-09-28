@@ -17,6 +17,7 @@ const Routers = function ({ history, app }) {
       getIndexRoute (nextState, cb) {
         require.ensure([], require => {
           registerModel(app, require('./models/dashboard'))
+          registerModel(app, require('./models/order'))
           cb(null, { component: require('./routes/dashboard/') })
         }, 'dashboard')
       },
@@ -26,6 +27,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], require => {
               registerModel(app, require('./models/dashboard'))
+              registerModel(app, require('./models/order'))
               cb(null, require('./routes/dashboard/'))
             }, 'dashboard')
           },

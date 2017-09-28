@@ -22,7 +22,6 @@ export default modelExtend(model, {
 
     setup ({ dispatch, history }) {
       let tid
-
       window.onresize = () => {
         clearTimeout(tid)
         tid = setTimeout(() => {
@@ -37,26 +36,8 @@ export default modelExtend(model, {
         }
       })
     },
-
   },
   effects: {
-
-    // *query ({
-    //   payload,
-    // }, { call, put }) {
-    //   // const data = yield call(query, parse(payload))
-    //   // if (data.success && data.user) {
-    //   //   yield put({
-    //   //     type: 'registerUser',
-    //   //     payload: data.user,
-    //   //   })
-    //   //   if (location.pathname === '/login') {
-    //   //     yield put(routerRedux.push('/dashboard'))
-    //   //   }
-    //   // } else {
-        
-    //   // }
-    // },
     *messageSuccess ({ payload }) {
       message.success(payload)
     },
@@ -88,7 +69,7 @@ export default modelExtend(model, {
       const { user } = yield(select(_=>_.app))
       let nowTime = Date.parse(new Date()) / 1000;
       //票据为空代表没有登录，直接返回登录页面
-      if (!user.hasOwnProperty("token")) {
+      if (!user || !user.token) {
         yield put({ type: 'logoutSuccess' })        
       }
       //过期时间比现在相差小于10分钟就重新申请令牌
@@ -108,9 +89,8 @@ export default modelExtend(model, {
     *reToken ({ 
       payload 
     }, { put, call, select }) {
-      const { user } = yield(select(_=>_.app))
       //以旧令牌换取新令牌
-      const res = yield call(reToken, { token: user.token });
+      const res = yield call(reToken, {});
       if (res.success && res.data) {
         localStorage.setItem(`${prefix}admin`, JSON.stringify(res.data))
         yield put({ type: 'registerUser', payload: res.data })
@@ -120,14 +100,12 @@ export default modelExtend(model, {
     *logout ({
       payload,
     }, { call, put, select }) {
-      const user = yield select(({ app }) => app.user)
-      const res = yield call(logout, { token: user.token })
+      const res = yield call(logout, {})
       if (res.success) {
         yield put({ type: 'messageSuccess', payload:"登出成功" })
         yield put({ type: 'logoutSuccess' })
       } else {
         yield put({ type: 'logoutSuccess' })
-        throw (res)
       }
     },
 

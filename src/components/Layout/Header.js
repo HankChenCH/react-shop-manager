@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon, Popover } from 'antd'
+import { Menu, Icon, Popover, Badge } from 'antd'
 import styles from './Header.less'
 import Menus from './Menu'
 
 const SubMenu = Menu.SubMenu
 
-const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVisible, location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu }) => {
+const Header = ({ user, logout, notificationCount, switchSider, siderFold, isNavbar, menuPopoverVisible, location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu }) => {
   let handleClickMenu = e => e.key === 'logout' && logout()
   const menusProps = {
     menu,
@@ -31,7 +31,9 @@ const Header = ({ user, logout, switchSider, siderFold, isNavbar, menuPopoverVis
         </div>}
       <div className={styles.rightWarpper}>
         <div className={styles.button}>
-          <Icon type="notification" />
+          <Badge count={notificationCount}>
+            <Icon type="notification" />
+          </Badge>
         </div>
         <Menu mode="horizontal" onClick={handleClickMenu}>
           <SubMenu style={{
@@ -57,6 +59,7 @@ Header.propTypes = {
   menu: PropTypes.array,
   user: PropTypes.object,
   logout: PropTypes.func,
+  notificationCount: PropTypes.number,
   switchSider: PropTypes.func,
   siderFold: PropTypes.bool,
   isNavbar: PropTypes.bool,

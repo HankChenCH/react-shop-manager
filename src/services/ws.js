@@ -36,8 +36,9 @@ export async function listen(event, cb) {
             break;
         default:
             client.onmessage = (res) => {
-                if (res.event === event) {
-                    cb(res)
+                const message = JSON.parse(res.data)
+                if (message.event === event) {
+                    cb(message)
                 }
             }
     }

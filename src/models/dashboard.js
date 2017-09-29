@@ -1,5 +1,4 @@
 import { myCity, queryWeather, query, queryRecentOrder, allSales } from '../services/dashboard'
-import * as ws from '../services/ws'
 import { parse } from 'qs'
 
 // zuimei 摘自 http://www.zuimeitianqi.com/res/js/index.js
@@ -196,9 +195,6 @@ export default {
       dispatch({ type: 'querySales' })
       dispatch({ type: 'queryRecentSales' })
     },
-    wssend ({ dispatch }) {
-      ws.send({ url: 'ws://112.74.49.73:9502' },{ event: 'msg', name: 'hank', msg: 'hello' })
-    }
   },
   effects: {
     *query ({

@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { query, queryProductAll, logout, reToken } from '../services/app'
+import { trigger } from '../services/ws'
 import { model } from './common'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
@@ -17,6 +18,7 @@ export default modelExtend(model, {
     darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
     isNavbar: document.body.clientWidth < 769,
     navOpenKeys: JSON.parse(localStorage.getItem(`${prefix}navOpenKeys`)) || [],
+    notificationCount: 0,
   },
   subscriptions: {
 
@@ -53,8 +55,8 @@ export default modelExtend(model, {
     *globalNotice ({ payload }, { select }) {
       const { notificationPlacement, notificationDuration } = yield select((_) => _.websocket)
       notification.open({
-          message: payload.title,
-          description: payload.description,
+          message: payload.from,
+          description: payload.data,
           placement: notificationPlacement,
           duration: notificationDuration,
           icon: <Icon type="smile-circle" style={{ color: '#292929' }} />,
@@ -144,14 +146,15 @@ export default modelExtend(model, {
       }
     },
 
+    *registerUser({ payload }, { put, call }) {
+      yield put({ type: 'updateState', payload: { user: payload } })
+      trigger('notice', {
+        name: payload.username
+      })
+    },
   },
   reducers: {
-    registerUser (state, { payload: user }) {
-      return {
-        ...state,
-        user,
-      }
-    },
+
 
     switchSider (state) {
       localStorage.setItem(`${prefix}siderFold`, !state.siderFold)

@@ -16,13 +16,13 @@ export default modelExtend(model, {
         setup ({ dispatch }) {
             let notificationSetting = JSON.parse(localStorage.getItem(`${prefix}notificationSetting`))
 
-            if (!notificationSetting instanceof Object) {
+            if (!(notificationSetting instanceof Object)) {
                 notificationSetting = {
                     placement: 'bottomRight',
                     duration: 4.5,
                 }
 
-                yield localStorage.setItem(`${prefix}notificationSetting`, JSON.stringify(notificationSetting))
+                localStorage.setItem(`${prefix}notificationSetting`, JSON.stringify(notificationSetting))
             }
 
             dispatch({ type: 'handleNotificationPlacement', payload: notificationSetting.placement })
@@ -37,7 +37,7 @@ export default modelExtend(model, {
         },
         wsListen ({ dispatch }) {
             ws.listen('notice',(res) => {
-                dispatch({ type: 'app/globalNotice', payload: res.data })
+                dispatch({ type: 'app/globalNotice', payload: res })
             })
         },
     },

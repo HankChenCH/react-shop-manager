@@ -1,4 +1,5 @@
 import { login } from '../services/login'
+import { trigger } from '../services/ws'
 import { routerRedux } from 'dva/router'
 import { queryURL, config } from '../utils'
 const { prefix } = config
@@ -18,6 +19,7 @@ export default {
       yield put({ type: 'hideLoginLoading' })
       if (res.success) {
         yield put({ type: 'app/messageSuccess', payload: '登录成功' })
+        yield call(trigger, 'notice', { name: res.data.true_name })
         localStorage.setItem(`${prefix}admin`, JSON.stringify(res.data))
         const from = queryURL('from')
         yield put({ type: 'app/registerUser', payload: res.data })

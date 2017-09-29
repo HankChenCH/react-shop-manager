@@ -106,10 +106,6 @@ const arrayToTree = (array, id = 'id', pid = 'pid', children = 'children') => {
  * @return  {bool}
  */
 const deleteProps = (obj, props = []) => {
-  if (!(obj instanceof Object) || !(props instanceof Array)){
-    return false
-  }
-
   for(let i = 0; i < props.length; i++){
     if(!Reflect.deleteProperty(obj, props[i])){
       return false
@@ -117,6 +113,10 @@ const deleteProps = (obj, props = []) => {
   }
 
   return true
+}
+
+const hasProp = (obj, prop) => {
+  return Reflect.has(obj, prop)
 }
 
 module.exports = {
@@ -129,4 +129,5 @@ module.exports = {
   queryArray,
   arrayToTree,
   deleteProps,
+  hasProp,
 }

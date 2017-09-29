@@ -4,7 +4,7 @@ import { model } from './common'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import { config } from '../utils'
-import { message } from 'antd'
+import { message, notification, Icon } from 'antd'
 const { prefix } = config
 
 export default modelExtend(model, {
@@ -48,6 +48,17 @@ export default modelExtend(model, {
       } else if (payload instanceof Object) {
         payload.msg && message.error(payload.msg)
       }
+    },
+
+    *globalNotice ({ payload }, { select }) {
+      const { notificationPlacement, notificationDuration } = yield select((_) => _.websocket)
+      notification.open({
+          message: payload.title,
+          description: payload.description,
+          placement: notificationPlacement,
+          duration: notificationDuration,
+          icon: <Icon type="smile-circle" style={{ color: '#292929' }} />,
+      });
     },
 
     *queryProduct ({ payload }, { call, put, select }) {

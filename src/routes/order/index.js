@@ -6,15 +6,11 @@ import PriceModal from './PriceModal'
 import DeliveryModal from './DeliveryModal'
 import { routerRedux } from 'dva/router'
 import List from './List'
+import { Enum } from '../../utils'
 
 const TabPane = Tabs.TabPane
 
-const EnumOrderStatus = {
-  UNPAY: 1,
-  UNDELIVERY: 2,
-  DELIVERY: 3,
-}
-
+const { EnumOrderStatus } = Enum
 
 const Index = ({ order, dispatch, loading, location }) => {
   const { list, pagination, selectedRowKeys, currentItem, priceModalVisible, deliveryModalVisible, queryStatus } = order
@@ -43,6 +39,12 @@ const Index = ({ order, dispatch, loading, location }) => {
         }
       })
     },
+    onCloseItem (id) {
+      dispatch({
+        type: 'order/close',
+        payload: id,
+      })
+    },
     onDeleteItem (id) {
       dispatch({
         type: 'order/delete',
@@ -57,7 +59,10 @@ const Index = ({ order, dispatch, loading, location }) => {
         }
       })
     },
-    rowSelection: {
+  }
+  
+  if (queryStatus === '1') {
+    listProps.rowSelection = {
       selectedRowKeys,
       onChange: (keys) => {
         dispatch({
@@ -67,7 +72,7 @@ const Index = ({ order, dispatch, loading, location }) => {
           },
         })
       },
-    },
+    }
   }
 
   const priceModalProps = {
@@ -110,6 +115,15 @@ const Index = ({ order, dispatch, loading, location }) => {
     },
   }
 
+  const handleCloseItems = () => {
+    dispatch({
+      type: 'order/multiClose',
+      payload: {
+        ids: selectedRowKeys,
+      }
+    })
+  }
+
   const handleDeleteItems = () => {
     dispatch({
       type: 'order/multiDelete',
@@ -128,32 +142,37 @@ const Index = ({ order, dispatch, loading, location }) => {
     }))
   }
 
-  return (<div className="content-inner">
-    <Tabs activeKey={queryStatus || '1'} onTabClick={handleTabClick}>
-      <TabPane tab="未付款" key={String(EnumOrderStatus.UNPAY)}>
-        {
-           selectedRowKeys.length > 0 &&
-             <Row style={{ marginBottom: 16, textAlign: 'right', fontSize: 13 }}>
-               <Col>
-                 {`选中了 ${selectedRowKeys.length} 条订单 `}
-                 <Popconfirm title={'确定删除选中的订单？'} placement="bottomRight" onConfirm={handleDeleteItems}>
-                   <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
-                 </Popconfirm>
-               </Col>
-             </Row>
-        }
-        <List {...listProps} />
-      </TabPane>
-      <TabPane tab="待发货" key={String(EnumOrderStatus.UNDELIVERY)}>
-        <List {...listProps} />
-      </TabPane>
-      <TabPane tab="已发货" key={String(EnumOrderStatus.DELIVERY)}>
-        <List {...listProps} />
-      </TabPane>
-    </Tabs>
-    {priceModalVisible && <PriceModal {...priceModalProps}/>}
-    {deliveryModalVisible && <DeliveryModal {...deliveryModalProps}/>}
-  </div>)
+  return (
+    <div className="content-inner">
+      <Tabs activeKey={queryStatus || '1'} onTabClick={handleTabClick}>
+        <TabPane tab="未付款" key={String(EnumOrderStatus.UNPAY)}>
+          {
+            selectedRowKeys.length > 0 &&
+              <Row style={{ marginBottom: 16, textAlign: 'right', fontSize: 13 }}>
+                <Col>
+                  {`选中了 ${selectedRowKeys.length} 条订单 `}
+                  <Popconfirm title={'确定关闭选中的订单？'} placement="bottomRight" onConfirm={handleCloseItems}>
+                    <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量关闭</Button>
+                  </Popconfirm>
+                  <Popconfirm title={'确定删除选中的订单？'} placement="bottomRight" onConfirm={handleDeleteItems}>
+                    <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
+                  </Popconfirm>
+                </Col>
+              </Row>
+          }
+          <List {...listProps} />
+        </TabPane>
+        <TabPane tab="待发货" key={String(EnumOrderStatus.UNDELIVERY)}>
+          <List {...listProps} />
+        </TabPane>
+        <TabPane tab="已发货" key={String(EnumOrderStatus.DELIVERY)}>
+          <List {...listProps} />
+        </TabPane>
+      </Tabs>
+      {priceModalVisible && <PriceModal {...priceModalProps}/>}
+      {deliveryModalVisible && <DeliveryModal {...deliveryModalProps}/>}
+    </div>
+  )
 }
 
 Index.propTypes = {

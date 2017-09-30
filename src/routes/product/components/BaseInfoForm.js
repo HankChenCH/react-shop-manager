@@ -17,12 +17,12 @@ class BaseInfoForm extends React.Component
 	}
 
 	checkMainImage = (rule, value, callback) => {
-	    if (Object.keys(value).length > 0) {
-	      callback();
-	      return;
-	    }
-	    callback('请上传商品图片');
-	  }
+		if (Object.keys(value).length > 0) {
+			callback();
+			return;
+		}
+		callback('请上传商品图片');
+	}
 
 	render() {
 		const { item, modalType, formItemLayout, form } = this.props

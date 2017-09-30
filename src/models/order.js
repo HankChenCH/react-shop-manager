@@ -37,9 +37,8 @@ export default modelExtend(pageModel, {
   effects: {
     *query ({
       payload = {},
-    }, { call, put, select }) {
-      const { token } = yield select(({ app }) => app.user)
-      const res = yield call(query, { ...payload, token: token})
+    }, { call, put }) {
+      const res = yield call(query, { ...payload })
       if (res.success) {
         yield put({
           type: 'querySuccess',

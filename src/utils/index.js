@@ -1,6 +1,7 @@
 import config from './config'
 import menu from './menu'
 import request from './request'
+import * as Enum from './enum'
 import classnames from 'classnames'
 import { color } from './theme'
 import lodash from 'lodash'
@@ -99,13 +100,51 @@ const arrayToTree = (array, id = 'id', pid = 'pid', children = 'children') => {
   return result
 }
 
+/**
+ * 删除对象下的多组属性
+ * @param   {obj}     obj
+ * @param   {array}   props
+ * @return  {bool}
+ */
+const deleteProps = (obj, props = []) => {
+  for(let i = 0; i < props.length; i++){
+    if(!Reflect.deleteProperty(obj, props[i])){
+      return false
+    }
+  }
+
+  return true
+}
+
+/**
+ * 检查对象是否存在属性
+ * @param   {obj}     obj
+ * @param   {string}  prop
+ * @return  {bool}
+ */
+const hasProp = (obj, prop) => {
+  return Reflect.has(obj, prop)
+}
+
+const sleep = (ms) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve()
+    },ms)
+  })
+}
+
 module.exports = {
   config,
   menu,
   request,
+  Enum,
   color,
   classnames,
   queryURL,
   queryArray,
   arrayToTree,
+  deleteProps,
+  hasProp,
+  sleep,
 }

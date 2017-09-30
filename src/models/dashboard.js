@@ -1,4 +1,4 @@
-import { myCity, queryWeather, query, allSales } from '../services/dashboard'
+import { myCity, queryWeather, query, queryRecentOrder, allSales } from '../services/dashboard'
 import { parse } from 'qs'
 
 // zuimei 摘自 http://www.zuimeitianqi.com/res/js/index.js
@@ -172,7 +172,7 @@ export default {
       temperature: '5',
       name: '晴',
       icon: 'http://www.zuimeitianqi.com/res/icon/0_big.png',
-      dateTime: new Date().format('MM-dd hh:mm'),
+      dateTime: new Date().format('MM-dd'),
     },
     sales: [],
     quote: {
@@ -191,8 +191,9 @@ export default {
   subscriptions: {
     setup ({ dispatch }) {
       // dispatch({ type: 'query' })
-      dispatch({ type: 'querySales' })
       // dispatch({ type: 'queryWeather' })
+      dispatch({ type: 'querySales' })
+      dispatch({ type: 'queryRecentSales' })
     },
   },
   effects: {
@@ -213,16 +214,21 @@ export default {
         weather,
       } })
     },
-    *querySales ({ payload },{ call, put, select }) {
-      const { token } = yield select(({ app }) => app.user)
-      const res = yield call(allSales, { countMonth: 6, token: token })
+    *querySales ({ payload }, { call, put, select }) {
+      const res = yield call(allSales, { countMonth: 6 })
       if (res.success) {
         const sales = res.data.map((item) => { return { "销售额": parseFloat(item.month_sales), "销售量": parseInt(item.month_counts), date: item.count_date } })
         yield put({ type: 'updateState', payload: { sales: sales } })
       } else {
         throw res
       }
-    }
+    },
+    *queryRecentSales ({ payload }, { call, put, select }) {
+      const res = yield call(queryRecentOrder, { status: 2 })
+      if (res.success) {
+        yield put({ type: 'updateState', payload: { recentSales: res.data.data } })
+      }
+    },
   },
   reducers: {
     updateState (state, { payload }) {

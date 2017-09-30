@@ -15,9 +15,9 @@ const fetch = (options) => {
     fetchType,
     url,
   } = options
-
-  const cloneData = lodash.cloneDeep(data)
+  
   const user = JSON.parse(localStorage.getItem(`${prefix}admin`))
+  const cloneData = lodash.cloneDeep(data)
   let headersOption = {}
 
   try {

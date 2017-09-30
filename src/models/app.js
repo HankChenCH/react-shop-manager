@@ -1,11 +1,13 @@
 import modelExtend from 'dva-model-extend'
 import { query, queryProductAll, logout, reToken } from '../services/app'
+import { trigger } from '../services/ws'
 import { model } from './common'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import { config } from '../utils'
-import { message } from 'antd'
+import { message, notification, Icon } from 'antd'
 const { prefix } = config
+
 
 export default modelExtend(model, {
   namespace: 'app',
@@ -17,12 +19,12 @@ export default modelExtend(model, {
     darkTheme: localStorage.getItem(`${prefix}darkTheme`) === 'true',
     isNavbar: document.body.clientWidth < 769,
     navOpenKeys: JSON.parse(localStorage.getItem(`${prefix}navOpenKeys`)) || [],
+    notificationCount: 0,
   },
   subscriptions: {
 
     setup ({ dispatch, history }) {
       let tid
-
       window.onresize = () => {
         clearTimeout(tid)
         tid = setTimeout(() => {
@@ -37,26 +39,8 @@ export default modelExtend(model, {
         }
       })
     },
-
   },
   effects: {
-
-    // *query ({
-    //   payload,
-    // }, { call, put }) {
-    //   // const data = yield call(query, parse(payload))
-    //   // if (data.success && data.user) {
-    //   //   yield put({
-    //   //     type: 'registerUser',
-    //   //     payload: data.user,
-    //   //   })
-    //   //   if (location.pathname === '/login') {
-    //   //     yield put(routerRedux.push('/dashboard'))
-    //   //   }
-    //   // } else {
-        
-    //   // }
-    // },
     *messageSuccess ({ payload }) {
       message.success(payload)
     },
@@ -67,6 +51,14 @@ export default modelExtend(model, {
       } else if (payload instanceof Object) {
         payload.msg && message.error(payload.msg)
       }
+    },
+
+    *globalNotice ({ payload }) {
+      notification.open({
+          message: payload.from,
+          description: payload.data,
+          icon: <Icon type="smile-circle" style={{ color: '#292929' }} />,
+      });
     },
 
     *queryProduct ({ payload }, { call, put, select }) {
@@ -88,7 +80,7 @@ export default modelExtend(model, {
       const { user } = yield(select(_=>_.app))
       let nowTime = Date.parse(new Date()) / 1000;
       //票据为空代表没有登录，直接返回登录页面
-      if (!user.hasOwnProperty("token")) {
+      if (!user || !user.token) {
         yield put({ type: 'logoutSuccess' })        
       }
       //过期时间比现在相差小于10分钟就重新申请令牌
@@ -108,9 +100,8 @@ export default modelExtend(model, {
     *reToken ({ 
       payload 
     }, { put, call, select }) {
-      const { user } = yield(select(_=>_.app))
       //以旧令牌换取新令牌
-      const res = yield call(reToken, { token: user.token });
+      const res = yield call(reToken, {});
       if (res.success && res.data) {
         localStorage.setItem(`${prefix}admin`, JSON.stringify(res.data))
         yield put({ type: 'registerUser', payload: res.data })
@@ -120,14 +111,12 @@ export default modelExtend(model, {
     *logout ({
       payload,
     }, { call, put, select }) {
-      const user = yield select(({ app }) => app.user)
-      const res = yield call(logout, { token: user.token })
+      const res = yield call(logout, {})
       if (res.success) {
         yield put({ type: 'messageSuccess', payload:"登出成功" })
         yield put({ type: 'logoutSuccess' })
       } else {
         yield put({ type: 'logoutSuccess' })
-        throw (res)
       }
     },
 
@@ -155,15 +144,21 @@ export default modelExtend(model, {
       }
     },
 
-  },
-  reducers: {
-    registerUser (state, { payload: user }) {
-      return {
-        ...state,
-        user,
-      }
+    *registerUser ({ payload }, { put, call }) {
+      yield put({ type: 'updateState', payload: { user: payload } })
+      trigger('notice', {
+        name: payload.username
+      })
     },
 
+    *addNoticeCount ({ payload }, { put, select }) {
+      const { chatRoomShow } = yield select((_) => _.chat)
+      if (!chatRoomShow) {
+        yield put({ type: 'noticeCountInc' })
+      }
+    },
+  },
+  reducers: {
     switchSider (state) {
       localStorage.setItem(`${prefix}siderFold`, !state.siderFold)
       return {
@@ -200,5 +195,19 @@ export default modelExtend(model, {
         ...navOpenKeys,
       }
     },
+
+    noticeCountInc (state) {
+      return { 
+        ...state,
+        notificationCount: ++state.notificationCount,
+      }
+    },
+
+    clearNoticeCount (state) {
+      return {
+        ...state,
+        notificationCount: 0,
+      }
+    }
   },
 })

@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import * as themeService from '../services/theme'
 import * as productService from '../services/product'
 import { pageModel } from './common'
-import { config } from '../utils'
+import { config, deleteProps } from '../utils'
 
 const { query, create, remove, update, batchRemove, queryProducts, updateProducts, removeAllProducts } = themeService
 const { queryAll } = productService
@@ -77,7 +77,10 @@ export default modelExtend(pageModel, {
 
     *create ({ payload }, { call, put }) {
       const newTheme = { ...payload, head_img_id: payload.head_img.img_id }
-      delete newTheme.head_img
+      if (!deleteProps(newTheme, ['head_img'])) {
+        yield put({ type: 'app/messageError', payload:"创建主题失败" })
+      }
+
       const res = yield call(create, newTheme)
       if (res.success) {
         yield put({ type: 'hideModal' })
@@ -91,7 +94,10 @@ export default modelExtend(pageModel, {
     *update ({ payload }, { select, call, put }) {
       const id = yield select(({ theme }) => theme.currentItem.id)
       const newTheme = { ...payload, id, head_img_id: payload.head_img.img_id }
-      delete newTheme.head_img
+      if (!deleteProps(newTheme, ['head_img'])) {
+        yield put({ type: 'app/messageError', payload:"更新主题失败" })
+      }
+
       const res = yield call(update, newTheme)
       if (res.success) {
         yield put({ type: 'hideModal' })
@@ -135,13 +141,6 @@ export default modelExtend(pageModel, {
 
     hideModal (state) {
       return { ...state, modalVisible: false, uploadTempItem: {} }
-    },
-
-    uploadImageSuccess (state, { payload }) {
-      const { uploadTempItem } = state
-      uploadTempItem.topic_img_id = payload.id
-      uploadTempItem.img_url = payload.url
-      return {...state,uploadTempItem: uploadTempItem}
     },
 
     showManagerModal (state, { payload }){

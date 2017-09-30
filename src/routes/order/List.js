@@ -5,7 +5,6 @@ import moment from 'moment'
 import { DropOption } from '../../components'
 import styles from './List.less'
 
-moment.locale('zh-cn');
 const confirm = Modal.confirm
 
 const List = ({ queryStatus, onChangeItemPrice, onDeleteItem, onCloseItem, onDeliveryItem, ...tableProps }) => {

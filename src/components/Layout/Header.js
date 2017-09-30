@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'dva/router'
 import { Menu, Icon, Popover, Badge } from 'antd'
+import { classnames } from '../../utils'
 import styles from './Header.less'
 import Menus from './Menu'
 
@@ -32,13 +33,13 @@ const Header = ({ user, logout, notificationCount, switchSider, siderFold, isNav
           <Icon type={siderFold ? 'menu-unfold' : 'menu-fold'} />
         </div>}
       <div className={styles.rightWarpper}>
-        <div className={styles.button} onClick={handleClickNotification}>
+        <div className={classnames(styles.button, { [styles.center]: true })} onClick={handleClickNotification}>
           <Badge count={notificationCount}>
-            <Icon type="notification" />
+            <Icon type="message" style={{ fontSize: 14 }}/>
           </Badge>
         </div>
         <Menu mode="horizontal" onClick={handleClickMenu}>
-          <SubMenu style={{
+          <SubMenu className={styles.center} style={{
             float: 'right',
             zIndex: 100,
           }} title={< span > <Icon type="user" />

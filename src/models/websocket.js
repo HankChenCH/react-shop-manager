@@ -45,7 +45,7 @@ export default modelExtend(model, {
             //     dispatch({ type: 'app/globalNotice', payload: res })
             // })
             // ws.listen('msg', (res) => {
-            //     dispatch({ type: 'app/noticeCountInc' })
+            //     dispatch({ type: 'app/addNoticeCount' })
                 // dispatch({ type: 'chat/receiveMsg', payload: res })
             // })
         },

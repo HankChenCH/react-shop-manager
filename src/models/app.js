@@ -8,6 +8,7 @@ import { config } from '../utils'
 import { message, notification, Icon } from 'antd'
 const { prefix } = config
 
+
 export default modelExtend(model, {
   namespace: 'app',
   state: {
@@ -52,13 +53,10 @@ export default modelExtend(model, {
       }
     },
 
-    *globalNotice ({ payload }, { select }) {
-      const { notificationPlacement, notificationDuration } = yield select((_) => _.websocket)
+    *globalNotice ({ payload }) {
       notification.open({
           message: payload.from,
           description: payload.data,
-          placement: notificationPlacement,
-          duration: notificationDuration,
           icon: <Icon type="smile-circle" style={{ color: '#292929' }} />,
       });
     },
@@ -154,8 +152,6 @@ export default modelExtend(model, {
     },
   },
   reducers: {
-
-
     switchSider (state) {
       localStorage.setItem(`${prefix}siderFold`, !state.siderFold)
       return {
@@ -192,5 +188,19 @@ export default modelExtend(model, {
         ...navOpenKeys,
       }
     },
+
+    noticeCountInc (state) {
+      return { 
+        ...state,
+        notificationCount: ++state.notificationCount,
+      }
+    },
+
+    clearNoticeCount (state) {
+      return {
+        ...state,
+        notificationCount: 0,
+      }
+    }
   },
 })

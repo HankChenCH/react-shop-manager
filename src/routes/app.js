@@ -13,7 +13,7 @@ const { Header, Bread, Footer, Sider, styles } = Layout
 let lastHref
 
 const App = ({ children, location, dispatch, app, loading }) => {
-  const { user, siderFold, notificationCount, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys } = app
+  const { user, siderFold, notificationCount, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys, tips } = app
   const href = window.location.href
 
   if (lastHref !== href) {
@@ -44,6 +44,9 @@ const App = ({ children, location, dispatch, app, loading }) => {
     },
     changeOpenKeys (openKeys) {
       dispatch({ type: 'app/handleNavOpenKeys', payload: { navOpenKeys: openKeys } })
+    },
+    checkNotice () {
+      dispatch({ type: 'app/clearNoticeCount' })
     },
   }
 
@@ -87,11 +90,14 @@ const App = ({ children, location, dispatch, app, loading }) => {
         </aside> : ''}
         <div className={styles.main}>
           <Header {...headerProps} />
-          <Bread {...breadProps} location={location} />
-          <div className={styles.container}>
-            <div className={styles.content}>
-              {children}
+          <div className="right_main">
+            <Bread {...breadProps} location={location} />
+            <div className={styles.container}>
+              <div className={styles.content}>
+                {children}
+              </div>
             </div>
+            {/*聊天室*/}
           </div>
           <Footer />
         </div>

@@ -45,14 +45,14 @@ export async function listen(event, cb) {
 }
 
 //普通发送消息
-export async function sendMsg(data) {
+export async function sendMsg(data = {}) {
     const client = getWebsocket(websocketURL)
     const sendBody = { ...data, event: 'msg'}
     client.send(JSON.stringify(sendBody))
 }
 
 //触发服务器事件
-export async function trigger(event, data) {
+export async function trigger(event, data = {}) {
     const client = getWebsocket(websocketURL)
     const sendBody = { ...data, event: event }
     client.send(JSON.stringify(sendBody))

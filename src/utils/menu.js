@@ -34,6 +34,13 @@ module.exports = [
     router: '/order',
   },
   {
+    id: 71,
+    mpid: -1,
+    bpid: 1,
+    name: '订单详情',
+    router: '/order/:id',
+  },
+  {
     id: 2,
     bpid: 1,
     name: '客户管理',
@@ -53,6 +60,7 @@ module.exports = [
     name: '系统管理',
     icon: 'setting',
   },
+  
   {
     id: 61,
     bpid: 6,
@@ -80,5 +88,12 @@ module.exports = [
     mpid: 62,
     name: '资源管理',
     router: '/setting/permission/source',
+  },
+  {
+    id: 8,
+    bpid: 1,
+    mpid: -1,
+    name: '个人中心',
+    router: '/setting/personal',
   },
 ]

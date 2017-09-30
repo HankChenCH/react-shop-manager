@@ -1,13 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'dva/router'
 import { Menu, Icon, Popover, Badge } from 'antd'
 import styles from './Header.less'
 import Menus from './Menu'
 
 const SubMenu = Menu.SubMenu
 
-const Header = ({ user, logout, notificationCount, switchSider, siderFold, isNavbar, menuPopoverVisible, location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu }) => {
-  let handleClickMenu = e => e.key === 'logout' && logout()
+const Header = ({ user, logout, notificationCount, switchSider, siderFold, isNavbar, menuPopoverVisible, location, switchMenuPopover, navOpenKeys, changeOpenKeys, menu, checkNotice }) => {
+  const handleClickMenu = e => e.key === 'logout' && logout()
+  const handleClickNotification = e => checkNotice()
   const menusProps = {
     menu,
     siderFold: false,
@@ -30,7 +32,7 @@ const Header = ({ user, logout, notificationCount, switchSider, siderFold, isNav
           <Icon type={siderFold ? 'menu-unfold' : 'menu-fold'} />
         </div>}
       <div className={styles.rightWarpper}>
-        <div className={styles.button}>
+        <div className={styles.button} onClick={handleClickNotification}>
           <Badge count={notificationCount}>
             <Icon type="notification" />
           </Badge>
@@ -43,7 +45,7 @@ const Header = ({ user, logout, notificationCount, switchSider, siderFold, isNav
             {user.username} < /span>}
           >
             <Menu.Item key="personal">
-              个人中心
+              <Link to="/setting/personal">个人中心</Link>
             </Menu.Item>
             <Menu.Item key="logout">
               登    出

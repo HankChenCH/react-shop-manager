@@ -41,9 +41,8 @@ const Routers = function ({ history, app }) {
           path: 'product/:id',
           getComponent (nextState, cb) {
             require.ensure([], require => {
-              // registerModel(app, require('./models/user/detail'))
-              cb(null, require('./routes/unbuild/'))
-              // cb(null, require('./routes/product/detail/'))
+              registerModel(app, require('./models/product/detail'))
+              cb(null, require('./routes/product/detail/'))
             }, 'product-detail')
           },
         }, {

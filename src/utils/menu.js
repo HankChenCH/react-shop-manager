@@ -27,6 +27,13 @@ module.exports = [
     router: '/product',
   },
   {
+    id: 31,
+    mpid: -1,
+    bpid: 3,
+    name: '商品详情',
+    router: '/product/:id',
+  },
+  {
     id: 7,
     bpid: 1,
     name: '订单管理',

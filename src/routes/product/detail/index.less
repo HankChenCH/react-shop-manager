@@ -4,11 +4,40 @@
 
   .item {
     display: flex;
+    justify-content: space-around;
+    align-content: center;
+    padding: 30px 0px;
 
     & > div {
+      text-align: center;
+
       &:first-child {
         width: 100px;
       }
     }
+
+    article {
+      text-indent: 2em;
+    }
   }
+
+  .main_img{
+    max-width: 320px;
+  }
+
+  .center{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+  }
+
+  .paganation {
+    text-align: justify;
+    margin: 80px 0 0;
+  }
+}
+
+.ant_tabs{
+  overflow: visible;
 }

@@ -9,7 +9,24 @@ export default modelExtend(model, {
 
     state: {
         chatRoomShow: false,
-        chatMessage: [{from:'hank',data:'test'}],
+        chatMessage: [],
+        chatPosition: 'absoulte'
+    },
+
+    subscriptions : {
+        setup ({ dispatch }) {
+            window.onscroll = function() {
+                let scrollHeight = document.documentElement.scrollTop || document.body.scrollTop
+
+                console.log(scrollHeight)
+
+                if (scrollHeight > 50) {
+                    dispatch({ type: 'chat/UpdateState', payload: { chatPosition: 'fixed' } })
+                } else {
+                    dispatch({ type: 'chat/UpdateState', payload: { chatPosition: 'absoulte' } })
+                }
+            }
+        }
     },
 
     effects: {

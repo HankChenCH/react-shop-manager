@@ -146,9 +146,9 @@ export default modelExtend(model, {
 
     *registerUser ({ payload }, { put, call }) {
       yield put({ type: 'updateState', payload: { user: payload } })
-      trigger('notice', {
-        name: payload.username
-      })
+      // trigger('notice', {
+      //   name: payload.username
+      // })
     },
 
     *addNoticeCount ({ payload }, { put, select }) {

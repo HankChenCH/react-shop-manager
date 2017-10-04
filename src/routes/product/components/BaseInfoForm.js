@@ -2,13 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Icon, Button } from 'antd'
 import { ProductMainUpload } from '../../../components/Upload'
-import { apiPrefix, api } from '../../../utils/config'
+import { baseURL, api } from '../../../utils/config'
 import styles from '../Modal.css'
 
 const FormItem = Form.Item;
 
 const { productMain } = api.image
-const uploadMainImageApi = `${apiPrefix}/${productMain}`
+const uploadMainImageApi = `${baseURL}/${productMain}`
 
 class BaseInfoForm extends React.Component
 {

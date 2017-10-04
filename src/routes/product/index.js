@@ -17,7 +17,7 @@ const Product = ({ location, dispatch, product, loading }) => {
     visible: modalVisible,
     maskClosable: false,
     currentStep: currentStep,
-    confirmLoading: loading.effects['product/${modalType}','product/uploadImageSuccess'],
+    confirmLoading: loading.effects['product/${modalType}'],
     title: `${modalType === 'create' ? '新建商品' : '更新商品'}`,
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
@@ -47,10 +47,6 @@ const Product = ({ location, dispatch, product, loading }) => {
       })
     },
     onUploadSuccess(data) {
-      dispatch({
-        type: 'product/uploadImageSuccess',
-        payload: data
-      })
     },
     onChangeStep (step) {
       dispatch({

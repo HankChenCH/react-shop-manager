@@ -113,7 +113,7 @@ const App = ({ children, location, dispatch, app, chat, loading }) => {
             </div>
             {
               /*聊天室*/
-              <aside className={classnames(styles.chat_sider, { [styles.chatshow]: chatRoomShow })}>
+              <aside className={classnames(styles.chatsider, { [styles.chatshow]: chatRoomShow })}>
                 <CommonChatRoom {...chatRoomProps}/>
               </aside>
             }

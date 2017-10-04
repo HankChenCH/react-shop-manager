@@ -29,7 +29,7 @@ const Header = ({ user, logout, notificationCount, switchSider, siderFold, isNav
             <Icon type="bars" />
           </div>
         </Popover>
-        : <div className={styles.button} onClick={switchSider}>
+        : <div className={classnames(styles.button, { [styles.center]: true })} onClick={switchSider}>
           <Icon type={siderFold ? 'menu-unfold' : 'menu-fold'} />
         </div>}
       <div className={styles.rightWarpper}>

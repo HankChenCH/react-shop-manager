@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Editor } from '../../../components'
-import { BaseInfoForm, DetailInfoForm, ParamsInfoForm } from '../components'
+import { BaseInfoForm, DetailInfoForm, ParamsInfoForm, BuyNowForm } from '../components'
 import { Form, Input, InputNumber, Modal, Button, Upload, Icon, message } from 'antd'
 import { apiPrefix, api } from '../../../utils/config'
 import draftToHtml from 'draftjs-to-html';
@@ -42,7 +42,7 @@ export default class InfoModal extends React.Component
   }
 
   render() {
-    const { onOk, onCancel, onUploadSuccess, modalType, ...modalProps } = this.props
+    const { onOk, onCancel, onUploadSuccess, modalType, formItemLayout, formItemLayoutWithOutLabel, ...modalProps } = this.props
     const { item } = this.props
 
     const handleOk = () => {
@@ -125,22 +125,35 @@ export default class InfoModal extends React.Component
       onOk,
     }
 
+    const buynowFormProps = {
+      item,
+      formItemLayout,
+      formItemLayoutWithOutLabel,
+      ref: 'infoForm',
+      onOk,
+    }
+
     return (
       <Modal width={900} {...modalOpts}>
         {
-        modalType === 'base'
-        &&
-        <BaseInfoForm {...baseFormProps}/>
+          modalType === 'base'
+          &&
+          <BaseInfoForm {...baseFormProps}/>
         }
         {
-        modalType === 'detail'
-        &&
-        <DetailInfoForm {...detailFormProps}/>
+          modalType === 'detail'
+          &&
+          <DetailInfoForm {...detailFormProps}/>
         }
         {
-        modalType === 'params'
-        &&
-        <ParamsInfoForm {...paramsFormProps}/>
+          modalType === 'params'
+          &&
+          <ParamsInfoForm {...paramsFormProps}/>
+        }
+        {
+          modalType === 'buyNow'
+          &&
+          <BuyNowForm {...buynowFormProps}/>
         }
         <div className={styles.steps_action}>
             <Button style={{ marginLeft: 8 }} onClick={handleCancel}>取消</Button>

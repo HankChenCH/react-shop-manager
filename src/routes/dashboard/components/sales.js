@@ -6,12 +6,15 @@ import { color } from '../../../utils'
 import { Button } from 'antd'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
-function Sales ({ data, reflashLoading, onReflash }) {
+function Sales ({ data, reflashable, reflashLoading, onReflash }) {
   return (
     <div className={styles.sales}>
       <div className={styles.title}>
         <span>月销量</span>
-        <Button className={styles.reflash} size="small" onClick={onReflash} loading={reflashLoading}>刷新</Button>
+        {
+          reflashable && 
+          <Button className={styles.reflash} size="small" onClick={onReflash} loading={reflashLoading}>刷新</Button>
+        }
       </div>
       <ResponsiveContainer minHeight={360}>
         <LineChart data={data}>

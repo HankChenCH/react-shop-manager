@@ -18,6 +18,7 @@ function Dashboard ({ dashboard, dispatch, loading }) {
 
   const salesProps = {
     data: sales,
+    reflashable: true,
     reflashLoading: loading.effects['dashboard/querySales'],
     onReflash: function () {
       dispatch({ type: 'dashboard/querySales' })

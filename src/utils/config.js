@@ -31,6 +31,8 @@ module.exports = {
       pull: 'product/:id/pullOnOff',
       recent: '/product/recent',
       countAllSales: '/product/sales',
+      countOneSales: '/product/:id/sales',
+      buyNow: '/product/:id/buynow',
     },
     category: {
       list: '/category/all',
@@ -45,6 +47,11 @@ module.exports = {
       batch: '/theme/batch',
       products: '/theme/:id/product',
       setProducts: 'theme/:id/product'
+    },
+    express: {
+      list: '/express/all',
+      info: '/express/:id',
+      batch: '/express/batch',
     },
     user:{
       list: '/user',

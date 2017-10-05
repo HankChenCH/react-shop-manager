@@ -1,7 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
 const { list, info, batch, products, setProducts } = api.category
-const { all } = api.product
 
 export async function query (params) {
   return request({
@@ -10,15 +9,6 @@ export async function query (params) {
     data: params,
   })
 }
-
-export async function queryAll (params) {
-  return request({
-    url: all,
-    method: 'get',
-    data: params,
-  })
-}
-
 export async function queryProducts (params) {
   return request({
     url: products,

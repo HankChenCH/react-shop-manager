@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
 import { model } from '../common'
 import { routerRedux } from 'dva/router'
-import { queryDetail, update, updateDetail, updateParams } from '../../services/product'
+import { queryDetail, update, updateDetail, updateParams, oneSales, createBuyNow } from '../../services/product'
 import { deleteProps } from '../../utils'
 
 export default modelExtend(model, {
@@ -15,6 +15,7 @@ export default modelExtend(model, {
     modalVisible: false,
     prevProduct: {},
     nextProduct: {},
+    productSales: [],
   },
 
   subscriptions: {
@@ -23,6 +24,7 @@ export default modelExtend(model, {
         const match = pathToRegexp('/product/:id').exec(location.pathname)
         if (match) {
           dispatch({ type: 'query', payload: { id: match[1] } })
+          
         }
       })
     },
@@ -41,13 +43,14 @@ export default modelExtend(model, {
           },
         })
         yield put({ type: 'queryPageProduct' })
+        yield put({ type: 'querySales' })
       } else {
         yield put({ type: 'backList' })
         throw data
       }
     },
 
-    *queryPageProduct({ payload }, { put, select }){
+    *queryPageProduct ({ payload }, { put, select }) {
       const { data } = yield select((_) => _.productDetail)
       const { productAll } = yield select((_) => _.app)
       const prevProduct = {}
@@ -71,18 +74,29 @@ export default modelExtend(model, {
       yield put({ type: 'updateState', payload: { prevProduct, nextProduct } })
     },
 
-    *locateTo({ payload }, { put }) {
+    *querySales ({ payload }, { put, call, select }) {
+      const { data } = yield select((_) => _.productDetail)
+      const res = yield call(oneSales, { countMonth: 6, id: data.id })
+      if (res.success) {
+        const sales = res.data.map((item) => { return { "销售额": parseFloat(item.month_sales), "销售量": parseInt(item.month_counts), date: item.count_date } })
+        yield put({ type: 'updateState', payload: { productSales: sales } })
+      } else {
+        throw res
+      }
+    },
+
+    *locateTo ({ payload }, { put }) {
       yield put(routerRedux.push(`/product/${payload}`))
       yield put({ type: 'clearData' })
     },
 
-    *backList({ payload }, { put, select }) {
+    *backList ({ payload }, { put, select }) {
       const { pagination } = yield select((_) => _.product)
       yield put(routerRedux.push(`/product?page=${pagination.current || 1}&pageSize=${pagination.pageSize || 10}`))
       yield put({ type: 'clearData' })
     },
 
-    *update({ payload }, { put, call, select }) {
+    *update ({ payload }, { put, call, select }) {
       const { data, modalType } = yield select((_) => _.productDetail)
       let newProduct = {}
       
@@ -102,42 +116,67 @@ export default modelExtend(model, {
           newProduct = { properties: payload.data, id: data.id }
           yield put({ type: 'updateParams', payload: newProduct })
           break;
-        }
+        case 'buyNow':
+          const newBuyNow = { 
+            ...payload.data, 
+            start_time: Math.ceil(payload.data.buynow_time[0].valueOf() / 1000), 
+            end_time: Math.ceil(payload.data.buynow_time[1].valueOf() / 1000) 
+          }
+          if (!deleteProps(newBuyNow, ['buynow_time'])) {
+            yield put({ type: 'app/messageError', payload: "开启秒杀失败" })
+          }
+          newProduct = { ...newBuyNow, id: data.id }
+          yield put({ type: 'updateBuyNow', payload: newProduct })
+          break;
+      }
 
         yield put({ type: 'hideModal' })
     },
 
-    *updateBase({ payload }, { put, call, select }) {
+    *pullOn ({ payload }, { put, select }) {
       const { data } = yield select((_) => _.productDetail)
+      yield put({ type: 'updateBase', payload: { ...data, is_on: '1' } })
+    },
+
+    *updateBase ({ payload }, { put, call }) {
       const res = yield call(update, payload)
       
       if (res.success) {
-        yield put({ type: 'query', payload: { id: data.id }})
+        yield put({ type: 'query', payload: { id: payload.id }})
         yield put({ type: 'app/messageSuccess', payload:"更新商品基础信息成功" })
       } else {
         throw res
       }
     },
 
-    *updateDetail({ payload }, { put, call, select }) {
-      const { data } = yield select((_) => _.productDetail)
+    *updateDetail({ payload }, { put, call }) {
       const res = yield call(updateDetail, payload)
       
       if (res.success) {
-        yield put({ type: 'query', payload: { id: data.id }})
+        yield put({ type: 'query', payload: { id: payload.id }})
         yield put({ type: 'app/messageSuccess', payload:"更新商品基础信息成功" })
       } else {
         throw res
       }
     },
 
-    *updateParams({ payload }, { put, call, select }) {
-      const { data } = yield select((_) => _.productDetail)
+    *updateParams ({ payload }, { put, call }) {
       const res = yield call(updateParams, payload)
       
       if (res.success) {
-        yield put({ type: 'query', payload: { id: data.id }})
+        yield put({ type: 'query', payload: { id: payload.id }})
         yield put({ type: 'app/messageSuccess', payload:"更新商品基础信息成功" })
+      } else {
+        throw res
+      }
+    },
+
+    *updateBuyNow ({ payload }, { put, call }) {
+      const res = yield call(createBuyNow, payload)
+
+      if (res.success) {
+        yield put({ type: 'query', payload: { id: payload.id }})
+        yield put({ type: 'app/messageSuccess', payload:"开启秒杀成功" })
       } else {
         throw res
       }

@@ -1,14 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Row, Col, Tabs, Button, Icon } from 'antd'
+import { Row, Col, Tabs, Button, Icon, Spin, Modal } from 'antd'
+import { DropOption } from '../../../components'
+import { Sales } from '../../dashboard/components'
 import { connect } from 'dva'
 import InfoModal from './Modal'
 import styles from './index.less'
 
 const TabPane = Tabs.TabPane
+const confirm = Modal.confirm
 
-const Detail = ({ productDetail, dispatch }) => {
-  const { data, prevProduct, nextProduct, modalType, modalVisible } = productDetail
+const Detail = ({ productDetail, dispatch, loading }) => {
+  const { data, prevProduct, nextProduct, productSales, modalType, modalVisible } = productDetail
   const { properties } = data
 
   let productProp = []
@@ -46,12 +49,56 @@ const Detail = ({ productDetail, dispatch }) => {
     dispatch({ type: 'productDetail/locateTo', payload: nextProduct.id })
   }
 
+  const handleMenuClick = (e) => {
+    if (e.key === '1') {
+      handleUpdateBase()
+    }
+
+    if (e.key === '2') {
+      if (data.is_on === '0') {
+        confirm({
+          title: '开启秒杀需要先上架商品，是否现在上架?',
+          onOk () {
+            dispatch({ type: 'productDetail/pullOn' })
+            dispatch({ type: 'productDetail/showModal', payload: { modalType: 'buyNow' } })
+          },
+        })
+      } else {
+        dispatch({ type: 'productDetail/showModal', payload: { modalType: 'buyNow' } })
+      }
+    }
+
+    if (e.key === '3') {
+      backToList()
+    }
+  }
+
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 4 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 18 },
+    },
+  }
+  
+  const formItemLayoutWithOutLabel = {
+    wrapperCol: {
+      xs: { span: 24, offset: 0 },
+      sm: { span: 18, offset: 4 },
+    },
+  }
+
   const modalProps = {
+    item: data,    
     modalType,
     visible: modalVisible,
-    title: '更新商品信息',
+    title: modalType !== 'buyNow' ? '更新商品信息' : '开启秒杀',
     wrapClassName: 'vertical-center-modal',
-    item: data,
+    formItemLayout,
+    formItemLayoutWithOutLabel,
     onOk (data) {
       dispatch({
         type: 'productDetail/update',
@@ -67,16 +114,27 @@ const Detail = ({ productDetail, dispatch }) => {
     }
   }
 
+  const salesProps = {
+    data: productSales,
+    reflashable: false,
+    style: {
+      width: 'auto'
+    }
+  }
+
   return (
     <div className="content-inner">
       <div className={styles.content}>
+        <Spin spinning={loading}>
         <Row gutter={8} justify="center" align="center">
-          <Col span={19}>
+          <Col span={22}>
             <h2>{data.name}</h2>
           </Col>
-          <Col className={styles.center} style={{ height: '46px', flexDirection: 'row', justifyContent: 'space-around' }} span={5}>
-            <Button onClick={handleUpdateBase}>更新基础信息</Button>
-            <Button onClick={backToList}>返回列表</Button>
+          <Col className={styles.center} style={{ height: '46px' }} span={2}>
+              <DropOption 
+                onMenuClick={e => handleMenuClick(e)} 
+                menuOptions={[{ key: '1', name: '更新基础信息' }, { key: '2', name: '开启秒杀' }, { key: '3', name: '返回列表'}]}
+              />
           </Col>
         </Row>
         <Row gutter={8} justify="center" align="center">
@@ -150,20 +208,33 @@ const Detail = ({ productDetail, dispatch }) => {
                 </Col>
               </Row>
             </TabPane>
-            <TabPane tab="商品销量" key="3">Content of tab 3</TabPane>
+            <TabPane tab="商品销量" key="3">
+              <Row gutter={8}>
+                <Col span={22}>
+                  {
+                    productSales.length > 0 ?
+                    <Sales {...salesProps}/> : 
+                    '暂无销售记录'
+                  }
+                </Col>
+              </Row>
+            </TabPane>
           </Tabs>
         </Row>
         <Row className={styles.paganation} gutter={8}>
+          <Col span={24}>
             {
               prevProduct.name && 
-              <Col span={12}><Button style={{ float: 'left' }} onClick={handlePrevProduct}><Icon type="left"/>{prevProduct.name}</Button></Col>              
+              <Button style={{ float: 'left' }} onClick={handlePrevProduct}><Icon type="left"/>{prevProduct.name}</Button>              
             }
             {
               nextProduct.name &&
-              <Col span={12}><Button style={{ float: 'right' }} onClick={handleNextProduct}>{nextProduct.name}<Icon type="right"/></Button></Col>            
+              <Button style={{ float: 'right' }} onClick={handleNextProduct}>{nextProduct.name}<Icon type="right"/></Button>           
             }
+          </Col>
         </Row>
         <InfoModal {...modalProps}/>
+        </Spin>
       </div>
     </div>
   )

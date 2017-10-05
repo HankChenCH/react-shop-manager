@@ -4,6 +4,11 @@ import dva from 'dva'
 import createLoading from 'dva-loading'
 import { browserHistory } from 'dva/router'
 import { message } from 'antd'
+import moment from 'moment';
+
+// 入口文件全局设置 locale
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 
 // 1. Initialize
 const app = dva({

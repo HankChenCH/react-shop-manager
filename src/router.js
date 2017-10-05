@@ -63,6 +63,14 @@ const Routers = function ({ history, app }) {
             }, 'category')
           },
         }, {
+          path: 'express',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/express'))
+              cb(null, require('./routes/express/'))
+            }, 'express')
+          },
+        }, {
           path: 'order',
           getComponent (nextState, cb) {
             require.ensure([], require => {
@@ -94,6 +102,13 @@ const Routers = function ({ history, app }) {
               // cb(null, require('./routes/user/detail/'))
             }, 'user-detail')
           },
+        }, {
+          path: 'setting/menu',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              cb(null ,require('./routes/menu'))
+            }, 'menu')
+          }
         }, {
           path: 'setting/admin',
           getComponent (nextState, cb) {

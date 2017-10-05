@@ -76,8 +76,7 @@ export default modelExtend(pageModel, {
     },
 
     *create ({ payload }, { call, put }) {
-      
-      const newCategory = { ...payload, id, topic_img_id: payload.topic_img.img_id }
+      const newCategory = { ...payload, topic_img_id: payload.topic_img.img_id }
       if (!deleteProps(newCategory, ['topic_img'])) {
         yield put({ type: 'app/messageError', payload:"更新失败" })
       }

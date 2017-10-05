@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Layout, Chat } from '../components'
-import moment from 'moment'
 import { classnames, config, menu } from '../utils'
 import { Helmet } from 'react-helmet'
 import '../themes/index.less'
@@ -13,7 +12,6 @@ const { prefix } = config
 const { Header, Bread, Footer, Sider, styles } = Layout
 const { CommonChatRoom } = Chat
 let lastHref
-moment.locale('zh-cn');
 
 const App = ({ children, location, dispatch, app, chat, loading }) => {
   const { user, siderFold, notificationCount, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys } = app

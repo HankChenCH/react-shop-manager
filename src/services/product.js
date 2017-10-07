@@ -1,6 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
-const { all, list, info, batch, stockAndPrice, detail, properties, pull, countOneSales, buyNow } = api.product
+const { all, list, info, batch, stockAndPrice, detail, properties, pull, countOneSales, buyNow, buyNowInfo } = api.product
 
 export async function query (params) {
   return request({
@@ -26,6 +26,14 @@ export async function queryAll (params) {
   })
 }
 
+export async function queryBuyNow (params) {
+  return request ({
+    url: buyNow,
+    method: 'get',
+    data: params,
+  })
+}
+
 export async function create (params) {
   return request({
     url: info.replace('/:id', ''),
@@ -45,6 +53,14 @@ export async function createBuyNow (params) {
 export async function remove (params) {
   return request({
     url: info,
+    method: 'delete',
+    data: params,
+  })
+}
+
+export async function removeBuyNow (params) {
+  return request({
+    url: buyNowInfo,
     method: 'delete',
     data: params,
   })

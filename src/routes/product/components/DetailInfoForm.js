@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import { Editor } from '../../../components'
 import { Form, Button, message } from 'antd'
 import { apiPrefix, api } from '../../../utils/config'
-import draftToHtml from 'draftjs-to-html';
-import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import styles from '../Modal.css'
 
 const FormItem = Form.Item
@@ -22,11 +20,11 @@ class DetailInfoForm extends React.Component
 		const { item, formItemLayout, onDetailsOk, onChangeStep, form } = this.props
 		const { getFieldDecorator, validateFields, getFieldsValue } = form
 
-	    const handleUploadError = (msg) => {
-	        message.error(msg)
-	    }
+		const handleUploadError = (msg) => {
+				message.error(msg)
+		}
 
-	    const detail = (item.details !== null && ('detail' in item.details)) ? item.details.detail : ''
+		const detail = (item.details !== null && ('detail' in item.details)) ? item.details.detail : ''
 
 		return (
 			<div>

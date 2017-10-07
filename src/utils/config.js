@@ -33,6 +33,7 @@ module.exports = {
       countAllSales: '/product/sales',
       countOneSales: '/product/:id/sales',
       buyNow: '/product/:id/buynow',
+      buyNowInfo: 'product/:id/buyNow/:bid',
     },
     category: {
       list: '/category/all',

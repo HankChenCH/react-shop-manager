@@ -6,8 +6,9 @@ import { DropOption } from '../../components'
 import styles from './List.less'
 
 const confirm = Modal.confirm
+const warning = Modal.warning
 
-const List = ({ queryStatus, onChangeItemPrice, onDeleteItem, onCloseItem, onDeliveryItem, ...tableProps }) => {
+const List = ({ queryStatus, express, onChangeItemPrice, onDeleteItem, onCloseItem, onDeliveryItem, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onChangeItemPrice(record)
@@ -26,7 +27,12 @@ const List = ({ queryStatus, onChangeItemPrice, onDeleteItem, onCloseItem, onDel
         },
       })
     } else if (e.key === '4') {
-      onDeliveryItem(record)
+      express.length > 0 ?
+        onDeliveryItem(record) :
+        warning({
+          title: '警告',
+          content: '快递信息未定义，请先到快递管理处理！'
+        })
     }
   }
 

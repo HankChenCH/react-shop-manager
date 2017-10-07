@@ -1,12 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Layout } from '../../../components'
-import { Form, DatePicker, InputNumber, Input } from 'antd'
+import { Layout, Editor } from '../../../components'
+import { apiPrefix, api } from '../../../utils/config'
+import { Form, DatePicker, InputNumber, Input, message } from 'antd'
+
 import styles from '../Modal.css'
 
 const FormItem = Form.Item
 const { RangePicker } = DatePicker
 const { Notice } = Layout
+const HtmlEditor = Editor.HtmlEditor
+const { productDetail } = api.image
+const uploadDetailImageApi = `${apiPrefix}/${productDetail}`
 
 class BuyNowForm extends React.Component
 {
@@ -19,20 +24,19 @@ class BuyNowForm extends React.Component
         return current && current.valueOf() < (Date.now() - 3600 * 1000 * 24);
     }
 
-    getBatchNo = () => {
-        return 'ABC'
-    } 
-
     render() {
         const { item, modalType, formItemLayout, form } = this.props
         const { getFieldDecorator } = form
+
+        const handleUploadError = (msg) => {
+            message.error(msg)
+        }
 
         return (
             <div className={styles.steps_content}>
                 <Form>
                     <FormItem label="秒杀批次" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('batch_no', {
-                            initialValue: this.getBatchNo(),
                             rule: [
                                 {
                                     required: true,
@@ -68,7 +72,8 @@ class BuyNowForm extends React.Component
                                     message: '请填写秒杀价格'
                                 }
                             ]
-                        })(<InputNumber style={{width: '100%'}} min={0} max={item.price} step={0.01}/>)}
+                        })(<InputNumber style={{width: '100%'}} min={0.01} max={item.price} step={0.01}/>)}
+                        <Notice>秒杀价格最低为0.01元，低于0.01元无法进行微信支付</Notice>
                     </FormItem>
                     <FormItem label="秒杀总量" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('stock', {
@@ -80,7 +85,6 @@ class BuyNowForm extends React.Component
                                 }
                             ]
                         })(<InputNumber style={{width: '100%'}} min={0} max={item.stock} />)}
-                        <Notice>开启秒杀后自动扣除当前总库存，秒杀结束后剩余量返回总库存</Notice>
                     </FormItem>
                     <FormItem label="限购数目" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('limit_every', {
@@ -93,6 +97,27 @@ class BuyNowForm extends React.Component
                             ]
                         })(<InputNumber style={{width: '100%'}} min={0}/>)}
                         <Notice>每人限购数量，0则为不限</Notice>
+                    </FormItem>
+                    <FormItem label="抢购规则" hasFeedback {...formItemLayout}>
+                        {getFieldDecorator('rules')(
+                            <HtmlEditor
+			                    wrapperStyle={{
+			                      minWidth: 200,
+			                      maxWidth: 700
+			                    }}
+			                    editorStyle={{
+			                      maxHeight: 300,
+			                      minHeight: 300,
+			                      overFlow: 'hidden',
+			                      minWidth: 200,
+			                      maxWidth: 700,
+			                      backgroundColor: '#fff'
+			                    }}
+			                    fileName="detailImage"
+			                    action={uploadDetailImageApi}
+			                    onUploadError={handleUploadError}
+			                />
+                        )}
                     </FormItem>
                 </Form>
             </div>

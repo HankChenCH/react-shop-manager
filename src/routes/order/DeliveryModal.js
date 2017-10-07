@@ -19,6 +19,7 @@ const formItemLayout = {
 
 const DeliveryModal = ({
   item,
+  express,
   onOk,
   form: {
     getFieldDecorator,
@@ -74,10 +75,11 @@ const DeliveryModal = ({
             ],
           })(
             <RadioGroup>
-              <RadioButton value="顺丰">顺丰</RadioButton>
-              <RadioButton value="中通">中通</RadioButton>
-              <RadioButton value="申通">申通</RadioButton>
-              <RadioButton value="圆通">圆通</RadioButton>
+              {
+                express.map( item =>  
+                  <RadioButton value={item.express_name}>{item.express_name}</RadioButton>
+                )
+              }
             </RadioGroup>
           )}
         </FormItem>

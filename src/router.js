@@ -74,6 +74,7 @@ const Routers = function ({ history, app }) {
           path: 'order',
           getComponent (nextState, cb) {
             require.ensure([], require => {
+              registerModel(app, require('./models/express'))
               registerModel(app, require('./models/order'))
               cb(null, require('./routes/order/'))
             }, 'order')

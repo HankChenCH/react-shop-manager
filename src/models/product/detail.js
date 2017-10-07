@@ -1,11 +1,11 @@
 import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
-import { model } from '../common'
+import { pageModel } from '../common'
 import { routerRedux } from 'dva/router'
-import { queryDetail, update, updateDetail, updateParams, oneSales, createBuyNow } from '../../services/product'
+import { queryDetail, update, updateDetail, updateParams, oneSales, createBuyNow, queryBuyNow, removeBuyNow } from '../../services/product'
 import { deleteProps } from '../../utils'
 
-export default modelExtend(model, {
+export default modelExtend(pageModel, {
 
   namespace: 'productDetail',
 
@@ -24,7 +24,7 @@ export default modelExtend(model, {
         const match = pathToRegexp('/product/:id').exec(location.pathname)
         if (match) {
           dispatch({ type: 'query', payload: { id: match[1] } })
-          
+          dispatch({ type: 'queryBuyNow', payload: { id: match[1] } })
         }
       })
     },
@@ -47,6 +47,21 @@ export default modelExtend(model, {
       } else {
         yield put({ type: 'backList' })
         throw data
+      }
+    },
+
+    *queryBuyNow ({ payload }, { put, call }) {
+      const res = yield call(queryBuyNow, payload)
+      if (res.success) {
+        yield put({ 
+          type: 'updateState', 
+          payload: { 
+            list: res.data, 
+            current: Number(payload.page) || 1,
+            pageSize: Number(payload.pageSize) || 10,
+            total: res.data.total, 
+          } 
+        })
       }
     },
 
@@ -171,16 +186,29 @@ export default modelExtend(model, {
       }
     },
 
-    *updateBuyNow ({ payload }, { put, call }) {
+    *updateBuyNow ({ payload }, { put, call, select }) {
+      const { data } = yield select((_) => _.productDetail)
       const res = yield call(createBuyNow, payload)
 
       if (res.success) {
-        yield put({ type: 'query', payload: { id: payload.id }})
+        yield put({ type: 'queryBuyNow', payload: { id: data.id }})
         yield put({ type: 'app/messageSuccess', payload:"开启秒杀成功" })
       } else {
         throw res
       }
     },
+
+    *deleteBuyNow ({ payload }, { put, call, select }) {
+      const { data } = yield select((_) => _.productDetail)
+      const res = yield call(removeBuyNow, { id: data.id, bid: payload })
+
+      if (res.success) {
+        yield put({ type: 'queryBuyNow', payload: { id: data.id }})
+        yield put({ type: 'app/messageSuccess', payload:"删除秒杀成功" })
+      } else {
+        throw res
+      }
+    }
   },
 
   reducers: {
@@ -188,6 +216,17 @@ export default modelExtend(model, {
       return {
         ...state,
         data: {},
+        sales: [],
+        list: [],
+        pagination: {
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: total => `共 ${total} 条记录`,
+          current: 1,
+          total: 0,
+        },
+        prevProduct: {},
+        nextProduct: {},
       }
     },
 

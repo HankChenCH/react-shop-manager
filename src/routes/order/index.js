@@ -12,13 +12,15 @@ const TabPane = Tabs.TabPane
 
 const { EnumOrderStatus } = Enum
 
-const Index = ({ order, dispatch, loading, location }) => {
+const Index = ({ order, express, dispatch, loading, location }) => {
   const { list, pagination, selectedRowKeys, currentItem, priceModalVisible, deliveryModalVisible, queryStatus } = order
+  const expresses = express.list
   const { query = {}, pathname } = location
 
   const listProps = {
     queryStatus: queryStatus || '1',
     pagination,
+    express: expresses,
     dataSource: list,
     loading: loading.effects['order/query'],
     onChange (page) {
@@ -97,6 +99,7 @@ const Index = ({ order, dispatch, loading, location }) => {
 
   const deliveryModalProps = {
     item: currentItem,
+    express: expresses,
     visible: deliveryModalVisible,
     maskClosable: false,
     confirmLoading: loading.effects['order/deliveryItem'],
@@ -182,4 +185,4 @@ Index.propTypes = {
   dispatch: PropTypes.func,
 }
 
-export default connect(({ order, loading }) => ({ order, loading }))(Index)
+export default connect(({ order, express, loading }) => ({ order, express, loading }))(Index)

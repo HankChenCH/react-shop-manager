@@ -1,5 +1,5 @@
 import React from 'react'
-import { conncet } from 'dva'
+import { connect } from 'dva'
 
 const Menu = ({ loading }) => {
 

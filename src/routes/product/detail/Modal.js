@@ -66,7 +66,6 @@ export default class InfoModal extends React.Component
               delete data.detail.value
             }
 
-            onOk(data)
           } else if(modalType === 'params') {
             const { validateFields, getFieldsValue } = this.refs.infoForm
             validateFields((errors) => {
@@ -83,11 +82,20 @@ export default class InfoModal extends React.Component
                 data.push(formData[i])
               }
       
-              onOk(data)
             })
-          } else {
-            onOk(data)
+          } else if(modalType === 'buyNow') {
+
+            if (typeof data.rules === 'object' && !('value' in data.rules)) {
+              data.rules = draftToHtml(data.rules)
+            }
+
+            if (data.rules.hasOwnProperty('value')) {
+              data.rules = data.rules.value
+              delete data.rules.value
+            }
           }
+          
+          onOk(data)          
       })
     }
 

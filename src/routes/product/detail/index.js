@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Row, Col, Tabs, Button, Icon, Spin, Modal } from 'antd'
 import { DropOption } from '../../../components'
 import { Sales } from '../../dashboard/components'
+import BuyNowTable from './BuyNowTable'
 import { connect } from 'dva'
 import InfoModal from './Modal'
 import styles from './index.less'
@@ -11,7 +12,7 @@ const TabPane = Tabs.TabPane
 const confirm = Modal.confirm
 
 const Detail = ({ productDetail, dispatch, loading }) => {
-  const { data, prevProduct, nextProduct, productSales, modalType, modalVisible } = productDetail
+  const { list, pagination, selectedRowKeys, data, prevProduct, nextProduct, productSales, modalType, modalVisible } = productDetail
   const { properties } = data
 
   let productProp = []
@@ -29,29 +30,17 @@ const Detail = ({ productDetail, dispatch, loading }) => {
     dispatch({ type: 'productDetail/backList' })
   }
 
-  const handleUpdateBase = () => {
-    dispatch({ type: 'productDetail/showModal', payload: { modalType: 'base' } })
+  const handleUpdate = (type) => {
+    dispatch({ type: 'productDetail/showModal', payload: { modalType: type } })
   }
 
-  const handleUpdateDetail = () => {
-    dispatch({ type: 'productDetail/showModal', payload: { modalType: 'detail' } })
-  }
-
-  const handleUpdateParams = () => {
-    dispatch({ type: 'productDetail/showModal', payload: { modalType: 'params' } })
-  }
-
-  const handlePrevProduct = () => {
-    dispatch({ type: 'productDetail/locateTo', payload: prevProduct.id })
-  }
-
-  const handleNextProduct = () => {
-    dispatch({ type: 'productDetail/locateTo', payload: nextProduct.id })
+  const handleLocateProduct = (id) => {
+    dispatch({ type: 'productDetail/locateTo', payload: id })
   }
 
   const handleMenuClick = (e) => {
     if (e.key === '1') {
-      handleUpdateBase()
+      handleUpdate('base')
     }
 
     if (e.key === '2') {
@@ -60,11 +49,11 @@ const Detail = ({ productDetail, dispatch, loading }) => {
           title: '开启秒杀需要先上架商品，是否现在上架?',
           onOk () {
             dispatch({ type: 'productDetail/pullOn' })
-            dispatch({ type: 'productDetail/showModal', payload: { modalType: 'buyNow' } })
+            handleUpdate('buyNow')
           },
         })
       } else {
-        dispatch({ type: 'productDetail/showModal', payload: { modalType: 'buyNow' } })
+        handleUpdate('buyNow')
       }
     }
 
@@ -100,6 +89,7 @@ const Detail = ({ productDetail, dispatch, loading }) => {
     formItemLayout,
     formItemLayoutWithOutLabel,
     onOk (data) {
+      console.log(data)
       dispatch({
         type: 'productDetail/update',
         payload: {
@@ -112,6 +102,17 @@ const Detail = ({ productDetail, dispatch, loading }) => {
         type: 'productDetail/hideModal'
       })
     }
+  }
+
+  const listProps = {
+    dataSource: list,
+    pagination,
+    onDeleteItem (id) {
+      dispatch({
+        type: 'productDetail/deleteBuyNow',
+        payload: id,
+      })
+    },
   }
 
   const salesProps = {
@@ -184,7 +185,7 @@ const Detail = ({ productDetail, dispatch, loading }) => {
                 }
                 </Col>
                 <Col span={4}>
-                  <Button onClick={handleUpdateDetail}>更新商品详情</Button>
+                  <Button onClick={() => handleUpdate('detail')}>更新商品详情</Button>
                 </Col>
               </Row>
             </TabPane>
@@ -204,11 +205,18 @@ const Detail = ({ productDetail, dispatch, loading }) => {
                 }
                 </Col>
                 <Col span={4}>
-                  <Button onClick={handleUpdateParams}>更新规格参数</Button>
+                  <Button onClick={() => handleUpdate('params')}>更新规格参数</Button>
                 </Col>
               </Row>
             </TabPane>
-            <TabPane tab="商品销量" key="3">
+            <TabPane tab="秒杀抢购" key="3">
+                <Row gutter={8}>
+                  <Col span={23}>
+                    <BuyNowTable {...listProps} />
+                  </Col>
+                </Row>
+            </TabPane>
+            <TabPane tab="商品销量" key="4">
               <Row gutter={8}>
                 <Col span={22}>
                   {
@@ -225,11 +233,11 @@ const Detail = ({ productDetail, dispatch, loading }) => {
           <Col span={24}>
             {
               prevProduct.name && 
-              <Button style={{ float: 'left' }} onClick={handlePrevProduct}><Icon type="left"/>{prevProduct.name}</Button>              
+              <Button style={{ float: 'left' }} onClick={() => handleLocateProduct(prevProduct.id)}><Icon type="left"/>{prevProduct.name}</Button>              
             }
             {
               nextProduct.name &&
-              <Button style={{ float: 'right' }} onClick={handleNextProduct}>{nextProduct.name}<Icon type="right"/></Button>           
+              <Button style={{ float: 'right' }} onClick={() => handleLocateProduct(nextProduct.id)}>{nextProduct.name}<Icon type="right"/></Button>           
             }
           </Col>
         </Row>

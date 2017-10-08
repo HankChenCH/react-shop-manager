@@ -37,7 +37,7 @@ class BuyNowForm extends React.Component
                 <Form>
                     <FormItem label="秒杀批次" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('batch_no', {
-                            rule: [
+                            rules: [
                                 {
                                     required: true,
                                     message: '请填写秒杀批次'
@@ -47,7 +47,7 @@ class BuyNowForm extends React.Component
                     </FormItem>
                     <FormItem label="秒杀时段" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('buynow_time', {
-                            rule: [
+                            rules: [
                                 {
                                     required: true,
                                     message: '请选择秒杀时段'
@@ -66,7 +66,7 @@ class BuyNowForm extends React.Component
                     <FormItem label="秒杀价格" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('price', {
                             initialValue: 0,
-                            rule: [
+                            rules: [
                                 {
                                     required: true,
                                     message: '请填写秒杀价格'
@@ -78,7 +78,7 @@ class BuyNowForm extends React.Component
                     <FormItem label="秒杀总量" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('stock', {
                             initialValue: 0,
-                            rule: [
+                            rules: [
                                 {
                                     required: true,
                                     message: '请填写秒杀总量'
@@ -89,7 +89,7 @@ class BuyNowForm extends React.Component
                     <FormItem label="限购数目" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('limit_every', {
                             initialValue: 0,
-                            rule: [
+                            rules: [
                                 {
                                     required: true,
                                     message: '请填写限购数目'

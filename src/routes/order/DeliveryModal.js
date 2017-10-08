@@ -66,7 +66,7 @@ const DeliveryModal = ({
         </FormItem>
         <FormItem label="快递公司" hasFeedback {...formItemLayout}>
           {getFieldDecorator('express_name', {
-            initialValue: "顺丰",
+            initialValue: express.length === 1 ? express[0].express_name : '',
             rules: [
               {
                 required: true,

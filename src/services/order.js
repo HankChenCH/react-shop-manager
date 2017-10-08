@@ -1,6 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
-const { list, info, price, delivery, batch } = api.order
+const { list, info, price, delivery, issue, batch, close } = api.order
 
 export async function query (params) {
   return request({
@@ -34,6 +34,14 @@ export async function deliveryGoods (params) {
 	})
 }
 
+export async function issueGoods (params) {
+	return request({
+		url: issue,
+		method: 'put',
+		data: params,
+	})
+}
+
 export async function remove (params) {
 	return request({
 		url: info,
@@ -46,6 +54,14 @@ export async function batchRemove (params) {
 	return request({
 		url: batch,
 		method: 'delete',
+		data: params,
+	})
+}
+
+export async function batchClose (params) {
+	return request({
+		url: close,
+		method: 'put',
 		data: params,
 	})
 }

@@ -4,6 +4,7 @@ import { connect } from 'dva'
 import { Tabs, Row, Col, Popconfirm, Button, Modal, Form } from 'antd'
 import PriceModal from './PriceModal'
 import DeliveryModal from './DeliveryModal'
+import ModalForm from './ModalForm'
 import { routerRedux } from 'dva/router'
 import List from './List'
 import { Enum } from '../../utils'
@@ -13,7 +14,7 @@ const TabPane = Tabs.TabPane
 const { EnumOrderStatus } = Enum
 
 const Index = ({ order, express, dispatch, loading, location }) => {
-  const { list, pagination, selectedRowKeys, currentItem, priceModalVisible, deliveryModalVisible, queryStatus } = order
+  const { list, pagination, selectedRowKeys, currentItem, modalType, modalVisible, priceModalVisible, deliveryModalVisible, queryStatus } = order
   const expresses = express.list
   const { query = {}, pathname } = location
 
@@ -35,9 +36,10 @@ const Index = ({ order, express, dispatch, loading, location }) => {
     },
     onChangeItemPrice (item) {
       dispatch({
-        type: 'order/showPriceModal',
+        type: 'order/showModal',
         payload: {
-          currentItem: item
+          currentItem: item,
+          modalType: 'price',
         }
       })
     },
@@ -55,9 +57,19 @@ const Index = ({ order, express, dispatch, loading, location }) => {
     },
     onDeliveryItem (item) {
       dispatch({
-        type: 'order/showDeliveryModal',
+        type: 'order/showModal',
         payload: {
           currentItem: item,
+          modalType: 'delivery',
+        }
+      })
+    },
+    onIssueItem (item) {
+      dispatch({
+        type: 'order/showModal',
+        payload: {
+          currentItem: item,
+          modalType: 'issue',
         }
       })
     },
@@ -77,37 +89,59 @@ const Index = ({ order, express, dispatch, loading, location }) => {
     }
   }
 
-  const priceModalProps = {
-    item: currentItem,
-    visible: priceModalVisible,
-    maskClosable: false,
-    confirmLoading: loading.effects['order/updatePrice'],
-    title: '订单改价',
-    wrapClassName: 'vertical-center-modal',
-    onOk (data) {
-      dispatch({
-        type: `order/updatePrice`,
-        payload: data,
-      })
-    },
-    onCancel () {
-      dispatch({
-        type: 'order/hideModal',
-      })
-    },
-  }
+  // const priceModalProps = {
+  //   item: currentItem,
+  //   visible: modalVisible,
+  //   maskClosable: false,
+  //   confirmLoading: loading.effects['order/updatePrice'],
+  //   title: '订单改价',
+  //   wrapClassName: 'vertical-center-modal',
+  //   onOk (data) {
+  //     dispatch({
+  //       type: `order/updatePrice`,
+  //       payload: data,
+  //     })
+  //   },
+  //   onCancel () {
+  //     dispatch({
+  //       type: 'order/hideModal',
+  //     })
+  //   },
+  // }
 
-  const deliveryModalProps = {
+  // const deliveryModalProps = {
+  //   item: currentItem,
+  //   express: expresses,
+  //   visible: modalVisible,
+  //   maskClosable: false,
+  //   confirmLoading: loading.effects['order/deliveryItem'],
+  //   title: '订单发货',
+  //   wrapClassName: 'vertical-center-modal',
+  //   onOk (data) {
+  //     dispatch({
+  //       type: `order/deliveryItem`,
+  //       payload: data,
+  //     })
+  //   },
+  //   onCancel () {
+  //     dispatch({
+  //       type: 'order/hideModal',
+  //     })
+  //   },
+  // }
+
+  const modalProps = {
     item: currentItem,
     express: expresses,
-    visible: deliveryModalVisible,
+    modalType,
+    visible: modalVisible,
     maskClosable: false,
-    confirmLoading: loading.effects['order/deliveryItem'],
-    title: '订单发货',
+    confirmLoading: loading.effects[`order/${modalType}Item`],
+    title: modalType === 'price' ? '订单改价' : '订单发货',
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
       dispatch({
-        type: `order/deliveryItem`,
+        type: `order/${modalType}Item`,
         payload: data,
       })
     },
@@ -172,8 +206,9 @@ const Index = ({ order, express, dispatch, loading, location }) => {
           <List {...listProps} />
         </TabPane>
       </Tabs>
-      {priceModalVisible && <PriceModal {...priceModalProps}/>}
-      {deliveryModalVisible && <DeliveryModal {...deliveryModalProps}/>}
+      {/*priceModalVisible && <PriceModal {...priceModalProps}/>}
+      {deliveryModalVisible && <DeliveryModal {...deliveryModalProps}/>*/}
+      {modalVisible && <ModalForm {...modalProps}/>}
     </div>
   )
 }

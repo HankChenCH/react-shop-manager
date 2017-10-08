@@ -69,7 +69,9 @@ module.exports = {
       info: '/order/by_admin/:id',
       price: '/order/by_admin/price/:id',
       delivery: '/order/by_admin/delivery/:id',
+      issue: '/order/by_admin/issue/:id',
       batch: '/order/by_admin/batch',
+      close: 'order/by_admin/closed',
     },
     image: {
       themeTopic: 'image/theme_topic_img',

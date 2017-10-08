@@ -35,10 +35,7 @@ const formItemLayoutWithOutLabel = {
 export default class InfoModal extends React.Component
 {
   constructor(props) {
-    super(props);
-    this.state = {
-      formData: {},
-    }
+    super(props)
   }
 
   render() {

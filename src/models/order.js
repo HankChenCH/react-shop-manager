@@ -1,17 +1,21 @@
 import modelExtend from 'dva-model-extend'
 import * as orderService from '../services/order'
 import { pageModel } from './common'
+import { Enum } from '../utils'
 
-const { query, changePrice, deliveryGoods, remove, batchRemove } = orderService
+const { query, changePrice, deliveryGoods, remove, batchRemove, batchClose, issueGoods } = orderService
+const { EnumOrderStatus } = Enum
 
 export default modelExtend(pageModel, {
 
   namespace: 'order',
 
   state: {
-    queryStatus: '1',
+    queryStatus: EnumOrderStatus.UNPAY,
     currentItem: {},
     tempItem: {},
+    modalType: 'price',
+    modalVisible: false,
     priceModalVisible: false,
     deliveryModalVisible: false,
     selectedRowKeys: [],
@@ -29,8 +33,16 @@ export default modelExtend(pageModel, {
           dispatch({ type: 'updateQueryStatus', payload: {
             queryStatus: location.query.status || '1'
           } })
+
+          dispatch({ type: 'express/query' })
         }
       })
+
+      setInterval(() => {
+        dispatch({
+          type: 'reloadList'
+        })
+      }, 600000)
     },
   },
 
@@ -59,6 +71,13 @@ export default modelExtend(pageModel, {
           }
         })
         throw res
+      }
+    },
+
+    *reloadList ({ payload }, { put, select }) {
+      const { queryStatus, pagination } = yield select((_) => _.order)
+      if (queryStatus === EnumOrderStatus.UNPAY) {
+        yield put({ type: 'query', payload: { page: pagination.current, pageSize: pagination.pageSize } })
       }
     },
 
@@ -93,7 +112,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *updatePrice ({ payload }, { put, call, select }) {
+    *priceItem ({ payload }, { put, call, select }) {
       const { currentItem, pagination, queryStatus } = yield select(_ => _.order)
       const res = yield call(changePrice, { id: currentItem.id, ...payload })
       if (res.success) {
@@ -115,7 +134,45 @@ export default modelExtend(pageModel, {
       } else {
         throw res
       }
-    }
+    },
+
+    *issueItem ({ payload }, { put, call, select }) {
+      const { currentItem, pagination, queryStatus } = yield select(_ => _.order)
+      
+      const res = yield call(issueGoods, { id: currentItem.id, tickets: payload })
+      if (res.success) {
+        yield put({ type: 'hideModal' })
+        yield put({ type: 'app/messageSuccess', payload:"订单出票成功" })
+        yield put({ type: 'query', payload: { status: queryStatus, page: pagination.current, pageSize: pagination.pageSize } })
+      } else {
+        throw res
+      }
+    },
+
+    *close ({ payload }, { put, call, select }) {
+      console.log(payload)
+      const { selectedRowKeys, pagination, queryStatus } = yield select(_ => _.order)
+      const res = yield call(batchClose, { ids: payload })
+      if (res.success) {
+        yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
+        yield put({ type: 'app/messageSuccess', payload:"关闭订单成功" })
+        yield put({ type: 'query', payload: { status: queryStatus, page: pagination.current, pageSize: pagination.pageSize } })
+      } else {
+        throw res
+      }
+    },
+
+    *multiClose ({ payload }, { put, call, select }) {
+      const { pagination, queryStatus } = yield select(_ => _.order)
+      const res = yield call(batchClose, { ids: payload.ids.join(',') })
+      if (res.success) {
+        yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
+        yield put({ type: 'app/messageSuccess', payload:"关闭订单成功" })
+        yield put({ type: 'query', payload: { status: queryStatus, page: pagination.current, pageSize: pagination.pageSize } })
+      } else {
+        throw res
+      }
+    },
 
   },
 
@@ -128,12 +185,21 @@ export default modelExtend(pageModel, {
       return { ...state, ...payload, deliveryModalVisible: true }
     },
 
+    showModal (state, { payload }) {
+      return {
+        ...state,
+        ...payload,
+        modalVisible: true,
+      }
+    },
+
     hideModal (state) {
       return { 
         ...state, 
         currentItem: {}, 
         priceModalVisible: false,
-        deliveryModalVisible: false
+        deliveryModalVisible: false,
+        modalVisible: false,
       }
     },
   },

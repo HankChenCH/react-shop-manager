@@ -232,18 +232,18 @@ const Detail = ({ productDetail, dispatch, loading }) => {
           </Tabs>
         </Row>
         <Row className={styles.paganation} gutter={8}>
+            <Col span={12} md={12}>
             {
               prevProduct.name && 
-              <Col span={12} md={12} xs={24}>
-                <Button style={{ float: 'left' }} onClick={() => handleLocateProduct(prevProduct.id)}><Icon type="left"/><span className={styles.text_clip} style={{ width: document.body.clientWidth < 769 ? 220 : '100%' }}>{prevProduct.name}</span></Button>              
-              </Col>
+                <Button style={{ float: 'left' }} onClick={() => handleLocateProduct(prevProduct.id)}><Icon type="left"/><span className={styles.text_clip} style={{ display: document.body.clientWidth < 769 ? 'none' : 'inline-block' }}>{prevProduct.name}</span></Button>              
             }
+            </Col>
+            <Col span={12} md={12}>
             {
               nextProduct.name &&
-              <Col span={12} md={12} xs={24}>
-                <Button style={{ float: 'right' }} onClick={() => handleLocateProduct(nextProduct.id)}><span className={styles.text_clip} style={{ width: document.body.clientWidth < 769 ? 220 : '100%' }}>{nextProduct.name}</span><Icon type="right"/></Button>           
-              </Col>
+                <Button style={{ float: 'right' }} onClick={() => handleLocateProduct(nextProduct.id)}><span className={styles.text_clip} style={{ display: document.body.clientWidth < 769 ? 'none' : 'inline-block' }}>{nextProduct.name}</span><Icon type="right"/></Button>           
             }
+            </Col>
         </Row>
         <InfoModal {...modalProps}/>
         </Spin>

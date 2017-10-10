@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Row, Col, Tabs, Button, Icon, Spin, Modal } from 'antd'
+import { Row, Col, Tabs, Button, Icon, Spin, Modal, Card } from 'antd'
 import { DropOption } from '../../../components'
 import { Sales } from '../../dashboard/components'
 import BuyNowTable from './BuyNowTable'
@@ -128,7 +128,7 @@ const Detail = ({ productDetail, dispatch, loading }) => {
       <div className={styles.content}>
         <Spin spinning={loading}>
         <Row gutter={8} justify="center" align="center">
-          <Col span={22}>
+          <Col span={22} xs={18}>
             <h2>{data.name}</h2>
           </Col>
           <Col className={styles.center} style={{ height: '46px' }} span={2}>
@@ -139,31 +139,29 @@ const Detail = ({ productDetail, dispatch, loading }) => {
           </Col>
         </Row>
         <Row gutter={8} justify="center" align="center">
-          <Col style={{ textAlign: 'center' }} span={24}>
+          <Col style={{ textAlign: 'center' }} span={24} xs={24}>
             <img className={styles.main_img} src={data.main_img_url}/>
           </Col>
         </Row>
-        <Row>
+        <Row gutter={8}>
           <Col className={styles.item} span={24}>
             <article>{data.summary}</article>
           </Col>
         </Row>
         <Row gutter={8} justify="center" align="center">
-          <Col className={styles.item} span={12}>
+          <Col className={styles.item} span={12} xs={24}>
             <div>单价</div>
             <div>￥{data.price}</div>
           </Col>
-          <Col className={styles.item} span={12}>
+          <Col className={styles.item} span={12} xs={24}>
             <div>库存量</div>
             <div>{data.stock}</div>
           </Col>
-        </Row>
-        <Row gutter={8} justify="center" align="center">
-          <Col className={styles.item} span={12}>
+          <Col className={styles.item} span={12} xs={24}>
             <div>种类</div>
             <div>{data.type === '1' ? '实体商品' : '卡卷商品'}</div>
           </Col>
-          <Col className={styles.item} span={12}>
+          <Col className={styles.item} span={12} xs={24}>
             <div>状态</div>
             <div>{data.is_on === '1' ? '上架' : '下架'}</div>
           </Col>
@@ -173,25 +171,28 @@ const Detail = ({ productDetail, dispatch, loading }) => {
           <Tabs
             className={styles.ant_tabs}
             defaultActiveKey="1"
-            tabPosition='left'
+            tabPosition={document.body.clientWidth < 769 ? 'top' : 'left'}
           >
             <TabPane tab="商品详情" key="1">
               <Row gutter={8}>
-                <Col span={20}>
+                <Col span={4}>
+                  <Button onClick={() => handleUpdate('detail')}>更新商品详情</Button>
+                </Col>
+                <Col span={20} xs={24}>
                 {
                   data.details instanceof Object && data.details.detail ? 
                   <div dangerouslySetInnerHTML={{ __html: data.details.detail }}></div> : 
                   '暂未录入详情'
                 }
                 </Col>
-                <Col span={4}>
-                  <Button onClick={() => handleUpdate('detail')}>更新商品详情</Button>
-                </Col>
               </Row>
             </TabPane>
             <TabPane tab="商品参数" key="2">
               <Row gutter={8}>
-                <Col span={20}>
+                <Col span={4}>
+                  <Button onClick={() => handleUpdate('params')}>更新规格参数</Button>
+                </Col>
+                <Col span={20} xs={24}>
                 {
                   properties instanceof Array && properties.length > 0 ?
                   <Row gutter={8} justify="center" align="center">
@@ -203,9 +204,6 @@ const Detail = ({ productDetail, dispatch, loading }) => {
                   </Row> : 
                   '暂未录入规格参数'
                 }
-                </Col>
-                <Col span={4}>
-                  <Button onClick={() => handleUpdate('params')}>更新规格参数</Button>
                 </Col>
               </Row>
             </TabPane>
@@ -221,7 +219,11 @@ const Detail = ({ productDetail, dispatch, loading }) => {
                 <Col span={22}>
                   {
                     productSales.length > 0 ?
-                    <Sales {...salesProps}/> : 
+                    <Card bordered={false} bodyStyle={{
+                      padding: '24px 36px 24px 0',
+                    }}>
+                      <Sales {...salesProps}/>
+                    </Card> : 
                     '暂无销售记录'
                   }
                 </Col>
@@ -230,16 +232,18 @@ const Detail = ({ productDetail, dispatch, loading }) => {
           </Tabs>
         </Row>
         <Row className={styles.paganation} gutter={8}>
-          <Col span={24}>
             {
               prevProduct.name && 
-              <Button style={{ float: 'left' }} onClick={() => handleLocateProduct(prevProduct.id)}><Icon type="left"/>{prevProduct.name}</Button>              
+              <Col span={12} md={12} xs={24}>
+                <Button style={{ float: 'left' }} onClick={() => handleLocateProduct(prevProduct.id)}><Icon type="left"/><span className={styles.text_clip} style={{ width: document.body.clientWidth < 769 ? 220 : '100%' }}>{prevProduct.name}</span></Button>              
+              </Col>
             }
             {
               nextProduct.name &&
-              <Button style={{ float: 'right' }} onClick={() => handleLocateProduct(nextProduct.id)}>{nextProduct.name}<Icon type="right"/></Button>           
+              <Col span={12} md={12} xs={24}>
+                <Button style={{ float: 'right' }} onClick={() => handleLocateProduct(nextProduct.id)}><span className={styles.text_clip} style={{ width: document.body.clientWidth < 769 ? 220 : '100%' }}>{nextProduct.name}</span><Icon type="right"/></Button>           
+              </Col>
             }
-          </Col>
         </Row>
         <InfoModal {...modalProps}/>
         </Spin>

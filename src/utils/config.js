@@ -6,9 +6,9 @@ module.exports = {
   iconFontCSS: '/iconfont.css',
   iconFontJS: '/iconfont.js',
   websocketURL: 'ws://112.74.49.73:9502',
-  baseURL: 'http://api.c.cn/v1',
+  baseURL: 'https://api.zsshitan.com/api/v1',
   YQL: ['http://www.zuimeitianqi.com'],
-  CORS: ['https://www.onegledog.cn'],
+  CORS: ['https://api.zsshitan.com/api/vi'],
   openPages: ['/login'],
   apiPrefix: '/api/v1',
   api: {

@@ -149,19 +149,19 @@ const Detail = ({ productDetail, dispatch, loading }) => {
           </Col>
         </Row>
         <Row gutter={8} justify="center" align="center">
-          <Col className={styles.item} span={12} xs={24}>
+          <Col className={styles.item} lg={12} xs={24}>
             <div>单价</div>
             <div>￥{data.price}</div>
           </Col>
-          <Col className={styles.item} span={12} xs={24}>
+          <Col className={styles.item} lg={12} xs={24}>
             <div>库存量</div>
             <div>{data.stock}</div>
           </Col>
-          <Col className={styles.item} span={12} xs={24}>
+          <Col className={styles.item} lg={12} xs={24}>
             <div>种类</div>
             <div>{data.type === '1' ? '实体商品' : '卡卷商品'}</div>
           </Col>
-          <Col className={styles.item} span={12} xs={24}>
+          <Col className={styles.item} lg={12} xs={24}>
             <div>状态</div>
             <div>{data.is_on === '1' ? '上架' : '下架'}</div>
           </Col>
@@ -235,13 +235,19 @@ const Detail = ({ productDetail, dispatch, loading }) => {
             <Col span={12}>
             {
               prevProduct.name && 
-                <Button style={{ float: 'left' }} onClick={() => handleLocateProduct(prevProduct.id)}><Icon type="left"/><span className={styles.text_clip} style={{ display: document.body.clientWidth < 769 ? 'none' : 'inline-block' }}>{prevProduct.name}</span></Button>              
+                <Button style={{ float: 'left' }} onClick={() => handleLocateProduct(prevProduct.id)}>
+                  <Icon className={styles.page_icon} type="left"/>
+                  <span className={styles.text_clip} style={{ display: document.body.clientWidth < 769 ? 'none' : 'inline-block' }}>{prevProduct.name}</span>
+                </Button>              
             }
             </Col>
             <Col span={12}>
             {
               nextProduct.name &&
-                <Button style={{ float: 'right' }} onClick={() => handleLocateProduct(nextProduct.id)}><span className={styles.text_clip} style={{ display: document.body.clientWidth < 769 ? 'none' : 'inline-block' }}>{nextProduct.name}</span><Icon type="right"/></Button>           
+                <Button style={{ float: 'right' }} onClick={() => handleLocateProduct(nextProduct.id)}>
+                  <span className={styles.text_clip} style={{ display: document.body.clientWidth < 769 ? 'none' : 'inline-block' }}>{nextProduct.name}</span>
+                  <Icon className={styles.page_icon} type="right"/>
+                </Button>           
             }
             </Col>
         </Row>

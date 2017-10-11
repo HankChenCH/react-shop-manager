@@ -73,9 +73,9 @@ const App = ({ children, location, dispatch, app, chat, loading }) => {
   }
 
   const chatRoomProps = {
-    title: '公共聊天室',
+    title: '工作室',
     message: chatMessage,
-    onlineCount: 12,
+    onlineCount: 0,
     onSend (data) {
       dispatch({ type: 'chat/sendMessage', payload: data })
     },

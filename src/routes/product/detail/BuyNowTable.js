@@ -11,10 +11,21 @@ const confirm = Modal.confirm
 const BuyNowTable = ({ onDeleteItem, ...tableProps }) => {
 
   const handleMenuClick = (record, e) => {
-    if (e.key === '1') {
+    if (e.key === '3') {
       onDeleteItem(record.id)
     }
   }
+
+  const menuOptions = [{ 
+      key: '1',
+      name: '页面路径' 
+    }, { 
+      key: '2',
+      name: '出票列表'
+    }, { 
+      key: '3',
+      name: '删除'
+    }]
 
   const columns = document.body.clientWidth < 769 ? 
   [
@@ -54,7 +65,7 @@ const BuyNowTable = ({ onDeleteItem, ...tableProps }) => {
       title: '操作',
       key: 'operation',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '删除' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
       },
     }
   ] :  
@@ -87,7 +98,7 @@ const BuyNowTable = ({ onDeleteItem, ...tableProps }) => {
       title: '操作',
       key: 'operation',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '删除' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
       },
     }
   ]

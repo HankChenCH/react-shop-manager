@@ -18,5 +18,15 @@
   },
   "theme": {
     "primary-color": "#292929"
+  },
+  "dllPlugin": {
+    "exclude": [
+      "babel-runtime"
+    ],
+    "include": [
+      "dva/router",
+      "dva/saga",
+      "dva/fetch"
+    ]
   }
 }

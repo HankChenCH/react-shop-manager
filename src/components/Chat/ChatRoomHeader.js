@@ -13,7 +13,7 @@ export default class ChatRoomHeader extends React.Component
             <div>
                 <h2>{title}</h2>
                 {
-                    this.props.onlineCount &&
+                    this.props.onlineCount > 0 &&
                     <div>在线 {this.props.onlineCount} 人</div>
                 }
             </div>

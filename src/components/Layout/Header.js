@@ -45,6 +45,9 @@ const Header = ({ user, logout, notificationCount, switchSider, siderFold, isNav
           }} title={< span > <Icon type="user" />
             {user.username} < /span>}
           >
+            <Menu.Item key="">
+              <Link to="https://mpkf.weixin.qq.com/" target="_blank">客服中心</Link>
+            </Menu.Item>
             <Menu.Item key="personal">
               <Link to="/setting/personal">个人中心</Link>
             </Menu.Item>

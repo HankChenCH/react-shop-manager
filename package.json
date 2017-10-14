@@ -15,7 +15,6 @@
     "react-dom": "^15.4.1",
     "react-draft-wysiwyg": "^1.10.8",
     "react-helmet": "^5.0.0",
-    "react-lz-editor": "^0.11.2",
     "recharts": "^0.19.0"
   },
   "devDependencies": {
@@ -40,7 +39,7 @@
     "path-to-regexp": "^1.7.0",
     "rc-tween-one": "^1.0.0",
     "redbox-react": "^1.2.10",
-    "roadhog": "0.6.0-beta.6"
+    "roadhog": "^1.2.2"
   },
   "pre-commit": [
     "lint"
@@ -48,6 +47,7 @@
   "scripts": {
     "dev": "set BROWSER=none&&set PORT=3050&&set HOST=0.0.0.0&&roadhog server",
     "lint": "eslint --fix --ext .js src",
-    "build": "roadhog build"
+    "build": "roadhog build",
+    "build:dll": "roadhog buildDll"
   }
 }

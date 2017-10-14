@@ -37,7 +37,7 @@ class DeliveryForm extends React.Component
                     </FormItem>
                     <FormItem label="快递公司" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('express_name', {
-                            initialValue: express.length === 1 ? express[0].express_name : '',
+                            initialValue: item.snap_express.express_name,
                             rules: [
                                 {
                                 required: true,

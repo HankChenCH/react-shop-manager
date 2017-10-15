@@ -7,12 +7,24 @@ import { DropOption } from '../../../components'
 import { Link } from 'dva/router'
 
 const confirm = Modal.confirm
+const info = Modal.info
 
-const BuyNowTable = ({ onDeleteItem, ...tableProps }) => {
+const BuyNowTable = ({ item, onDeleteItem, onShowTicketList, ...tableProps }) => {
 
   const handleMenuClick = (record, e) => {
     if (e.key === '3') {
       onDeleteItem(record.id)
+    } else if (e.key === '2') {
+      onShowTicketList(record.id)
+    } else if (e.key === '1') {
+      info({
+        title: '生成页面路径',
+        content: (
+          <div>
+            {`pages/buy-now/buy-now?id=${item.id}&bid=${record.id}`}
+          </div>
+        )
+      })
     }
   }
 
@@ -25,7 +37,7 @@ const BuyNowTable = ({ onDeleteItem, ...tableProps }) => {
     }, { 
       key: '3',
       name: '删除'
-    }]
+  }]
 
   const columns = document.body.clientWidth < 769 ? 
   [
@@ -41,11 +53,11 @@ const BuyNowTable = ({ onDeleteItem, ...tableProps }) => {
           </Col>
           <Col span={24}>
             <label>开始时间：</label>
-            <span>{record.start_time}</span>
+            <span>{new Date().setTime(parseInt(record.start_time) * 1000)}</span>
           </Col>
           <Col span={24}>
             <label>结束时间：</label>
-            <span>{record.end_time}</span>
+            <span>{new Date().setTime(parseInt(record.end_time) * 1000)}</span>
           </Col>
           <Col span={24}>
             <label>单价：</label>
@@ -78,10 +90,20 @@ const BuyNowTable = ({ onDeleteItem, ...tableProps }) => {
       title: '开始时间',
       dataIndex: 'start_time',
       key: 'start_time',
+      render: (text) => {
+        let newDate = new Date()
+        newDate.setTime(text * 1000)
+        return <div>{newDate.format('yyyy-MM-dd HH:mm')}</div>
+      }
     }, {
       title: '结束时间',
       dataIndex: 'end_time',
       key: 'end_time',
+      render: (text) => {
+        let newDate = new Date()
+        newDate.setTime(text * 1000)
+        return <div>{newDate.format('yyyy-MM-dd HH:mm')}</div>
+      }
     }, {
       title: '单价',
       dataIndex: 'price',

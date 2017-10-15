@@ -1,6 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
-const { list, info, price, delivery, issue, batch, close } = api.order
+const { list, info, price, delivery, issue, batch, close, ticket } = api.order
 
 export async function query (params) {
   return request({
@@ -8,6 +8,14 @@ export async function query (params) {
     method: 'get',
     data: params,
   })
+}
+
+export async function queryTickets (params) {
+	return request({
+		url: ticket,
+		method: 'get',
+		data: params,
+	})
 }
 
 export async function update (params) {

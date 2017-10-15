@@ -10,8 +10,8 @@ const FormItem = Form.Item
 const { RangePicker } = DatePicker
 const { Notice } = Layout
 const HtmlEditor = Editor.HtmlEditor
-const { productDetail } = api.image
-const uploadDetailImageApi = `${apiPrefix}/${productDetail}`
+const { buyNowRules } = api.image
+const uploadRulesImageApi = `${apiPrefix}/${buyNowRules}`
 
 class BuyNowForm extends React.Component
 {
@@ -113,7 +113,7 @@ class BuyNowForm extends React.Component
 			                      maxWidth: 700,
 			                      backgroundColor: '#fff'
 			                    }}
-			                    fileName="detailImage"
+			                    fileName="rulesImage"
 			                    action={uploadDetailImageApi}
 			                    onUploadError={handleUploadError}
 			                />

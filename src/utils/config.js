@@ -6,7 +6,7 @@ module.exports = {
   iconFontCSS: '/iconfont.css',
   iconFontJS: '/iconfont.js',
   websocketURL: 'ws://112.74.49.73:9502',
-  baseURL: 'https://api.zsshitan.com/api/v1',
+  baseURL: true ? 'http://api.c.cn/api/v1' : 'https://api.zsshitan.com/api/v1',
   YQL: ['http://www.zuimeitianqi.com'],
   CORS: ['https://api.zsshitan.com/api/vi'],
   openPages: ['/login'],
@@ -71,7 +71,8 @@ module.exports = {
       delivery: '/order/by_admin/delivery/:id',
       issue: '/order/by_admin/issue/:id',
       batch: '/order/by_admin/batch',
-      close: 'order/by_admin/closed',
+      close: '/order/by_admin/closed',
+      ticket: '/order/ticket/:bid'
     },
     image: {
       themeTopic: 'image/theme_topic_img',
@@ -79,6 +80,7 @@ module.exports = {
       categoryTopic: 'image/category_topic_img',
       productMain: 'image/product_main_img',
       productDetail: 'image/product_detail_img',
+      buyNowRules: 'image/buy_now_rules_img',
     },
   },
   imgStyle: {

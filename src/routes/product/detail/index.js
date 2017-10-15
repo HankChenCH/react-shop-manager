@@ -12,7 +12,7 @@ const TabPane = Tabs.TabPane
 const confirm = Modal.confirm
 
 const Detail = ({ productDetail, dispatch, loading }) => {
-  const { list, pagination, selectedRowKeys, data, prevProduct, nextProduct, productSales, modalType, modalVisible } = productDetail
+  const { list, pagination, selectedRowKeys, data, ticketList, prevProduct, nextProduct, productSales, modalType, modalVisible } = productDetail
   const { properties } = data
 
   let productProp = []
@@ -62,6 +62,20 @@ const Detail = ({ productDetail, dispatch, loading }) => {
     }
   }
 
+  const createModalTitle = (type) => {
+    switch(type) {
+      case 'buyNow': 
+          return '开启秒杀'
+        break
+      case 'ticket':
+          return '出票列表'
+        break
+      default:
+          return '更新商品信息'
+        break
+    }
+  }
+
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
@@ -81,15 +95,14 @@ const Detail = ({ productDetail, dispatch, loading }) => {
   }
 
   const modalProps = {
-    item: data,    
+    item: modalType !== 'ticket' ? data : ticketList,   
     modalType,
     visible: modalVisible,
-    title: modalType !== 'buyNow' ? '更新商品信息' : '开启秒杀',
+    title: modalType && createModalTitle(modalType),
     wrapClassName: 'vertical-center-modal',
     formItemLayout,
     formItemLayoutWithOutLabel,
     onOk (data) {
-      console.log(data)
       dispatch({
         type: 'productDetail/update',
         payload: {
@@ -105,8 +118,17 @@ const Detail = ({ productDetail, dispatch, loading }) => {
   }
 
   const listProps = {
+    item: data,
     dataSource: list,
     pagination,
+    onShowTicketList(id) {
+      dispatch({
+        type: 'productDetail/showTicketModal',
+        payload: {
+          bid: id
+        }
+      })
+    },
     onDeleteItem (id) {
       dispatch({
         type: 'productDetail/deleteBuyNow',

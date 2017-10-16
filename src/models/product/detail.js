@@ -3,6 +3,7 @@ import pathToRegexp from 'path-to-regexp'
 import { pageModel } from '../common'
 import { routerRedux } from 'dva/router'
 import { queryDetail, update, updateDetail, updateParams, oneSales, createBuyNow, queryBuyNow, removeBuyNow } from '../../services/product'
+import { queryTickets } from '../../services/order'
 import { deleteProps } from '../../utils'
 
 export default modelExtend(pageModel, {
@@ -16,6 +17,7 @@ export default modelExtend(pageModel, {
     prevProduct: {},
     nextProduct: {},
     productSales: [],
+    ticketList: [],
   },
 
   subscriptions: {
@@ -207,6 +209,15 @@ export default modelExtend(pageModel, {
         yield put({ type: 'app/messageSuccess', payload:"删除秒杀成功" })
       } else {
         throw res
+      }
+    },
+
+    *showTicketModal({ payload }, { call, put }) {
+      const res = yield call(queryTickets, payload)
+      if (res.success) {
+        console.log(res.data)
+        yield put({ type: 'updateState', payload: { ticketList: res.data } })
+        yield put({ type: 'showModal', payload: { modalType: 'ticket' } })
       }
     }
   },

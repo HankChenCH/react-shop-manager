@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Editor } from '../../../components'
-import { BaseInfoForm, DetailInfoForm, ParamsInfoForm, BuyNowForm } from '../components'
+import { BaseInfoForm, DetailInfoForm, ParamsInfoForm, BuyNowForm, TicketsTable } from '../components'
 import { Form, Input, InputNumber, Modal, Button, Upload, Icon, message } from 'antd'
 import { apiPrefix, api } from '../../../utils/config'
 import draftToHtml from 'draftjs-to-html';
@@ -138,27 +138,38 @@ export default class InfoModal extends React.Component
       onOk,
     }
 
+    const ticketFormProps = {
+      item,
+      formItemLayout,
+      formItemLayoutWithOutLabel,
+    }
+
     return (
       <Modal width={900} {...modalOpts}>
         {
           modalType === 'base'
           &&
-          <BaseInfoForm {...baseFormProps}/>
+          <BaseInfoForm {...baseFormProps} />
         }
         {
           modalType === 'detail'
           &&
-          <DetailInfoForm {...detailFormProps}/>
+          <DetailInfoForm {...detailFormProps} />
         }
         {
           modalType === 'params'
           &&
-          <ParamsInfoForm {...paramsFormProps}/>
+          <ParamsInfoForm {...paramsFormProps} />
         }
         {
           modalType === 'buyNow'
           &&
-          <BuyNowForm {...buynowFormProps}/>
+          <BuyNowForm {...buynowFormProps} />
+        }
+        {
+          modalType === 'ticket'
+          &&
+          <TicketsTable {...ticketFormProps} />
         }
         <div className={styles.steps_action}>
             <Button style={{ marginLeft: 8 }} onClick={handleCancel}>取消</Button>
@@ -171,8 +182,7 @@ export default class InfoModal extends React.Component
 
 
 InfoModal.propTypes = {
-  type: PropTypes.string,
-  item: PropTypes.object,
+  modalType: PropTypes.string,
   onOk: PropTypes.func,
 }
 

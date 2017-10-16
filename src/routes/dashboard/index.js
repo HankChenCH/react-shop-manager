@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Row, Col, Card } from 'antd'
+import { Row, Col, Card, Calendar } from 'antd'
 import { Quote, Sales, Weather, RecentSales, Comments, Completed, Browser, Cpu, User } from './components'
 import styles from './index.less'
 import { color } from '../../utils'
@@ -27,14 +27,15 @@ function Dashboard ({ dashboard, dispatch, loading }) {
 
   return (
     <Row gutter={24}>
-      <Col lg={8} md={24}>
-        <Card bordered={false} {...bodyStyle}>
-          <Comments data={comments} />
-        </Card>
-      </Col>
       <Col lg={16} md={24}>
         <Card bordered={false} {...bodyStyle}>
           <RecentSales data={recentSales} />
+        </Card>
+      </Col>
+      <Col lg={8} md={24}>
+        <Card bordered={false} {...bodyStyle}>
+          {/*<Comments data={comments} />*/}
+          <Calendar fullscreen={false} />
         </Card>
       </Col>
       <Col lg={24} md={24}>

@@ -114,7 +114,7 @@ class BuyNowForm extends React.Component
 			                      backgroundColor: '#fff'
 			                    }}
 			                    fileName="rulesImage"
-			                    action={uploadDetailImageApi}
+			                    action={uploadRulesImageApi}
 			                    onUploadError={handleUploadError}
 			                />
                         )}

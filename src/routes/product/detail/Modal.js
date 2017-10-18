@@ -43,7 +43,7 @@ export default class InfoModal extends React.Component
     const { item } = this.props
 
     const handleOk = () => {
-      const { validateFields, getFieldsValue } = this.refs.infoForm
+      const { validateFields, getFieldsValue, resetFields } = this.refs.infoForm
       validateFields((errors) => {
           if (errors) {
               return
@@ -90,6 +90,8 @@ export default class InfoModal extends React.Component
               data.rules = data.rules.value
               delete data.rules.value
             }
+
+            resetFields()
           }
           
           onOk(data)          

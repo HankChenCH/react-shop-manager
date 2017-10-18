@@ -65,7 +65,7 @@ class BuyNowForm extends React.Component
                     </FormItem>
                     <FormItem label="秒杀价格" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('price', {
-                            initialValue: 0,
+                            initialValue: 0.01,
                             rules: [
                                 {
                                     required: true,

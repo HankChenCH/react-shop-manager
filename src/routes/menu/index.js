@@ -11,7 +11,7 @@ const Menu = ({ location, dispatch, menu, loading }) => {
     const { list, pagination, currentItem, modalVisible, modalType, selectedRowKeys } = menu
     const { pageSize } = pagination
 
-    const treeList = arrayToTree(list)
+    const treeList = arrayToTree(list, 'id', 'bpid')
 
     const listProps = {
         dataSource: treeList,

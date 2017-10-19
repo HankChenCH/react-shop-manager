@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
+import { Table, Modal, Icon } from 'antd'
 import styles from './List.less'
 import classnames from 'classnames'
 import AnimTableBody from '../../components/DataTable/AnimTableBody'
@@ -30,6 +30,7 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
       title: '菜单',
       dataIndex: 'name',
       key: 'name',
+      render: (text, record) => <span>{record.icon && <Icon type={record.icon}/>}{text}</span>
     }, {
       title: '路径',
       dataIndex: 'router',

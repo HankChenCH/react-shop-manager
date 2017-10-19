@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { FilterItem } from '../../components'
 import { Form, Button, Row, Col, DatePicker, Input, Cascader, Switch } from 'antd'
+import city from '../../utils/city'
 
 const Search = Input.Search
 const { RangePicker } = DatePicker
@@ -78,7 +79,7 @@ const Filter = ({
         <div >
           {/*<Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>搜索</Button>
           <Button size="large" className="margin-right" onClick={handleReset}>重置搜索</Button>*/}
-          <Button size="large" type="ghost" onClick={onAdd}>创建分类</Button>
+          <Button size="large" type="ghost" onClick={onAdd}>创建主菜单</Button>
         </div>
       </Col>
     </Row>

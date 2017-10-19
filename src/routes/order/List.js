@@ -112,7 +112,6 @@ const List = ({ queryStatus, express, onChangeItemPrice, onDeleteItem, onCloseIt
     <div>
       <Table
         {...tableProps}
-        bordered
         scroll={{ x: 900 }}
         columns={columns}
         simple

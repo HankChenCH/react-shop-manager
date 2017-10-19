@@ -17,7 +17,7 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
       onEditItem(record)
     } else if (e.key === '3') {
       confirm({
-        title: '确定要删除分类 ' + record.name + ' ?',
+        title: '确定要删除菜单 ' + record.name + ' ?',
         onOk () {
           onDeleteItem(record.id)
         },
@@ -27,20 +27,13 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
 
   const columns = [
     {
-      title: '分类名',
+      title: '菜单',
       dataIndex: 'name',
       key: 'name',
     }, {
-      title: '头图',
-      dataIndex: 'img.url',
-      key: 'topic_img',
-      render: (text, record) => {
-        return <img style={{maxWidth: '130px'}} src={text}/>
-      }
-    }, {
-      title: '分类描述',
-      dataIndex: 'description',
-      key: 'description',
+      title: '路径',
+      dataIndex: 'router',
+      key: 'router',
       render: (text, record) => {
         return text == null ? '-' : text;
       }
@@ -49,15 +42,10 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
       key: 'operation',
       width: 100,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '商品管理' }, { key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '新增子菜单' }, { key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
       },
     },
   ]
-
-  const getBodyWrapperProps = {
-    page: location.query.page,
-    current: tableProps.pagination.current,
-  }
 
   return (
     <div>

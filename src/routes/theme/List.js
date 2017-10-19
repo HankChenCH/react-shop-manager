@@ -64,7 +64,6 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
       <Table
         {...tableProps}
         className={classnames({ [styles.table]: true })}
-        bordered
         scroll={{ x: 900 }}
         columns={columns}
         simple

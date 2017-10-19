@@ -130,10 +130,10 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       <Table
         {...tableProps}
         className={classnames({ [styles.table]: true })}
-        bordered
         scroll={{ x: 900 }}
         columns={columns}
         simple
+        scroll={{ y: 510 }}
         rowKey={record => record.id}
       />
     </div>

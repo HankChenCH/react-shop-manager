@@ -52,7 +52,6 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
       <Table
         {...tableProps}
         className={classnames({ [styles.table]: true, [styles.motion]: isMotion })}
-        bordered
         scroll={{ x: 900 }}
         columns={columns}
         simple

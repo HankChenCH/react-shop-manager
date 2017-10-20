@@ -31,7 +31,7 @@ class ProductCardList extends React.Component
 						header
 					</Row>
 				}
-				<Row class="content">
+				<Row class="content" justify="center" align="center">
 					{CardList}
 				</Row>
 				{

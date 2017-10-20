@@ -89,47 +89,6 @@ const Index = ({ order, express, dispatch, loading, location }) => {
     }
   }
 
-  // const priceModalProps = {
-  //   item: currentItem,
-  //   visible: modalVisible,
-  //   maskClosable: false,
-  //   confirmLoading: loading.effects['order/updatePrice'],
-  //   title: '订单改价',
-  //   wrapClassName: 'vertical-center-modal',
-  //   onOk (data) {
-  //     dispatch({
-  //       type: `order/updatePrice`,
-  //       payload: data,
-  //     })
-  //   },
-  //   onCancel () {
-  //     dispatch({
-  //       type: 'order/hideModal',
-  //     })
-  //   },
-  // }
-
-  // const deliveryModalProps = {
-  //   item: currentItem,
-  //   express: expresses,
-  //   visible: modalVisible,
-  //   maskClosable: false,
-  //   confirmLoading: loading.effects['order/deliveryItem'],
-  //   title: '订单发货',
-  //   wrapClassName: 'vertical-center-modal',
-  //   onOk (data) {
-  //     dispatch({
-  //       type: `order/deliveryItem`,
-  //       payload: data,
-  //     })
-  //   },
-  //   onCancel () {
-  //     dispatch({
-  //       type: 'order/hideModal',
-  //     })
-  //   },
-  // }
-
   const modalProps = {
     item: currentItem,
     express: expresses,

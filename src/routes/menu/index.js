@@ -5,13 +5,42 @@ import { connect } from 'dva'
 import { Row, Col, Button, Popconfirm } from 'antd'
 import List from './List'
 import Filter from './Filter'
+import InfoModal from './Modal'
 import { arrayToTree } from '../../utils'
 
 const Menu = ({ location, dispatch, menu, loading }) => {
     const { list, pagination, currentItem, modalVisible, modalType, selectedRowKeys } = menu
     const { pageSize } = pagination
-
+    
     const treeList = arrayToTree(list, 'id', 'bpid')
+
+    const modalProps = {
+        item: (modalType === 'create' ? {} : currentItem),
+        menuList: list,
+        modalType: modalType,
+        visible: modalVisible,
+        maskClosable: false,
+        confirmLoading: loading.effects[`menu/${modalType}`],
+        title: `${modalType === 'create' ? '创建菜单' : '更新菜单'}`,
+        wrapClassName: 'vertical-center-modal',
+        onOk (data) {
+          dispatch({
+            type: `menu/${modalType}`,
+            payload: data,
+          })
+        },
+        onError (data) {
+          dispatch({
+            type: `app/messageError`,
+            payload: data
+          })
+        },
+        onCancel () {
+          dispatch({
+            type: 'menu/hideModal',
+          })
+        },
+    }
 
     const listProps = {
         dataSource: treeList,
@@ -28,14 +57,6 @@ const Menu = ({ location, dispatch, menu, loading }) => {
                     pageSize: page.pageSize,
                 },
             }))
-        },
-        onManagerItem (item) {
-            dispatch({
-                type: 'menu/showProductManager',
-                payload: {
-                    currentItem: item,
-                }
-            })
         },
         onDeleteItem (id) {
             dispatch({
@@ -79,17 +100,6 @@ const Menu = ({ location, dispatch, menu, loading }) => {
                 },
             }))
         },
-        onSearch (fieldsValue) {
-            fieldsValue.keyword.length ? dispatch(routerRedux.push({
-                    pathname: '/menu',
-                    query: {
-                        field: fieldsValue.field,
-                        keyword: fieldsValue.keyword,
-                    },
-            })) : dispatch(routerRedux.push({
-                pathname: '/menu',
-            }))
-        },
         onAdd () {
             dispatch({
                 type: 'menu/showModal',
@@ -99,6 +109,15 @@ const Menu = ({ location, dispatch, menu, loading }) => {
             })
         }
     }
+
+    const handleDeleteItems = () => {
+        dispatch({
+          type: 'menu/multiDelete',
+          payload: {
+            ids: selectedRowKeys,
+          },
+        })
+      }
 
     return (
         <div className="content-inner">
@@ -115,6 +134,7 @@ const Menu = ({ location, dispatch, menu, loading }) => {
                 </Row>
             }
             <List {...listProps} />
+            {modalVisible && <InfoModal {...modalProps} /> }
         </div>
     )
 }

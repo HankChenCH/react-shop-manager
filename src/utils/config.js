@@ -1,6 +1,6 @@
 module.exports = {
   name: '探小店后台',
-  version: '1.0.2@beta',
+  version: '1.0.5@beta',
   prefix: 'tan_shop_',
   footerText: '探小店后台  © 2017 中山食探工作室',
   logo: '/st.jpg',
@@ -36,6 +36,16 @@ module.exports = {
       buyNow: '/product/:id/buynow',
       buyNowInfo: 'product/:id/buyNow/:bid',
     },
+    order: {
+      list: '/order/by_admin',
+      info: '/order/by_admin/:id',
+      price: '/order/by_admin/price/:id',
+      delivery: '/order/by_admin/delivery/:id',
+      issue: '/order/by_admin/issue/:id',
+      batch: '/order/by_admin/batch',
+      close: '/order/by_admin/closed',
+      ticket: '/order/ticket/:bid'
+    },
     category: {
       list: '/category/all',
       info: '/category/:id',
@@ -65,15 +75,11 @@ module.exports = {
       status: '/admin/:id/status',
       batch: '/admin/batch',
     },
-    order:{
-      list: '/order/by_admin',
-      info: '/order/by_admin/:id',
-      price: '/order/by_admin/price/:id',
-      delivery: '/order/by_admin/delivery/:id',
-      issue: '/order/by_admin/issue/:id',
-      batch: '/order/by_admin/batch',
-      close: '/order/by_admin/closed',
-      ticket: '/order/ticket/:bid'
+    menu: {
+      list: '/menu',
+      info: '/menu/:id',
+      subInfo: '/menu/:id/sub/:sid',
+      batch: '/menu/batch',
     },
     image: {
       themeTopic: 'image/theme_topic_img',

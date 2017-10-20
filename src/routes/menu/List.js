@@ -32,7 +32,7 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
       key: 'name',
       render: (text, record) => <span>{record.icon && <Icon type={record.icon}/>}{text}</span>
     }, {
-      title: '路径',
+      title: '路由',
       dataIndex: 'router',
       key: 'router',
       render: (text, record) => {
@@ -53,6 +53,7 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
       <Table
         {...tableProps}
         className={classnames({ [styles.table]: true })}
+        pagination={false}
         scroll={{ x: 900 }}
         columns={columns}
         simple

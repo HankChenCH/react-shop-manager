@@ -5,6 +5,7 @@ import * as Enum from './enum'
 import classnames from 'classnames'
 import { color } from './theme'
 import lodash from 'lodash'
+import particlesConfig from './particlesCofig'
 
 // 连字符转驼峰
 String.prototype.hyphenToHump = function () {
@@ -147,4 +148,5 @@ module.exports = {
   deleteProps,
   hasProp,
   sleep,
+  particlesConfig,
 }

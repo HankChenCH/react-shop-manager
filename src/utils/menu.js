@@ -50,7 +50,7 @@ module.exports = [
   {
     id: 71,
     mpid: -1,
-    bpid: 1,
+    bpid: 7,
     name: '订单详情',
     router: '/order/:id',
   },

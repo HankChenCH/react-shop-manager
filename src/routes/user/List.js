@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Avatar } from 'antd'
+import { Table, Modal, Avatar, Row, Col } from 'antd'
 import moment from 'moment'
 import styles from './List.less'
 import classnames from 'classnames'
@@ -29,7 +29,17 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
       title: '微信昵称',
       dataIndex: 'nickname',
       key: 'nickname',
-      render: (text, record) => <Link to={`user/${record.id}`}><Avatar style={{ verticalAlign: 'middle', margin: '0 10px' }} src={ record.extend && record.extend.avatarUrl} alt='用户头像'/>{text}</Link>,
+      render: (text, record) => 
+      <Link to={`user/${record.id}`}>
+        <Row gutter={8} style={{ lineHeight: '32px' }}>
+            <Col span={2} offset={5}>
+              <Avatar style={{ verticalAlign: 'middle', margin: '0 10px' }} src={ record.extend && record.extend.avatarUrl} alt='用户头像'/>
+            </Col>
+            <Col span={12}>
+              {text}
+            </Col>
+        </Row>
+      </Link>
     }, {
       title: '性别',
       dataIndex: 'gender',

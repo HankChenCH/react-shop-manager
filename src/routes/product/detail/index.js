@@ -150,7 +150,7 @@ const Detail = ({ productDetail, dispatch, loading }) => {
       <div className={styles.content}>
         <Spin spinning={loading}>
         <Row gutter={8} justify="center" align="center">
-          <Col span={22} xs={18}>
+          <Col span={22}>
             <h2>{data.name}</h2>
           </Col>
           <Col className={styles.center} style={{ height: '46px' }} span={2}>

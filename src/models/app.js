@@ -123,7 +123,7 @@ export default modelExtend(model, {
     *logoutSuccess ({
       payload
     }, { put }) { 
-      yield localStorage.removeItem(`${prefix}admin`)
+      // yield localStorage.removeItem(`${prefix}admin`)
       if (location.pathname !== '/login') {
         let from = location.pathname
         if (location.pathname === '/dashboard') {

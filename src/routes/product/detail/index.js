@@ -156,36 +156,20 @@ const Detail = ({ productDetail, dispatch, loading }) => {
           <Col className={styles.center} style={{ height: '46px' }} span={2}>
               <DropOption 
                 onMenuClick={e => handleMenuClick(e)} 
-                menuOptions={[{ key: '1', name: '更新基础信息' }, { key: '2', name: '开启秒杀' }, { key: '3', name: '返回列表'}]}
+                menuOptions={[{ key: '1', name: '更新基础信息' }, { key: '3', name: '返回列表'}]}
               />
           </Col>
         </Row>
-        <Row gutter={8} justify="center" align="center">
-          <Col style={{ textAlign: 'center' }} span={24} xs={24}>
+        <Row gutter={8} justify="center" align="center" style={{ paddingTop: 40 }}>
+          <Col style={{ textAlign: 'center' }} span={12}>
             <img className={styles.main_img} src={data.main_img_url}/>
           </Col>
-        </Row>
-        <Row gutter={8}>
-          <Col className={styles.item} span={24}>
-            <article>{data.summary}</article>
-          </Col>
-        </Row>
-        <Row gutter={8} justify="center" align="center">
-          <Col className={styles.item} lg={12} xs={24}>
-            <div>单价</div>
-            <div>￥{data.price}</div>
-          </Col>
-          <Col className={styles.item} lg={12} xs={24}>
-            <div>库存量</div>
-            <div>{data.stock}</div>
-          </Col>
-          <Col className={styles.item} lg={12} xs={24}>
-            <div>种类</div>
-            <div>{data.type === '1' ? '实体商品' : '卡卷商品'}</div>
-          </Col>
-          <Col className={styles.item} lg={12} xs={24}>
-            <div>状态</div>
-            <div>{data.is_on === '1' ? '上架' : '下架'}</div>
+          <Col span={12}>
+            <div>简述：{data.summary}</div>
+            <div>单价：￥{data.price}</div>
+            <div>库存量：{data.stock}</div>
+            <div>种类：{data.type === '1' ? '实体商品' : '卡卷商品'}</div>
+            <div>状态：{data.is_on === '1' ? '上架' : '下架'}</div>
           </Col>
         </Row>
         <hr style={{ margin: '20px' }}/>
@@ -200,7 +184,7 @@ const Detail = ({ productDetail, dispatch, loading }) => {
                 <Col span={4}>
                   <Button onClick={() => handleUpdate('detail')}>更新商品详情</Button>
                 </Col>
-                <Col span={20} xs={24}>
+                <Col span={24}>
                 {
                   data.details instanceof Object && data.details.detail ? 
                   <div dangerouslySetInnerHTML={{ __html: data.details.detail }}></div> : 
@@ -214,7 +198,7 @@ const Detail = ({ productDetail, dispatch, loading }) => {
                 <Col span={4}>
                   <Button onClick={() => handleUpdate('params')}>更新规格参数</Button>
                 </Col>
-                <Col span={20} xs={24}>
+                <Col span={24}>
                 {
                   properties instanceof Array && properties.length > 0 ?
                   <Row gutter={8} justify="center" align="center">
@@ -231,7 +215,10 @@ const Detail = ({ productDetail, dispatch, loading }) => {
             </TabPane>
             <TabPane tab="秒杀抢购" key="3">
                 <Row gutter={8}>
-                  <Col span={23}>
+                  <Col span={4}>
+                    <Button onClick={() => handleUpdate('buyNow')}>开启秒杀</Button>
+                  </Col>
+                  <Col span={24}>
                     <BuyNowTable {...listProps} />
                   </Col>
                 </Row>

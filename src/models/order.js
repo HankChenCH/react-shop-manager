@@ -125,10 +125,12 @@ export default modelExtend(pageModel, {
     },
 
     *deliveryItem ({ payload }, { put, call, select }) {
+      console.log(payload)
       const { currentItem, pagination, queryStatus } = yield select(_ => _.order)
-      const res = yield call(deliveryGoods, { id: currentItem.id, ...payload })
+      const res = yield call(deliveryGoods, { id: currentItem.id , ...payload })
       if (res.success) {
         yield put({ type: 'hideModal' })
+        yield put({ type: 'orderDetail/hideModal' })
         yield put({ type: 'app/messageSuccess', payload:"订单发货成功" })
         yield put({ type: 'query', payload: { status: queryStatus, page: pagination.current, pageSize: pagination.pageSize } })
       } else {
@@ -138,10 +140,10 @@ export default modelExtend(pageModel, {
 
     *issueItem ({ payload }, { put, call, select }) {
       const { currentItem, pagination, queryStatus } = yield select(_ => _.order)
-      
       const res = yield call(issueGoods, { id: currentItem.id, tickets: payload })
       if (res.success) {
         yield put({ type: 'hideModal' })
+        yield put({ type: 'orderDetail/hideModal' })
         yield put({ type: 'app/messageSuccess', payload:"订单出票成功" })
         yield put({ type: 'query', payload: { status: queryStatus, page: pagination.current, pageSize: pagination.pageSize } })
       } else {

@@ -133,7 +133,6 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
         scroll={{ x: 900 }}
         columns={columns}
         simple
-        scroll={{ y: 510 }}
         rowKey={record => record.id}
       />
     </div>

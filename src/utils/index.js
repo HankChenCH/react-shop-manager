@@ -135,8 +135,23 @@ const sleep = (ms) => {
   })
 }
 
+const queryObjToString = (queryObj) => {
+  if (!(queryObj instanceof Object)) {
+    return ''
+  }
+
+  let queryArr = []
+
+  for(let i in queryObj) {
+    if (hasProp(queryObj, i))queryArr.push(`${i}=${queryObj[i]}`)
+  }
+
+  return queryArr.join('&')
+}
+
 module.exports = {
   config,
+  particlesConfig,
   menu,
   request,
   Enum,
@@ -148,5 +163,5 @@ module.exports = {
   deleteProps,
   hasProp,
   sleep,
-  particlesConfig,
+  queryObjToString,  
 }

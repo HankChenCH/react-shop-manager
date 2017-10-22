@@ -1,7 +1,7 @@
 module.exports = {
     "particles": {
         "number": {
-            "value": 20,
+            "value": 30,
             "density": {
                 "enable": true,
                 "value_area": 800
@@ -11,7 +11,7 @@ module.exports = {
             "value": "#ddd"
         },
         "shape": {
-            "type": "circle",
+            "type": ["circle", "image"],
             "stroke": {
                 "width": 0,
                 "color": "#000000"
@@ -20,10 +20,10 @@ module.exports = {
                 "nb_sides": 5
             },
             "image": {
-                "src": "img/github.svg",
+                "src": "github.png",
                 "width": 100,
                 "height": 100
-            }
+            },
         },
         "opacity": {
             "value": 0.5,

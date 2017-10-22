@@ -87,35 +87,31 @@ const BuyNowTable = ({ item, onDeleteItem, onShowTicketList, ...tableProps }) =>
       dataIndex: 'batch_no',
       key: 'batch_no',
     }, {
-      title: '开始时间',
-      dataIndex: 'start_time',
-      key: 'start_time',
-      render: (text) => {
-        let newDate = new Date()
-        newDate.setTime(text * 1000)
-        return <div>{newDate.format('yyyy-MM-dd HH:mm')}</div>
-      }
-    }, {
-      title: '结束时间',
-      dataIndex: 'end_time',
-      key: 'end_time',
-      render: (text) => {
-        let newDate = new Date()
-        newDate.setTime(text * 1000)
-        return <div>{newDate.format('yyyy-MM-dd HH:mm')}</div>
+      title: '秒杀时段',
+      dataIndex: 'buynow_time',
+      key: 'buynow_time',
+      render: (text,record) => {
+        let start_time = new Date(),
+        end_time = new Date()
+        start_time.setTime(record.start_time * 1000)
+        end_time.setTime(record.end_time * 1000)
+        return <div>{start_time.format('yyyy-MM-dd HH:mm')} - {end_time.format('yyyy-MM-dd HH:mm')}</div>
       }
     }, {
       title: '单价',
       dataIndex: 'price',
       key: 'price',
+      render: (text) => <div>￥{text}</div>
     }, {
       title: '库存量',
       dataIndex: 'stock',
       key: 'stock',
+      render: (text) => <div>余{text}件</div>
     }, {
       title: '限购数',
       dataIndex: 'limit_every',
-      key: 'limit_every'
+      key: 'limit_every',
+      render: (text) => <div>每人限{text}件</div>
     }, {
       title: '操作',
       key: 'operation',
@@ -130,9 +126,10 @@ const BuyNowTable = ({ item, onDeleteItem, onShowTicketList, ...tableProps }) =>
       <Table
         {...tableProps}
         className={classnames({ [styles.table]: true })}
-        bordered
+        showHeader={false}
         columns={columns}
         simple
+        pagination={false}
         rowKey={record => record.id}
       />
     </div>

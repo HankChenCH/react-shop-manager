@@ -1,12 +1,12 @@
 import modelExtend from 'dva-model-extend'
 import pathToRegexp from 'path-to-regexp'
-import { pageModel } from '../common'
+import { detailModel } from '../common'
 import { routerRedux } from 'dva/router'
 import { queryDetail, update, updateDetail, updateParams, oneSales, createBuyNow, queryBuyNow, removeBuyNow } from '../../services/product'
 import { queryTickets } from '../../services/order'
 import { deleteProps } from '../../utils'
 
-export default modelExtend(pageModel, {
+export default modelExtend(detailModel, {
 
   namespace: 'productDetail',
 
@@ -215,8 +215,10 @@ export default modelExtend(pageModel, {
     *showTicketModal({ payload }, { call, put }) {
       const res = yield call(queryTickets, payload)
       if (res.success) {
-        console.log(res.data)
-        yield put({ type: 'updateState', payload: { ticketList: res.data } })
+        const newTicketList = res.data.length > 0 ? res.data.map( ticket => {
+          return { user: ticket.order.user.nickname, tickets: ticket.order.snap_items, orderStatus: ticket.order.status }
+        }) : []
+        yield put({ type: 'updateState', payload: { ticketList: newTicketList } })
         yield put({ type: 'showModal', payload: { modalType: 'ticket' } })
       }
     }

@@ -13,7 +13,7 @@ class ProductCardList extends React.Component
 	render() {
 		const { data, header, footer, cardStyle } = this.props
 		const CardList = data.map( item => 
-			<Col xs={12}>
+			<Col style={{ margin: '10px auto' }} xs={12}>
 				<ProductCard 
 					style={cardStyle} 
 					img_src={item.img_url} 

@@ -165,8 +165,6 @@ const Index = ({ order, express, dispatch, loading, location }) => {
           <List {...listProps} />
         </TabPane>
       </Tabs>
-      {/*priceModalVisible && <PriceModal {...priceModalProps}/>}
-      {deliveryModalVisible && <DeliveryModal {...deliveryModalProps}/>*/}
       {modalVisible && <ModalForm {...modalProps}/>}
     </div>
   )

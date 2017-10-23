@@ -1,7 +1,8 @@
 import { login } from '../services/login'
 import { routerRedux } from 'dva/router'
-import { queryURL, config } from '../utils'
+import { queryURL, config, Enum } from '../utils'
 const { prefix } = config
+const { EnumAdminStatus } = Enum
 
 export default {
   namespace: 'login',
@@ -17,10 +18,12 @@ export default {
       const res = yield call(login, payload)
       yield put({ type: 'hideLoginLoading' })
       if (res.success) {
+        const admin = { ...res.data, login_name: payload.login_name, status: EnumAdminStatus.LOGIN }
         yield put({ type: 'app/messageSuccess', payload: '登录成功' })
-        localStorage.setItem(`${prefix}admin`, JSON.stringify(res.data))
+        yield localStorage.setItem(`${prefix}admin`, JSON.stringify(admin))
         const from = queryURL('from')
-        yield put({ type: 'app/registerUser', payload: res.data })
+        console.log(from)
+        yield put({ type: 'app/registerUser', payload: admin })
         if (from) {
           yield put(routerRedux.push(from))
         } else {

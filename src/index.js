@@ -19,7 +19,7 @@ const app = dva({
   onError (error) {
   	if (error.success === false) {
 	    message.error(error.message)
-  	}
+    }
   },
 })
 

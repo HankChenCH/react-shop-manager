@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Row, Col, Tabs, Button, Icon, Spin, Modal, Card } from 'antd'
+import { Row, Col, Tabs, Button, Icon, Spin, Modal, Card, Table } from 'antd'
 import { DropOption } from '../../../components'
 import { Sales } from '../../dashboard/components'
 import BuyNowTable from './BuyNowTable'
@@ -15,16 +15,16 @@ const Detail = ({ productDetail, dispatch, loading }) => {
   const { list, pagination, selectedRowKeys, data, ticketList, prevProduct, nextProduct, productSales, modalType, modalVisible } = productDetail
   const { properties } = data
 
-  let productProp = []
+  // let productProp = []
   
-  if (properties instanceof Array && properties.length > 0) {
-    productProp = properties.map( item => 
-      <Col className={styles.item} span={24}>
-        <div>{item.name}</div>
-        <div>{item.detail}</div>
-      </Col>
-    )
-  }
+  // if (properties instanceof Array && properties.length > 0) {
+  //   productProp = properties.map( item => 
+  //     <Col className={styles.item} span={24}>
+  //       <div>{item.name}</div>
+  //       <div>{item.detail}</div>
+  //     </Col>
+  //   )
+  // }
   
   const backToList = () => {
     dispatch({ type: 'productDetail/backList' })
@@ -137,6 +137,24 @@ const Detail = ({ productDetail, dispatch, loading }) => {
     },
   }
 
+  const propertiesTableProps = {
+    dataSource: properties,
+    columns: [
+      {
+        title: '规格名称',
+        dataIndex: 'name',
+        key: 'name',
+      },
+      {
+        title: '规格参数',
+        dataIndex: 'detail',
+        key: 'detail',
+      }
+    ],
+    showHeader: false,
+    pagination: false
+  }
+
   const salesProps = {
     data: productSales,
     reflashable: false,
@@ -201,13 +219,7 @@ const Detail = ({ productDetail, dispatch, loading }) => {
                 <Col span={24}>
                 {
                   properties instanceof Array && properties.length > 0 ?
-                  <Row gutter={8} justify="center" align="center">
-                    <Col className={styles.item} span={24}>
-                      <div>规格名</div>
-                      <div>规格参数</div>
-                    </Col>
-                    {productProp}
-                  </Row> : 
+                    <Table {...propertiesTableProps} /> : 
                   '暂未录入规格参数'
                 }
                 </Col>

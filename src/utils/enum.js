@@ -10,7 +10,14 @@ const EnumOrderStatus = {
     DELIVERY: '3',
 }
 
+const EnumAdminStatus = {
+    LOGOUT: '-1',
+    LOCKED: '0',
+    LOGIN: '1',
+}
+
 module.exports = {
     EnumTipsType,
     EnumOrderStatus,
+    EnumAdminStatus,
 }

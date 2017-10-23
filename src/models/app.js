@@ -4,9 +4,10 @@ import { trigger } from '../services/ws'
 import { model } from './common'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
-import { config } from '../utils'
+import { config, Enum } from '../utils'
 import { message, notification, Icon } from 'antd'
 const { prefix } = config
+const { EnumAdminStatus } = Enum
 
 
 export default modelExtend(model, {
@@ -38,6 +39,17 @@ export default modelExtend(model, {
           dispatch({ type: 'queryProduct' })
         }
       })
+
+      document.onkeydown = function(e) {
+        let keyCode = e.keyCode || e.which || e.charCode,
+        ctrlKey = e.ctrlKey || e.metaKey, 
+        altKey = e.altKey,
+        shiftKey = e.shiftKey
+
+        if(altKey && keyCode == 76) {
+            dispatch({ type: 'lock' })
+        }
+      }
     },
   },
   effects: {
@@ -79,8 +91,8 @@ export default modelExtend(model, {
     }, { put, select }) {
       const { user } = yield(select(_=>_.app))
       let nowTime = Date.parse(new Date()) / 1000;
-      //票据为空代表没有登录，直接返回登录页面
-      if (!user || !user.token) {
+      //票据为空或状态不是登录中代表没有登录，直接返回登录页面
+      if (!user || !user.token || user.status !== EnumAdminStatus.LOGIN) {
         yield put({ type: 'logoutSuccess' })        
       }
       //过期时间比现在相差小于10分钟就重新申请令牌
@@ -108,11 +120,30 @@ export default modelExtend(model, {
       }
     },
 
+    *lock({
+      payload
+    }, { put, select }) {
+      if (location.pathname !== '/login') {
+        const { user } = yield select((_) => _.app)
+        const newUser = { ...user, status: EnumAdminStatus.LOCKED }
+        yield localStorage.setItem(`${prefix}admin`, JSON.stringify(newUser))
+        yield put({ type: 'updateState', payload: { user: newUser }  })
+        yield put({ type: 'messageSuccess', payload:"锁屏成功" })
+        yield put({ type: 'logoutSuccess' })
+      } else {
+        yield put({ type: 'messageError', payload: '请不要在登录界面进行锁屏操作！' })
+      }
+    },
+
     *logout ({
       payload,
     }, { call, put, select }) {
+      const { user } = yield select((_) => _.app)
       const res = yield call(logout, {})
       if (res.success) {
+        const newUser = { ...user, status: EnumAdminStatus.LOGOUT }
+        yield localStorage.setItem(`${prefix}admin`, JSON.stringify(newUser))
+        yield put({ type: 'updateState', payload: { user: newUser }  })
         yield put({ type: 'messageSuccess', payload:"登出成功" })
         yield put({ type: 'logoutSuccess' })
       } else {
@@ -129,7 +160,7 @@ export default modelExtend(model, {
         if (location.pathname === '/dashboard') {
           from = '/dashboard'
         }
-        window.location = `${location.origin}/login?from=${from}`
+        yield put(routerRedux.push(`/login?from=${from}`))
       }
     },
 
@@ -207,6 +238,13 @@ export default modelExtend(model, {
       return {
         ...state,
         notificationCount: 0,
+      }
+    },
+
+    clearUser(state) {
+      return {
+        ...state,
+        user: {}
       }
     }
   },

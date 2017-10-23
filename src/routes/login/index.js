@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import 'particles.js/particles';
 import { connect } from 'dva'
 import { Button, Row, Col, Avatar, Form, Input, Icon } from 'antd'
-import { config, particlesConfig, Enum } from '../../utils'
+import { config, particlesConfig, Enum, classnames } from '../../utils'
 import styles from './index.less'
 
 const FormItem = Form.Item
@@ -14,6 +14,12 @@ class Login extends React.Component
 {
   constructor(props){
     super(props)
+    const { user } = this.props.app
+
+    this.state = {
+      showPassword: (user.status && user.status === EnumAdminStatus.LOCKED) ? false : true,
+      isLock: (user.status && user.status === EnumAdminStatus.LOCKED)
+    }
   }
 
   componentDidMount(){
@@ -25,14 +31,13 @@ class Login extends React.Component
     const { user } = this.props.app
     const { loginLoading } = this.props.login
     const { getFieldDecorator,validateFieldsAndScroll } = this.props.form
-    const isLock = (user.status && user.status === EnumAdminStatus.LOCKED)
     
     const handleOk = () => {
       validateFieldsAndScroll((errors, values) => {
         if (errors) {
           return
         }
-        if (isLock) {
+        if (this.state.isLock) {
           dispatch({ type: 'login/login', payload: { login_name: user.login_name, ...values } })
         } else {
           dispatch({ type: 'login/login', payload: values })
@@ -41,7 +46,16 @@ class Login extends React.Component
     }
 
     const handleOther = () => {
-      dispatch({ type: 'app/clearUser' })
+      this.setState({
+        isLock: false,
+        showPassword: true,
+      })
+    }
+
+    const handleChangePasswordInput = () => {
+      this.setState({
+        showPassword: !this.state.showPassword
+      })
     }
 
     return (
@@ -51,14 +65,14 @@ class Login extends React.Component
             <img alt={'logo'} src={config.logo} />
             <span>{config.name}</span>
           </div>
-            { isLock ?
+            { this.state.isLock ?
               <FormItem hasFeedback>
-                <Row gutter={8}>
+                <Row gutter={8} onClick={handleChangePasswordInput} style={{ cursor: 'pointer' }}>
                   <Col span={6} offset={6}>
-                    <Avatar shape="square" style={{ backgroundColor: '#292929', verticalAlign: 'middle', margin: '0 10px' }} icon="user" alt='用户头像'/>
+                    <Avatar size="large" shape="square" style={{ backgroundColor: '#292929', verticalAlign: 'middle' }} icon="user" alt='用户头像'/>
                   </Col>
                   <Col span={12}>
-                    {user.username}
+                    <span style={{ fontSize: 18 }}>{user.username}</span>
                   </Col>
                 </Row>
               </FormItem> 
@@ -68,26 +82,32 @@ class Login extends React.Component
                   rules: [
                     {
                       required: true,
+                      message: '请输入登录账号'
                     },
                   ],
                 })(<Input size="large" onPressEnter={handleOk} placeholder="用户名" prefix={<Icon type='user'/>}/>)}
               </FormItem>
             }
-            <FormItem hasFeedback>
-              {getFieldDecorator('password', {
-                rules: [
-                  {
-                    required: true,
-                  },
-                ],
-              })(<Input size="large" type="password" onPressEnter={handleOk} placeholder="密码" prefix={<Icon type='lock'/>}/>)}
-            </FormItem>
+            {this.state.showPassword &&
+              <div className={classnames(styles.password, { [styles.passwordShow]: this.state.showPassword })}>
+                <FormItem hasFeedback>
+                  {getFieldDecorator('password', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请输入密码',
+                      },
+                    ],
+                  })(<Input size="large" type="password" onPressEnter={handleOk} placeholder="密码" prefix={<Icon type='lock'/>}/>)}
+                </FormItem>
+              </div>
+            }
             <Row>
-              <Button type="primary" size="large" onClick={handleOk} loading={loginLoading}>
+              <Button type="primary" size="large" onClick={handleOk} loading={loginLoading} disabled={!this.state.showPassword}>
                 登  录
               </Button>
             </Row>
-            {isLock &&
+            {this.state.isLock &&
               <Row style={{ marginTop: 10 }}>
                 <Button size="large" onClick={handleOther}>
                   使用其他账号登录

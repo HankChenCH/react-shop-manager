@@ -13,12 +13,8 @@ export default {
   effects: {
     *login ({
       payload,
-    }, { put, call, select }) {
-      const { user } = yield select((_) => _.app)
+    }, { put, call }) {
       yield put({ type: 'showLoginLoading' })
-      if (user.status && user.status === EnumAdminStatus.LOCKED) {
-        payload = { login_name: user.login_name, ...payload }
-      }
       const res = yield call(login, payload)
       yield put({ type: 'hideLoginLoading' })
       if (res.success) {

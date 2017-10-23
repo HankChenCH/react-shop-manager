@@ -17,7 +17,7 @@ class Login extends React.Component
     const { user } = this.props.app
 
     this.state = {
-      showPassword: (user.status && user.status === EnumAdminStatus.LOCKED) ? false : true,
+      showPassword: !(user.status && user.status === EnumAdminStatus.LOCKED),
       isLock: (user.status && user.status === EnumAdminStatus.LOCKED)
     }
   }
@@ -38,7 +38,11 @@ class Login extends React.Component
           return
         }
         
-        dispatch({ type: 'login/login', payload: values })
+        if (isLock) {
+          dispatch({ type: 'login/login', payload: { login_name: user.login_name, ...value } })
+        } else {
+          dispatch({ type: 'login/login', payload: values })
+        }
       })
     }
 

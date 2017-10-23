@@ -13,8 +13,12 @@ export default {
   effects: {
     *login ({
       payload,
-    }, { put, call }) {
+    }, { put, call, select }) {
+      const { user } = yield select((_) => _.app)
       yield put({ type: 'showLoginLoading' })
+      if (user.status && user.status === EnumAdminStatus.LOCKED) {
+        payload = { login_name: user.login_name, ...payload }
+      }
       const res = yield call(login, payload)
       yield put({ type: 'hideLoginLoading' })
       if (res.success) {
@@ -22,7 +26,6 @@ export default {
         yield put({ type: 'app/messageSuccess', payload: '登录成功' })
         yield localStorage.setItem(`${prefix}admin`, JSON.stringify(admin))
         const from = queryURL('from')
-        console.log(from)
         yield put({ type: 'app/registerUser', payload: admin })
         if (from) {
           yield put(routerRedux.push(from))

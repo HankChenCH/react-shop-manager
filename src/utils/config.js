@@ -6,7 +6,7 @@ module.exports = {
   logo: '/st.jpg',
   iconFontCSS: '/iconfont.css',
   iconFontJS: '/iconfont.js',
-  websocketURL: 'ws://112.74.49.73:9502',
+  websocketURL: 'wss://ws.zsshitan.com',
   baseURL: false ? 'http://api.c.cn/api/v1' : 'https://api.zsshitan.com/api/v1',
   YQL: ['http://www.zuimeitianqi.com'],
   CORS: ['https://api.zsshitan.com/api/vi'],

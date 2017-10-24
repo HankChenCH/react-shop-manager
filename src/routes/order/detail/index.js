@@ -71,6 +71,34 @@ const Detail = ({ dispatch, express, orderDetail, loading }) => {
         }
     }
 
+    const hanldeTimelineClick = (status) => {
+        switch (status){
+            case EnumOrderStatus.CLOSED:
+                break
+            case EnumOrderStatus.UNPAY:
+                break
+            case EnumOrderStatus.UNDELIVERY:
+                if (data.type === '1') {
+                    dispatch({
+                        type: 'orderDetail/showModal',
+                        payload: {
+                            modalType: 'delivery'
+                        }
+                    })
+                } else if (data.type === '2') {
+                    dispatch({
+                        type: 'orderDetail/showModal',
+                        payload: {
+                            modalType: 'issue'
+                        }
+                    })
+                }
+                break
+            case EnumOrderStatus.DELIVERY:
+                break;
+        }
+    }
+
     const renderStatus = (status, prepay_id) => {
         switch (status){
             case EnumOrderStatus.CLOSED:
@@ -78,7 +106,11 @@ const Detail = ({ dispatch, express, orderDetail, loading }) => {
             case EnumOrderStatus.UNPAY:
                 return prepay_id ? '未支付（已申请第三方支付）' : '未支付'
             case EnumOrderStatus.UNDELIVERY:
-                return '已付款待发货'
+                if (data.type === '1') {
+                    return '已支付待发货'
+                } else if (data.type === '2') {
+                    return '已支付待出票'
+                }
             case EnumOrderStatus.DELIVERY:
                 return '已发货'
         }
@@ -188,7 +220,7 @@ const Detail = ({ dispatch, express, orderDetail, loading }) => {
                             </Row>
                             <Row gutter={8} justify="center" align="center" style={{ paddingTop: 40 }}>
                                 <Col span={10}>
-                                    <OrderTimeLine data={timelineData.filter((i) => i)} count={3} />
+                                    <OrderTimeLine data={timelineData.filter((i) => i)} count={3} state={renderStatus(data.status.toString(), data.prepay_id)} onComplete={() => hanldeTimelineClick(data.status.toString())} />
                                 </Col>
                                 <Col span={14}>
                                     <div>快递：</div>

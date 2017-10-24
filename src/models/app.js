@@ -128,8 +128,7 @@ export default modelExtend(model, {
         const newUser = { ...user, status: EnumAdminStatus.LOCKED }
         yield localStorage.setItem(`${prefix}admin`, JSON.stringify(newUser))
         yield put({ type: 'updateState', payload: { user: newUser }  })
-        yield put({ type: 'messageSuccess', payload:"锁屏成功" })
-        yield put({ type: 'logoutSuccess' })
+        yield put({ type: 'logoutSuccess', payload:"锁屏成功" })
       } else {
         yield put({ type: 'messageError', payload: '请不要在登录界面进行锁屏操作！' })
       }
@@ -144,8 +143,7 @@ export default modelExtend(model, {
         const newUser = { ...user, status: EnumAdminStatus.LOGOUT }
         yield localStorage.setItem(`${prefix}admin`, JSON.stringify(newUser))
         yield put({ type: 'updateState', payload: { user: newUser }  })
-        yield put({ type: 'messageSuccess', payload:"登出成功" })
-        yield put({ type: 'logoutSuccess' })
+        yield put({ type: 'logoutSuccess', payload:"登出成功" })
       } else {
         yield put({ type: 'logoutSuccess' })
       }
@@ -153,14 +151,17 @@ export default modelExtend(model, {
 
     *logoutSuccess ({
       payload
-    }, { put }) { 
-      // yield localStorage.removeItem(`${prefix}admin`)
+    }, { put }) {
+      if (payload) {
+        yield put({ type: 'messageSuccess', payload: payload })
+      }
       if (location.pathname !== '/login') {
         let from = location.pathname
-        if (location.pathname === '/dashboard') {
+        if (location.pathname === '/') {
           from = '/dashboard'
         }
-        yield put(routerRedux.push(`/login?from=${from}`))
+        let search = location.search
+        yield put(routerRedux.push(`/login?from=${from}${search}`))
       }
     },
 

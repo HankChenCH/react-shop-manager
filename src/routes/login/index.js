@@ -38,7 +38,7 @@ class Login extends React.Component
           return
         }
         
-        if (isLock) {
+        if (this.state.isLock) {
           dispatch({ type: 'login/login', payload: { login_name: user.login_name, ...value } })
         } else {
           dispatch({ type: 'login/login', payload: values })

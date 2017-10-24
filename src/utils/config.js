@@ -1,6 +1,6 @@
 module.exports = {
   name: '探小店后台',
-  version: '1.0.5@beta',
+  version: '1.0.7@beta',
   prefix: 'tan_shop_',
   footerText: '探小店后台  © 2017 中山食探工作室',
   logo: '/st.jpg',

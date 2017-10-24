@@ -11,10 +11,10 @@ export default class OrderTimeLine extends React.Component
     }
 
     render() {
-        const { data, count } = this.props
+        const { data, count, onComplete,state } = this.props
 
         return (
-            <Timeline pending={data.length !== count ? '订单未完结' : false}>
+            <Timeline pending={data.length !== count ? <span style={{ cursor: 'pointer' }} onClick={onComplete}>{state}</span> : false}>
                 {data.map( (item, key) => 
                     <TimelineItem>
                         { key === 0 && 

@@ -208,10 +208,10 @@ const Detail = ({ dispatch, express, orderDetail, loading }) => {
                     <div className="content-inner">
                         <div className={styles.content}>
                             <Row gutter={8}>
-                                <Col span={22}>
-                                    <h2>订单编号：{data.order_no}</h2>
+                                <Col lg={22} md={24}>
+                                    <h2>订单号：{data.order_no}</h2>
                                 </Col>
-                                <Col className={styles.center} style={{ height: '46px' }} span={2}>
+                                <Col className={styles.center} style={{ height: '46px' }} lg={2} md={0}>
                                     <DropOption 
                                         onMenuClick={e => handleMenuClick(e)} 
                                         menuOptions={(menuList)()}
@@ -219,10 +219,10 @@ const Detail = ({ dispatch, express, orderDetail, loading }) => {
                                 </Col>
                             </Row>
                             <Row gutter={8} justify="center" align="center" style={{ paddingTop: 40 }}>
-                                <Col span={10}>
+                                <Col lg={12} md={24}>
                                     <OrderTimeLine data={timelineData.filter((i) => i)} count={3} state={renderStatus(data.status.toString(), data.prepay_id)} onComplete={() => hanldeTimelineClick(data.status.toString())} />
                                 </Col>
-                                <Col span={14}>
+                                <Col lg={12} md={24}>
                                     <div>快递：</div>
                                     <div>{renderSnapExpress(data.snap_express)}</div>
                                     <div>收货地址：</div>
@@ -237,9 +237,9 @@ const Detail = ({ dispatch, express, orderDetail, loading }) => {
                     </div>
                     <Row gutter={24} style={{ marginTop: 24 }}>
                         <Col lg={12} md={24}>
-                            <Card bordered={false} {...bodyStyle}>
+                            <Card bordered={false} {...bodyStyle} style={{ textAlign: 'center'  }}>
                                 <h3>订单商品：</h3>
-                                <ProductCardList data={orderItems} cardStyle={{ width:210 }}/>
+                                <ProductCardList data={orderItems} cardStyle={{ width:210 }} />
                             </Card>
                         </Col>
                         <Col lg={12} md={24}>

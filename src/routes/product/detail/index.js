@@ -98,6 +98,7 @@ const Detail = ({ productDetail, dispatch, loading }) => {
     item: modalType !== 'ticket' ? data : ticketList,   
     modalType,
     visible: modalVisible,
+    maskClosable: false,
     title: modalType && createModalTitle(modalType),
     wrapClassName: 'vertical-center-modal',
     formItemLayout,
@@ -168,10 +169,10 @@ const Detail = ({ productDetail, dispatch, loading }) => {
       <div className={styles.content}>
         <Spin spinning={loading}>
         <Row gutter={8} justify="center" align="center">
-          <Col span={22}>
+          <Col lg={22} md={24}>
             <h2>{data.name}</h2>
           </Col>
-          <Col className={styles.center} style={{ height: '46px' }} span={2}>
+          <Col className={styles.center} style={{ height: '46px' }} lg={2} md={12}>
               <DropOption 
                 onMenuClick={e => handleMenuClick(e)} 
                 menuOptions={[{ key: '1', name: '更新基础信息' }, { key: '3', name: '返回列表'}]}
@@ -179,10 +180,10 @@ const Detail = ({ productDetail, dispatch, loading }) => {
           </Col>
         </Row>
         <Row gutter={8} justify="center" align="center" style={{ paddingTop: 40 }}>
-          <Col style={{ textAlign: 'center' }} span={12}>
+          <Col style={{ textAlign: 'center' }} lg={12} md={24}>
             <img className={styles.main_img} src={data.main_img_url}/>
           </Col>
-          <Col span={12}>
+          <Col lg={12} md={24}>
             <div>简述：{data.summary}</div>
             <div>单价：￥{data.price}</div>
             <div>库存量：{data.stock}</div>

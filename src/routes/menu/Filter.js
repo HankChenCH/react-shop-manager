@@ -79,7 +79,7 @@ const Filter = ({
         <div >
           {/*<Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>搜索</Button>
           <Button size="large" className="margin-right" onClick={handleReset}>重置搜索</Button>*/}
-          <Button size="large" type="ghost" onClick={onAdd}>创建主菜单</Button>
+          <Button size="large" type="ghost" onClick={onAdd}>创建菜单</Button>
         </div>
       </Col>
     </Row>

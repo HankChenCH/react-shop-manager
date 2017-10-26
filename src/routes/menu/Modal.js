@@ -16,11 +16,6 @@ class InfoModal extends React.Component
         }
     }
 
-    componentDidMount() {
-        const { validateFields } = this.props.form
-        validateFields(['id'])
-    }
-
     handleOk = () => {
         const { onOk } = this.props
         const { validateFields, getFieldsValue } = this.props.form
@@ -56,21 +51,6 @@ class InfoModal extends React.Component
         })
     }
 
-    handleRouterChange = (e) => {
-        console.log(e)
-    }
-
-    countLength = (rule, value, callback) => {
-        const { getFieldValue } = this.props.form
-        const routerLength = getFieldValue('router').replace('/').split('/').length
-        const idLength = value.toString().length
-        if (idLength !== routerLength) {
-            callback('ID长度必须与路由长度一致')
-        }
-
-        callback()
-    }
-
     render() {
         const { item, menuList, ...modalProps } = this.props
         const { getFieldDecorator } = this.props.form
@@ -102,9 +82,6 @@ class InfoModal extends React.Component
                                     required: true,
                                     message: '请输入菜单ID'
                                 },
-                                {
-                                    len: this.state.idLength,
-                                },
                             ],
                         })(<Input />)}
                     </FormItem>
@@ -112,10 +89,10 @@ class InfoModal extends React.Component
                         {getFieldDecorator('name', {
                             initialValue: item.name,
                             rules: [
-                            {
-                                required: true,
-                                message: '请输入菜单名'
-                            },
+                                {
+                                    required: true,
+                                    message: '请输入菜单名'
+                                },
                             ],
                         })(<Input />)}
                     </FormItem>
@@ -150,7 +127,7 @@ class InfoModal extends React.Component
                                     message: '请输入路由'
                                 },
                             ],
-                        })(<Input onChange={(e) => this.handleRouterChange(e)}/>)}
+                        })(<Input />)}
                     </FormItem>
                     <FormItem label="图标名" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('icon', {

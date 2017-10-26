@@ -67,7 +67,6 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
         scroll={{ x: 900 }}
         columns={columns}
         simple
-        size="small" 
         rowKey={record => record.id}
       />
     </div>

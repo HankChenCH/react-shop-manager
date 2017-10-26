@@ -85,8 +85,7 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, onUpdateRank, location,
             {...tableProps}
             className={classnames({ [styles.table]: true })}
             columns={columns}
-            simple
-            size="small" 
+            simple 
             pagination={!layoutVisible}
             rowKey={record => record.id}
           />

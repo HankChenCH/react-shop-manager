@@ -60,7 +60,7 @@ module.exports = {
       products: '/theme/:id/product',
       setProducts: 'theme/:id/product',
       pull: 'theme/:id/pullOnOff',
-      rank: 'theme/setRank',
+      rank: 'theme/rank',
     },
     express: {
       list: '/express/all',

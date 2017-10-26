@@ -133,12 +133,12 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *pullOnOff ({ payload }, { pull, call, select }) {
+    *pullItem ({ payload }, { put, call, select }) {
       const res = yield call(pullOnOff, { id: payload.id, is_on: payload.is_on ? '1' : '0' })
       if (res.success) {
         let list = yield select(({ theme }) => theme.list)
         let newList = list.map((item) => item.id === payload.id ? {...item, is_on: payload.is_on ? '1' : '0'} : item)
-        yield put({ type: 'updateState', payload: {list: newList} })
+        yield put({ type: 'updateState', payload: { list: newList } })
         yield put({ type: 'app/messageSuccess', payload: (payload.is_on ? '推荐精选' : '取消精选') + '成功' })
       } else {
         throw res
@@ -147,13 +147,13 @@ export default modelExtend(pageModel, {
     
     *syncRank ({ payload }, { put, call, select }) {
       const { layoutList } = yield select(({ theme }) => theme)
-      const rank = layoutList.map((item, idx) => {
+      const ranks = layoutList.map((item, idx) => {
         return {
           id: item.id,
           rank: idx + 1
         }
       })
-      const res = yield call(setRank, rank)
+      const res = yield call(setRank, { ranks })
       if (res.success) {
         yield put({ type: 'hideLayout' })
         yield put({ type: 'app/messageSuccess', payload: "更新排序成功" })
@@ -188,7 +188,7 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         layoutVisible: true,
-        layoutList: state.list.filter((item) => item.is_on === '1')
+        layoutList: state.list.filter((item) => item.is_on === '1').sort((a,b) => a.rank - b.rank)
       }
     },
 

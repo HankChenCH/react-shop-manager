@@ -23,7 +23,7 @@ const TwoColProps = {
 
 const Filter = ({
   onAdd,
-  isMotion,
+  onShowLayout,
   switchIsMotion,
   onFilterChange,
   filter,
@@ -79,7 +79,8 @@ const Filter = ({
         <div >
           {/*<Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>搜索</Button>
           <Button size="large" className="margin-right" onClick={handleReset}>重置搜索</Button>*/}
-          <Button size="large" type="ghost" onClick={onAdd}>创建主题</Button>
+          <Button className="margin-right"  size="large" type="ghost" onClick={onAdd}>创建主题</Button>
+          <Button size="large" type="ghost" onClick={onShowLayout}>排序布局</Button>
         </div>
       </Col>
     </Row>

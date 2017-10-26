@@ -4,7 +4,7 @@ import * as productService from '../services/product'
 import { pageModel } from './common'
 import { config, deleteProps } from '../utils'
 
-const { query, create, remove, update, batchRemove, queryProducts, updateProducts, removeAllProducts } = themeService
+const { query, create, remove, update, batchRemove, queryProducts, updateProducts, removeAllProducts, setRank } = themeService
 const { queryAll } = productService
 const { prefix } = config
 
@@ -18,6 +18,8 @@ export default modelExtend(pageModel, {
     managerModalVisible: false,
     modalType: 'create',
     selectedRowKeys: [],
+    layoutVisible: false,
+    layoutList: [],
   },
 
   subscriptions: {
@@ -131,6 +133,25 @@ export default modelExtend(pageModel, {
       }
     },
 
+    *syncRank ({ payload }, { put, call, select }) {
+      const { layoutList } = yield select(({ theme }) => theme)
+      const rank = layoutList.map((item, idx) => {
+        return {
+          id: item.id,
+          rank: idx + 1
+        }
+      })
+      const res = yield call(setRank, rank)
+      if (res.success) {
+        yield put({ type: 'hideLayout' })
+        yield put({ type: 'app/messageSuccess', payload: "更新排序成功" })
+        yield put({ type: 'query' })
+      } else {
+        yield put({ type: 'hideLayout' })
+        throw res
+      }
+    },
+
   },
 
   reducers: {
@@ -150,6 +171,22 @@ export default modelExtend(pageModel, {
     hideManagerModal (state) {
       return  { ...state, managerModalVisible: false, currentProductKeyList: [] }
     },
+
+    showLayout (state) {
+      return {
+        ...state,
+        layoutVisible: true,
+        layoutList: state.list.filter((item) => item.is_on === '1')
+      }
+    },
+
+    hideLayout (state) {
+      return {
+        ...state,
+        layoutVisible: false,
+        layoutList: [],
+      }
+    }
 
   },
 })

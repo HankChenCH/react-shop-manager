@@ -4,6 +4,8 @@ import { connect } from 'dva'
 import { Layout, Chat } from '../components'
 import { classnames, config, menu } from '../utils'
 import { Helmet } from 'react-helmet'
+import { Row, Col, Radio } from 'antd'
+import { Comments } from './dashboard/components'
 import '../themes/index.less'
 import './app.less'
 import NProgress from 'nprogress'
@@ -11,11 +13,13 @@ const { prefix } = config
 
 const { Header, Bread, Footer, Sider, styles } = Layout
 const { CommonChatRoom } = Chat
+const RadioButton = Radio.Button
+const RadioGroup = Radio.Group
 let lastHref
 
-const App = ({ children, location, dispatch, app, chat, loading }) => {
+const App = ({ children, location, dispatch, app, message, loading }) => {
   const { user, siderFold, notificationCount, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys } = app
-  const { chatRoomShow, chatMessage } = chat
+  const { msgCenterShow, chatMessage, contentValue } = message
   const href = window.location.href
 
   if (lastHref !== href) {
@@ -48,7 +52,7 @@ const App = ({ children, location, dispatch, app, chat, loading }) => {
       dispatch({ type: 'app/handleNavOpenKeys', payload: { navOpenKeys: openKeys } })
     },
     checkNotice () {
-      dispatch({ type: 'chat/triggerChatRoom' })
+      dispatch({ type: 'message/triggerMsgCenter' })
       dispatch({ type: 'app/clearNoticeCount' })
     },
   }
@@ -73,12 +77,23 @@ const App = ({ children, location, dispatch, app, chat, loading }) => {
   }
 
   const chatRoomProps = {
-    title: '工作室',
     message: chatMessage,
     onlineCount: 0,
     onSend (data) {
-      dispatch({ type: 'chat/sendMessage', payload: data })
+      dispatch({ type: 'message/sendMessage', payload: data })
     },
+  }
+
+  const msgCenterRadios = [
+    { key: '1', value: '消息通知' },
+    { key: '2', value: '讨论区' }
+  ]
+
+  const handleMsgRadioChange = (e) => {
+    dispatch({
+      type: 'message/showContent',
+      payload: e.target.value
+    })
   }
 
   if (config.openPages && config.openPages.indexOf(location.pathname) > -1) {
@@ -110,9 +125,31 @@ const App = ({ children, location, dispatch, app, chat, loading }) => {
               </div>
             </div>
             {
-              /*聊天室*/
-              <aside className={classnames(styles.chatsider, { [styles.chatshow]: chatRoomShow })}>
-                <CommonChatRoom {...chatRoomProps}/>
+              /*消息中心*/
+              <aside className={classnames(styles.chatsider, { [styles.chatshow]: msgCenterShow })}>
+                <Row>
+                  <Col span={24} style={{ textAlign: 'center', marginTop: 30 }}>
+                    <RadioGroup defaultValue={contentValue} onChange={handleMsgRadioChange}>
+                      {msgCenterRadios.map((item) => <RadioButton value={item.key}>{item.value}</RadioButton>)}
+                    </RadioGroup>
+                  </Col>
+                </Row>
+                <section
+                  className={styles.msg_content} 
+                  style={{ 
+                    display: 'flex', 
+                    flexDirection: 'row', 
+                    flexWrap: 'no-warp', 
+                    overflow: 'hidden', 
+                    position: 'relative', 
+                    top: 0, 
+                    left: isNavbar ? -100 * (contentValue - 1) + 'vw' : -400 * (contentValue - 1) + 'px' , 
+                    width: isNavbar ? 100 * msgCenterRadios.length + 'vw' : 400 * msgCenterRadios.length + 'px'
+                  }}
+                >
+                  <Comments className={styles.chatshow} columns={[{title: '消息', dataIndex: 'msg'}]}/>
+                  <CommonChatRoom className={styles.chatshow} {...chatRoomProps}/>
+                </section>
               </aside>
             }
           </div>
@@ -131,4 +168,4 @@ App.propTypes = {
   loading: PropTypes.object,
 }
 
-export default connect(({ app, chat, loading }) => ({ app, chat, loading }))(App)
+export default connect(({ app, message, loading }) => ({ app, message, loading }))(App)

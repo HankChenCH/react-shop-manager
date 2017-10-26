@@ -243,6 +243,7 @@ export default modelExtend(model, {
     },
 
     clearUser(state) {
+      localStorage.removeItem(`${prefix}admin`)
       return {
         ...state,
         user: {}

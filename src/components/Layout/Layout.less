@@ -88,6 +88,10 @@
       box-shadow: @shadow-2;
       border-left: solid 1px #f8f8f8;
       display: inline-block;
+
+      .msg_content{
+        transition: @transition-ease-out;
+      }
     }
 
     .chatshow{
@@ -311,7 +315,7 @@
         position: relative;
         
         .chat_sider{
-          width: 100%;
+          width: 0;
           background: #eee;
           position: absolute;
           overflow: hidden;
@@ -325,7 +329,7 @@
         }
 
         .chatshow{
-          height: 100vh;
+          width: 100vw;
         }
       }
 

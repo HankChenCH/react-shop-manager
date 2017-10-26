@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
 import styles from './comments.less'
-import { color } from '../../../utils'
+import { color, classnames } from '../../../utils'
 
 const status = {
   1: {
@@ -19,7 +19,7 @@ const status = {
   },
 }
 
-function Comments ({ dataSource, columns }) {
+function Comments ({ dataSource, columns, className }) {
   // const columns = [
   //   {
   //     title: 'avatar',
@@ -41,7 +41,7 @@ function Comments ({ dataSource, columns }) {
   //   },
   // ]
   return (
-    <div className={styles.comments}>
+    <div className={classnames(className, styles.comments)}>
       <Table pagination={false} showHeader={false} columns={columns} rowKey={(record, key) => key} dataSource={dataSource} />
     </div>
   )

@@ -5,28 +5,15 @@ const { prefix } = config
 
 export default modelExtend(model, {
 
-    namespace: 'chat',
+    namespace: 'message',
 
     state: {
-        chatRoomShow: false,
+        msgCenterShow: false,
+        contentValue: localStorage.getItem(`${prefix}msgContentValue`) || '1',
         chatMessage: [],
-        chatPosition: 'absoulte'
     },
 
     subscriptions : {
-        setup ({ dispatch }) {
-            window.onscroll = function() {
-                let scrollHeight = document.documentElement.scrollTop || document.body.scrollTop
-
-                console.log(scrollHeight)
-
-                if (scrollHeight > 50) {
-                    dispatch({ type: 'chat/UpdateState', payload: { chatPosition: 'fixed' } })
-                } else {
-                    dispatch({ type: 'chat/UpdateState', payload: { chatPosition: 'absoulte' } })
-                }
-            }
-        }
     },
 
     effects: {
@@ -40,10 +27,18 @@ export default modelExtend(model, {
     },
 
     reducers: {
-        triggerChatRoom (state) {
+        triggerMsgCenter (state) {
             return {
                 ...state,
-                chatRoomShow: !state.chatRoomShow
+                msgCenterShow: !state.msgCenterShow
+            }
+        },
+
+        showContent (state, { payload }) {
+            localStorage.setItem(`${prefix}msgContentValue`, payload)
+            return {
+                ...state,
+                contentValue: payload
             }
         }
     }

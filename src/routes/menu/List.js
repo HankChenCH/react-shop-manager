@@ -66,7 +66,6 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
 List.propTypes = {
   onDeleteItem: PropTypes.func,
   onEditItem: PropTypes.func,
-  isMotion: PropTypes.bool,
   location: PropTypes.object,
 }
 

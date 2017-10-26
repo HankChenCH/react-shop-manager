@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal } from 'antd'
+import { Table, Modal, Switch } from 'antd'
 import styles from './List.less'
 import classnames from 'classnames'
 import AnimTableBody from '../../components/DataTable/AnimTableBody'
@@ -9,7 +9,7 @@ import { Link } from 'dva/router'
 
 const confirm = Modal.confirm
 
-const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps }) => {
+const List = ({ onManagerItem, onDeleteItem, onEditItem, onPullShelvesItem, location, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onManagerItem(record)
@@ -23,6 +23,10 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
         },
       })
     }
+  }
+
+  const handleSwitchChange = (record, checked) => {
+    onPullShelvesItem(record.id, checked)
   }
 
   const columns = [
@@ -44,6 +48,11 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
       render: (text, record) => {
         return text == null ? '-' : text;
       }
+    }, {
+      title: '精选',
+      dataIndex: 'is_on',
+      key: 'is_on',
+      render: (text, record) => <Switch checked={text === '1' ? true : false} checkedChildren="取消" unCheckedChildren="推荐" onChange={checked => handleSwitchChange(record, checked)}/>,
     }, {
       title: '操作',
       key: 'operation',

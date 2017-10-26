@@ -114,6 +114,15 @@ const Theme = ({ location, dispatch, app, theme, loading }) => {
         },
       })
     },
+    onPullShelvesItem (id, is_on) {
+      dispatch({
+        type: 'theme/pullOnOff',
+        payload: {
+          id,
+          is_on,
+        }
+      })
+    },
     rowSelection: {
       selectedRowKeys,
       onChange: (keys) => {

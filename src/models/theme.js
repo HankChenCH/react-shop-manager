@@ -4,7 +4,7 @@ import * as productService from '../services/product'
 import { pageModel } from './common'
 import { config, deleteProps } from '../utils'
 
-const { query, create, remove, update, batchRemove, queryProducts, updateProducts, removeAllProducts } = themeService
+const { query, create, remove, update, batchRemove, queryProducts, updateProducts, removeAllProducts, pullOnOff } = themeService
 const { queryAll } = productService
 const { prefix } = config
 
@@ -130,6 +130,18 @@ export default modelExtend(pageModel, {
         throw res
       }
     },
+
+    *pullOnOff ({ payload }, { pull, call, select }) {
+      const res = yield call(pullOnOff, { id: payload.id, is_on: payload.is_on ? '1' : '0' })
+      if (res.success) {
+        let list = yield select(({ theme }) => theme.list)
+        let newList = list.map((item) => item.id === payload.id ? {...item, is_on: payload.is_on ? '1' : '0'} : item)
+        yield put({ type: 'updateState', payload: {list: newList} })
+        yield put({ type: 'app/messageSuccess', payload: (payload.is_on ? '推荐精选' : '取消精选') + '成功' })
+      } else {
+        throw res
+      }
+    }
 
   },
 

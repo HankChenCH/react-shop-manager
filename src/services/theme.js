@@ -1,6 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
-const { list, info, batch, products, setProducts } = api.theme
+const { list, info, batch, products, setProducts, pull } = api.theme
 
 export async function query (params) {
   return request({
@@ -22,6 +22,14 @@ export async function create (params) {
   return request({
     url: info.replace('/:id', ''),
     method: 'post',
+    data: params,
+  })
+}
+
+export async function pullOnOff (params) {
+  return request({
+    url: pull,
+    method: 'put',
     data: params,
   })
 }

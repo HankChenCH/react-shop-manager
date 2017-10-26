@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { classnames } from '../../utils'
 import ChatRoomHeader from './ChatRoomHeader'
 import ChatRoomContent from './ChatRoomContent'
 import ChatRoomSendBox from './ChatRoomSendBox'
@@ -12,7 +13,7 @@ export default class CommonChatRoom extends React.Component
     }
 
     render() {
-        const {  title, onlineCount, message, onSend } = this.props
+        const { className, title, onlineCount, message, onSend } = this.props
 
         const headerProps = {
             title,
@@ -28,7 +29,7 @@ export default class CommonChatRoom extends React.Component
         }
 
         return (
-            <div className={styles.chatroom_container}>
+            <div className={classnames(className, styles.chatroom_container)}>
                 <ChatRoomHeader {...headerProps}/>
                 <ChatRoomContent {...mainProps}/>
                 <ChatRoomSendBox {...sendBoxProps}/>

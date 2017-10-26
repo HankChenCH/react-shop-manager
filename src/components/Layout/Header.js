@@ -24,8 +24,8 @@ const Header = ({ user, logout, notificationCount, switchSider, siderFold, isNav
   return (
     <div className={styles.header}>
       {isNavbar
-        ? <Popover placement="bottomLeft" onVisibleChange={switchMenuPopover} visible={menuPopoverVisible} overlayClassName={styles.popovermenu} trigger="click" content={<Menus {...menusProps} />}>
-          <div className={styles.button}>
+        ? <Popover style={{ maxHeight: 300, overflowY: 'scroll' }} placement="bottomLeft" onVisibleChange={switchMenuPopover} visible={menuPopoverVisible} overlayClassName={styles.popovermenu} trigger="click" content={<Menus {...menusProps} />}>
+          <div className={classnames([styles.button,styles.center])}>
             <Icon type="bars" />
           </div>
         </Popover>

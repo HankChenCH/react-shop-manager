@@ -10,11 +10,11 @@ import ManagerModal from '../components/ManagerModal/'
 
 const Theme = ({ location, dispatch, app, theme, loading }) => {
   const { productAll } = app
-  const { list, pagination, currentItem, modalVisible, managerModalVisible, productList, currentProductKeyList, modalType, selectedRowKeys, uploadTempItem } = theme
+  const { list, pagination, currentItem, modalVisible, managerModalVisible, currentProductKeyList, modalType, selectedRowKeys, layoutVisible, layoutList } = theme
   const { pageSize } = pagination
 
   const modalProps = {
-    item: Object.assign((modalType === 'create' ? {} : currentItem), uploadTempItem),
+    item: modalType === 'create' ? {} : currentItem,
     modalType: modalType,
     visible: modalVisible,
     maskClosable: false,
@@ -76,8 +76,9 @@ const Theme = ({ location, dispatch, app, theme, loading }) => {
   }
 
   const listProps = {
-    dataSource: list,
-    loading: loading.effects['theme/query'],
+    dataSource: layoutVisible ? layoutList : list,
+    loading: loading.effects['theme/query','theme/syncRank'],
+    layoutVisible,
     pagination,
     location,
     onChange (page) {
@@ -123,7 +124,20 @@ const Theme = ({ location, dispatch, app, theme, loading }) => {
         }
       })
     },
-    rowSelection: {
+    onSyncRank () {
+      dispatch({
+        type: 'theme/syncRank',
+      })
+    },
+    onCancelRank () {
+      dispatch({
+        type: 'theme/hideLayout',
+      })
+    }
+  }
+
+  if (!layoutVisible) {
+    listProps.rowSelection = {
       selectedRowKeys,
       onChange: (keys) => {
         dispatch({
@@ -133,7 +147,7 @@ const Theme = ({ location, dispatch, app, theme, loading }) => {
           },
         })
       },
-    },
+    }
   }
 
   const filterProps = {
@@ -168,6 +182,11 @@ const Theme = ({ location, dispatch, app, theme, loading }) => {
           modalType: 'create',
         },
       })
+    },
+    onShowLayout () {
+      dispatch({
+        type: 'theme/showLayout',
+      })
     }
   }
 
@@ -182,12 +201,18 @@ const Theme = ({ location, dispatch, app, theme, loading }) => {
 
   return (
     <div className="content-inner">
-      <Filter {...filterProps} />
+      { !layoutVisible && <Filter {...filterProps} /> }
       {
          selectedRowKeys.length > 0 &&
            <Row style={{ marginBottom: 18, textAlign: 'right', fontSize: 13 }}>
              <Col>
                {`选择了 ${selectedRowKeys.length} 条主题 `}
+               <Popconfirm title={'确定要取消选中的主题的精选推荐?'} placement="bottomRight" onConfirm={handleDeleteItems}>
+                 <Button type="ghost" size="small" style={{ marginLeft: 8 }}>批量取消精选</Button>
+               </Popconfirm>
+               <Popconfirm title={'确定要推荐选中的主题为精选?'} placement="bottomRight" onConfirm={handleDeleteItems}>
+                 <Button type="ghost" size="small" style={{ marginLeft: 8 }}>批量推荐精选</Button>
+               </Popconfirm>
                <Popconfirm title={'确定要删除选中的主题?'} placement="bottomRight" onConfirm={handleDeleteItems}>
                  <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
                </Popconfirm>

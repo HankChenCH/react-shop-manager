@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Switch } from 'antd'
-import styles from './List.less'
+import { Table, Modal, Switch, Button } from 'antd'
 import classnames from 'classnames'
-import AnimTableBody from '../../components/DataTable/AnimTableBody'
-import { DropOption } from '../../components'
 import { Link } from 'dva/router'
+import ReactDragListView from 'react-drag-listview'
+import { DropOption } from '../../components'
+import styles from './List.less'
 
 const confirm = Modal.confirm
 
-const List = ({ onManagerItem, onDeleteItem, onEditItem, onPullShelvesItem, location, ...tableProps }) => {
+const List = ({ onManagerItem, onDeleteItem, onEditItem, onPullShelvesItem, onUpdateRank, location, layoutVisible, onSyncRank, onCancelRank, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onManagerItem(record)
@@ -29,7 +29,7 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, onPullShelvesItem, loca
     onPullShelvesItem(record.id, checked)
   }
 
-  const columns = [
+  const columns = !layoutVisible ? [
     {
       title: '主题名',
       dataIndex: 'name',
@@ -61,24 +61,51 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, onPullShelvesItem, loca
         return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '商品管理' }, { key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
       },
     },
+  ] : [
+    {
+      title: '主题(长按拖拽排序)',
+      dataIndex: 'theme',
+      key: 'theme',
+      render: (text, record) => 
+        <section className="drag-handle">
+          <img style={{maxWidth: '130px'}} src={record.head_img.url}/>
+          <p>{record.name}</p>
+          <p>{record.description}</p>
+        </section>
+    },
   ]
 
-  const getBodyWrapperProps = {
-    page: location.query.page,
-    current: tableProps.pagination.current,
+  const dragProps = {
+    onDragEnd(fromIndex, toIndex) {
+        const { dataSource } = { ...tableProps }
+        const item = dataSource.splice(fromIndex, 1)[0]
+        dataSource.splice(toIndex, 0, item)
+        onUpdateRank(dataSource)
+    },
+    handleSelector: ".drag-handle"
   }
 
+  const { loading } = { ...tableProps }
+
   return (
-    <div>
-      <Table
-        {...tableProps}
-        className={classnames({ [styles.table]: true })}
-        scroll={{ x: 900 }}
-        columns={columns}
-        simple
-        size="small" 
-        rowKey={record => record.id}
-      />
+    <div style={{ textAlign: 'right' }}>
+      <ReactDragListView {...dragProps}>
+          <Table
+            {...tableProps}
+            className={classnames({ [styles.table]: true })}
+            columns={columns}
+            simple 
+            pagination={!layoutVisible}
+            rowKey={record => record.id}
+          />
+      </ReactDragListView>
+      {
+        layoutVisible && 
+        <div>
+          <Button className={classnames([styles.sync_btn, styles.margin_right])} size="large" onClick={onCancelRank}>取消</Button>
+          <Button className={styles.sync_btn} size="large" type="primary" onClick={onSyncRank} loading={loading}>确定并同步到小程序</Button>
+        </div>
+      }
     </div>
   )
 }
@@ -86,7 +113,6 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, onPullShelvesItem, loca
 List.propTypes = {
   onDeleteItem: PropTypes.func,
   onEditItem: PropTypes.func,
-  isMotion: PropTypes.bool,
   location: PropTypes.object,
 }
 

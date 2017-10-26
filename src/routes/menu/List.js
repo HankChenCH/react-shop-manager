@@ -43,7 +43,7 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
       key: 'operation',
       width: 100,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '新增子菜单' }, { key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
       },
     },
   ]
@@ -57,7 +57,6 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
         scroll={{ x: 900 }}
         columns={columns}
         simple
-        size="small" 
         rowKey={record => record.id}
       />
     </div>
@@ -67,7 +66,6 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
 List.propTypes = {
   onDeleteItem: PropTypes.func,
   onEditItem: PropTypes.func,
-  isMotion: PropTypes.bool,
   location: PropTypes.object,
 }
 

@@ -1,16 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal, Avatar, Row, Col } from 'antd'
-import moment from 'moment'
+import { hasProp } from '../../utils'
 import styles from './List.less'
 import classnames from 'classnames'
-import AnimTableBody from '../../components/DataTable/AnimTableBody'
 import { DropOption } from '../../components'
 import { Link } from 'dva/router'
 
 const confirm = Modal.confirm
 
-const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) => {
+const List = ({ onDeleteItem, onEditItem, location, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onEditItem(record)
@@ -44,7 +43,7 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
       title: '性别',
       dataIndex: 'gender',
       key: 'gender',
-      render: (text, record) => <div>{ record.extend && record.extend.gender ? '男' : '女'}</div>
+      render: (text, record) => <div>{ record.extend && record.extend.gender === 1 ? '男' : '女'}</div>
     }, {
       title: '所在地址',
       dataIndex: 'address',
@@ -61,7 +60,7 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
     <div>
       <Table
         {...tableProps}
-        className={classnames({ [styles.table]: true, [styles.motion]: isMotion })}
+        className={classnames({ [styles.table]: true })}
         scroll={{ x: 900 }}
         columns={columns}
         simple
@@ -74,7 +73,6 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
 List.propTypes = {
   onDeleteItem: PropTypes.func,
   onEditItem: PropTypes.func,
-  isMotion: PropTypes.bool,
   location: PropTypes.object,
 }
 

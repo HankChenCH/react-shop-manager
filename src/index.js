@@ -28,6 +28,7 @@ app.model(require('./models/app'))
 app.model(require('./models/websocket'))
 app.model(require('./models/message'))
 
+
 // 3. Router
 app.router(require('./router'))
 

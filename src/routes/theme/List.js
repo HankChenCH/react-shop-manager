@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Button } from 'antd'
+import { Table, Modal, Switch, Button } from 'antd'
 import classnames from 'classnames'
 import { Link } from 'dva/router'
-import ReactDragListView from 'react-drag-listview';
+import ReactDragListView from 'react-drag-listview'
 import { DropOption } from '../../components'
 import styles from './List.less'
 
 const confirm = Modal.confirm
 
-const List = ({ onManagerItem, onDeleteItem, onEditItem, onUpdateRank, location, layoutVisible, onSyncRank, onCancelRank, ...tableProps }) => {
+const List = ({ onManagerItem, onDeleteItem, onEditItem, onPullShelvesItem, onUpdateRank, location, layoutVisible, onSyncRank, onCancelRank, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onManagerItem(record)
@@ -23,6 +23,10 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, onUpdateRank, location,
         },
       })
     }
+  }
+
+  const handleSwitchChange = (record, checked) => {
+    onPullShelvesItem(record.id, checked)
   }
 
   const columns = !layoutVisible ? [
@@ -44,6 +48,11 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, onUpdateRank, location,
       render: (text, record) => {
         return text == null ? '-' : text;
       }
+    }, {
+      title: '精选',
+      dataIndex: 'is_on',
+      key: 'is_on',
+      render: (text, record) => <Switch checked={text === '1' ? true : false} checkedChildren="取消" unCheckedChildren="推荐" onChange={checked => handleSwitchChange(record, checked)}/>,
     }, {
       title: '操作',
       key: 'operation',

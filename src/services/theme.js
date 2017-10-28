@@ -26,6 +26,14 @@ export async function create (params) {
   })
 }
 
+export async function pullOnOff (params) {
+  return request({
+    url: pull,
+    method: 'put',
+    data: params,
+  })
+}
+
 export async function remove (params) {
   return request({
     url: info,

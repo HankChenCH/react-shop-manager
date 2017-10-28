@@ -115,6 +115,15 @@ const Theme = ({ location, dispatch, app, theme, loading }) => {
         },
       })
     },
+    onPullShelvesItem (id, is_on) {
+      dispatch({
+        type: 'theme/pullItem',
+        payload: {
+          id,
+          is_on,
+        }
+      })
+    },
     onUpdateRank (layoutList) {
       dispatch({
         type: 'theme/updateState',

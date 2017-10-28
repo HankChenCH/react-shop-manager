@@ -29,25 +29,25 @@ export default modelExtend(model, {
             dispatch({ type: 'setNotificationConfig', payload: notificationSetting })
         },
         wsSetup ({ dispatch }) {
-            // ws.connect()
+            ws.connect()
 
-            // let timer = setInterval(() => {
-            //     ws.trigger('heartbeatCheck')
-            // }, 25000) 
+            let timer = setInterval(() => {
+                ws.trigger('heartbeatCheck')
+            }, 25000) 
             
-            // window.onunload = () => {
-            //     clearInterval(timer)
-            //     ws.close()
-            // }
+            window.onunload = () => {
+                clearInterval(timer)
+                ws.close()
+            }
         },
         wsListen ({ dispatch }) {
-            // ws.listen('notice',(res) => {
-            //     dispatch({ type: 'app/globalNotice', payload: res })
-            // })
-            // ws.listen('msg', (res) => {
-            //     dispatch({ type: 'app/addNoticeCount' })
-                // dispatch({ type: 'chat/receiveMsg', payload: res })
-            // })
+            ws.addListen('login',(res) => {
+                dispatch({ type: 'app/globalNotice', payload: res })
+            })
+            ws.addListen('msg', (res) => {
+                dispatch({ type: 'app/addNoticeCount' })
+                dispatch({ type: 'message/receiveMsg', payload: res })
+            })
         },
     },
 

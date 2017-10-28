@@ -3,6 +3,7 @@ import { config } from '../utils/'
 const { websocketURL } = config
 
 let websocket = undefined
+let eventListener = []
 
 function getWebsocket(url) {
     if (!(websocket instanceof WebSocket)) {
@@ -16,32 +17,22 @@ export async function connect() {
     client.onopen = () => {
         console.log('链接成功',client)
     }
+    client.onmessage = (res) => {
+        const message = JSON.parse(res.data)
+        if (eventListener[message.event] instanceof Function) {
+            eventListener[message.event](message)
+        }
+    }
 }
 
-//监听服务器事件以及返回结果
-export async function listen(event, cb) {
-    const client = getWebsocket(websocketURL)
-    switch (event){
-        case 'error':
-            client.onerror = (e) => {
-                cb(e)
-            }
-            break;
-        case 'close':
-            //服务器主动关闭
-            client.onclose=function(e){
-                cb(e)
-                client.close() //关闭TCP连接
-            }
-            break;
-        default:
-            client.onmessage = (res) => {
-                const message = JSON.parse(res.data)
-                if (message.event === event) {
-                    cb(message)
-                }
-            }
+//增加监听服务器事件以及返回结果
+export function addListen(event, cb) {
+    if(eventListener[event] instanceof Function) {
+        console.error('this event already has listener function,please checkout!')
+        return
     }
+
+    eventListener[event] = cb
 }
 
 //普通发送消息

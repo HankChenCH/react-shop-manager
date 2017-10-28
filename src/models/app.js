@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { query, queryProductAll, logout, reToken } from '../services/app'
-import { trigger } from '../services/ws'
+import * as ws from '../services/ws'
 import { model } from './common'
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
@@ -178,9 +178,9 @@ export default modelExtend(model, {
 
     *registerUser ({ payload }, { put, call }) {
       yield put({ type: 'updateState', payload: { user: payload } })
-      // trigger('notice', {
-      //   name: payload.username
-      // })
+      ws.trigger('login', {
+        name: payload.username
+      })
     },
 
     *addNoticeCount ({ payload }, { put, select }) {

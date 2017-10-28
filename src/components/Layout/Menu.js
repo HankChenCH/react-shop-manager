@@ -82,6 +82,11 @@ const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys
   let currentMenu
   let defaultSelectedKeys
   for (let item of menu) {
+    if (pathToRegexp('/').exec(location.pathname)) {
+      currentMenu = menu[0]
+      break
+    }
+
     if (item.router && pathToRegexp(item.router).exec(location.pathname)) {
       currentMenu = item
       break

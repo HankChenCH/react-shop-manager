@@ -11,6 +11,11 @@ const Bread = ({ menu }) => {
   let pathArray = []
   let current
   for (let index in menu) {
+    if (pathToRegexp('/').exec(location.pathname)) {
+      current = menu[0]
+      break
+    }
+
     if (menu[index].router && pathToRegexp(menu[index].router).exec(location.pathname)) {
       current = menu[index]
       break

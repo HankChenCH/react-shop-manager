@@ -41,10 +41,10 @@ export default modelExtend(model, {
             }
         },
         wsListen ({ dispatch }) {
-            ws.addListen('login',(res) => {
+            ws.registerListen('login',(res) => {
                 dispatch({ type: 'app/globalNotice', payload: res })
             })
-            ws.addListen('msg', (res) => {
+            ws.registerListen('msg', (res) => {
                 dispatch({ type: 'app/addNoticeCount' })
                 dispatch({ type: 'message/receiveMsg', payload: res })
             })

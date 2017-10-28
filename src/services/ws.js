@@ -3,7 +3,7 @@ import { config } from '../utils/'
 const { websocketURL } = config
 
 let websocket = undefined
-let eventListener = []
+const eventListener = []
 
 function getWebsocket(url) {
     if (!(websocket instanceof WebSocket)) {
@@ -26,7 +26,7 @@ export async function connect() {
 }
 
 //增加监听服务器事件以及返回结果
-export function addListen(event, cb) {
+export function registerListen(event, cb) {
     if(eventListener[event] instanceof Function) {
         console.error('this event already has listener function,please checkout!')
         return

@@ -184,8 +184,8 @@ export default modelExtend(model, {
     },
 
     *addNoticeCount ({ payload }, { put, select }) {
-      const { chatRoomShow } = yield select((_) => _.chat)
-      if (!chatRoomShow) {
+      const { msgCenterShow } = yield select((_) => _.message)
+      if (!msgCenterShow) {
         yield put({ type: 'noticeCountInc' })
       }
     },

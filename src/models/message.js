@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { model } from './common'
+import * as ws from '../services/ws.js'
 import { config, hasProp } from '../utils'
 const { prefix } = config
 
@@ -10,6 +11,7 @@ export default modelExtend(model, {
     state: {
         msgCenterShow: false,
         contentValue: localStorage.getItem(`${prefix}msgContentValue`) || '1',
+        msgNotice: [],
         chatMessage: [],
     },
 
@@ -19,10 +21,16 @@ export default modelExtend(model, {
     effects: {
         *sendMessage({ payload }, { put, select }) {
             const { username } = yield select(({ app }) => app.user)
-            const { chatMessage } = yield select((_) => _.chat)
+            const { chatMessage } = yield select((_) => _.message)
             payload = payload.replace(/\n/g, '<br />$&')
             chatMessage.push({data: payload, from: username})
             yield put({ type: 'updateState', payload: { chatMessage } })
+            ws.sendMsg({ data: payload })
+        },
+
+        *addOrderNotice({ payload }, { put, select }) {
+            const newNotice = `您有一笔新的订单等待处理，订单号：${payload.orderNo}`
+            yield put({ type: 'addMsgNotice', payload: { msg: newNotice } })
         }
     },
 
@@ -31,6 +39,15 @@ export default modelExtend(model, {
             return {
                 ...state,
                 msgCenterShow: !state.msgCenterShow
+            }
+        },
+
+        addMsgNotice(state, { payload }) {
+            const { msgNotice } = state
+            msgNotice.unshift(payload)
+            return {
+                ...state,
+                msgNotice: msgNotice
             }
         },
 

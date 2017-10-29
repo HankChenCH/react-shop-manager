@@ -19,7 +19,7 @@ let lastHref
 
 const App = ({ children, location, dispatch, app, message, loading }) => {
   const { user, siderFold, notificationCount, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys } = app
-  const { msgCenterShow, chatMessage, contentValue } = message
+  const { msgCenterShow, msgNotice,chatMessage, contentValue } = message
   const href = window.location.href
 
   if (lastHref !== href) {
@@ -142,12 +142,12 @@ const App = ({ children, location, dispatch, app, message, loading }) => {
                     flexWrap: 'no-warp', 
                     overflow: 'hidden', 
                     position: 'relative', 
-                    top: 0, 
+                    top: 30, 
                     left: isNavbar ? -100 * (contentValue - 1) + 'vw' : -400 * (contentValue - 1) + 'px' , 
                     width: isNavbar ? 100 * msgCenterRadios.length + 'vw' : 400 * msgCenterRadios.length + 'px'
                   }}
                 >
-                  <Comments className={styles.chatshow} columns={[{title: '消息', dataIndex: 'msg'}]}/>
+                  <Comments className={styles.chatshow} dataSource={msgNotice} columns={[{title: '消息', dataIndex: 'msg'}]}/>
                   <CommonChatRoom className={styles.chatshow} {...chatRoomProps}/>
                 </section>
               </aside>

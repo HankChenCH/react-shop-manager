@@ -1,32 +1,35 @@
 import { config } from '../utils/'
 
-const { websocketURL } = config
+const { prefix, websocketURL } = config
 
 let websocket = undefined
 const eventListener = []
 
 function getWebsocket(url) {
     if (!(websocket instanceof WebSocket)) {
-        websocket = new WebSocket(url)
+        const token = JSON.parse(localStorage.getItem(`${prefix}admin`)).token
+        websocket = new WebSocket(url + '?token=' + token)
     }
     return websocket
 }
 
 export async function connect() {
     const client = getWebsocket(websocketURL)
-    client.onopen = () => {
-        console.log('链接成功',client)
-    }
-    client.onmessage = (res) => {
-        const message = JSON.parse(res.data)
-        if (eventListener[message.event] instanceof Function) {
-            eventListener[message.event](message)
+    if (client.readyState !== 1) {
+        client.onopen = () => {
+            console.log('链接成功',client)
+        }
+        client.onmessage = (res) => {
+            const message = JSON.parse(res.data)
+            if (eventListener[message.event] instanceof Function) {
+                eventListener[message.event](message)
+            }
         }
     }
 }
 
 //增加监听服务器事件以及返回结果
-export function registerListen(event, cb) {
+export function registerListener(event, cb) {
     if(eventListener[event] instanceof Function) {
         console.error('this event already has listener function,please checkout!')
         return
@@ -38,7 +41,7 @@ export function registerListen(event, cb) {
 //普通发送消息
 export async function sendMsg(data = {}) {
     const client = getWebsocket(websocketURL)
-    const sendBody = { ...data, event: 'msg'}
+    const sendBody = { ...data, event: 'manager/chat'}
     client.send(JSON.stringify(sendBody))
 }
 

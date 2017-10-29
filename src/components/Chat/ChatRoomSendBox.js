@@ -29,7 +29,7 @@ class ChatRoomBox extends React.Component
             <div>
                 <Form>
                     <FormItem>
-		                {getFieldDecorator('message')(<Input type='textarea' autosize={{ minRows: 4, maxRows: 4 }}/>)}
+		                {getFieldDecorator('message')(<Input type='textarea' onPressEnter={this.handleSend} autosize={{ minRows: 4, maxRows: 4 }}/>)}
                     </FormItem>
                 </Form>
                 <Button style={{ float: 'right' }} type="primary" onClick={this.handleSend}>发送</Button>

@@ -25,7 +25,7 @@ export default modelExtend(model, {
             payload = payload.replace(/\n/g, '<br />$&')
             chatMessage.push({data: payload, from: username})
             yield put({ type: 'updateState', payload: { chatMessage } })
-            ws.sendMsg({ data: payload })
+            ws.sendMsg({ data: payload, from: username })
         },
 
         *addOrderNotice({ payload }, { put, select }) {
@@ -39,6 +39,13 @@ export default modelExtend(model, {
             return {
                 ...state,
                 msgCenterShow: !state.msgCenterShow
+            }
+        },
+
+        receiveMsg(state, { payload }) {
+            return {
+                ...state,
+                chatMessage: state.chatMessage.concat({ data: payload.data, from: payload.from })
             }
         },
 

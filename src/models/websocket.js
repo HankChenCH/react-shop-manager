@@ -48,7 +48,7 @@ export default modelExtend(model, {
             ws.registerListener('login',(res) => {
                 dispatch({ type: 'app/globalNotice', payload: res })
             })
-            ws.registerListener('msg', (res) => {
+            ws.registerListener('manager/chat', (res) => {
                 dispatch({ type: 'app/addNoticeCount' })
                 dispatch({ type: 'message/receiveMsg', payload: res })
             })

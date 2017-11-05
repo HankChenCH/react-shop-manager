@@ -45,17 +45,17 @@ export default modelExtend(model, {
             }
         },
         wsListen ({ dispatch }) {
-            ws.registerListener('login',(res) => {
+            ws.on('login',(res) => {
                 dispatch({ type: 'app/globalNotice', payload: res })
             })
-            ws.registerListener('manager/chat', (res) => {
+            ws.on('manager/chat', (res) => {
                 dispatch({ type: 'app/addNoticeCount' })
                 dispatch({ type: 'message/receiveMsg', payload: res })
             })
-            ws.registerListener('pay/notice',(res) => {
+            ws.on('pay/notice',(res) => {
                 dispatch({ type: 'app/addNoticeCount' })
                 dispatch({ type: 'app/globalNotice', payload: { from: 'system', data: '您有一笔新的订单等待处理' } })
-                dispatch({ type: 'message/addOrderNotice', payload: res })
+                dispatch({ type: 'message/addOrderNotice', payload: res.data })
             })
         },
     },

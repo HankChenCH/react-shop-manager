@@ -6,6 +6,7 @@ import { classnames, config, menu } from '../utils'
 import { Helmet } from 'react-helmet'
 import { Row, Col, Radio } from 'antd'
 import { Comments } from './dashboard/components'
+import MessageCenter from './messageCenter'
 import '../themes/index.less'
 import './app.less'
 import NProgress from 'nprogress'
@@ -76,26 +77,6 @@ const App = ({ children, location, dispatch, app, message, loading }) => {
     menu,
   }
 
-  const chatRoomProps = {
-    message: chatMessage,
-    onlineCount: 0,
-    onSend (data) {
-      dispatch({ type: 'message/sendMessage', payload: data })
-    },
-  }
-
-  const msgCenterRadios = [
-    { key: '1', value: '消息通知' },
-    { key: '2', value: '讨论区' }
-  ]
-
-  const handleMsgRadioChange = (e) => {
-    dispatch({
-      type: 'message/showContent',
-      payload: e.target.value
-    })
-  }
-
   if (config.openPages && config.openPages.indexOf(location.pathname) > -1) {
     return <div>{children}</div>
   }
@@ -126,6 +107,7 @@ const App = ({ children, location, dispatch, app, message, loading }) => {
             </div>
             {
               /*消息中心*/
+              /*
               <aside className={classnames(styles.chatsider, { [styles.chatshow]: msgCenterShow })}>
                 <Row>
                   <Col span={24} style={{ textAlign: 'center', marginTop: 30 }}>
@@ -151,7 +133,9 @@ const App = ({ children, location, dispatch, app, message, loading }) => {
                   <CommonChatRoom className={styles.chatshow} {...chatRoomProps}/>
                 </section>
               </aside>
+              */
             }
+            <MessageCenter/>
           </div>
           <Footer />
         </div>

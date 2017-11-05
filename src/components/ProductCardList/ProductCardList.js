@@ -27,16 +27,16 @@ class ProductCardList extends React.Component
 			<div>
 				{
 					header &&
-					<Row class="header">
+					<Row className="header">
 						header
 					</Row>
 				}
-				<Row class="content" justify="center" align="center">
+				<Row className="content" justify="center" align="center">
 					{CardList}
 				</Row>
 				{
 					footer &&
-					<Row class="footer">
+					<Row className="footer">
 						footer
 					</Row>
 				}

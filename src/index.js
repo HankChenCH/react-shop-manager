@@ -27,6 +27,7 @@ const app = dva({
 app.model(require('./models/app'))
 app.model(require('./models/websocket'))
 app.model(require('./models/message'))
+app.model(require('./models/chat'))
 
 
 // 3. Router

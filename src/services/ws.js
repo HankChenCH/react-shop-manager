@@ -1,4 +1,4 @@
-import { config } from '../utils/'
+import { config, deleteProps } from '../utils/'
 
 const { prefix, websocketURL } = config
 
@@ -10,6 +10,12 @@ function getWebsocket(url) {
         const token = JSON.parse(localStorage.getItem(`${prefix}admin`)).token
         websocket = new WebSocket(url + '?token=' + token)
     }
+
+    if (websocket instanceof WebSocket && websocket.readyState !== 1) {
+        const token = JSON.parse(localStorage.getItem(`${prefix}admin`)).token
+        websocket = new WebSocket(url + '?token=' + token)
+    }
+    
     return websocket
 }
 
@@ -21,15 +27,17 @@ export async function connect() {
         }
         client.onmessage = (res) => {
             const message = JSON.parse(res.data)
-            if (eventListener[message.event] instanceof Function) {
-                eventListener[message.event](message)
+            const { event } = message
+            if (eventListener[event] instanceof Function && deleteProps(message, ['event'])) {
+                // console.log(event)
+                eventListener[event](message)
             }
         }
     }
 }
 
 //增加监听服务器事件以及返回结果
-export function registerListener(event, cb) {
+export function on(event, cb) {
     if(eventListener[event] instanceof Function) {
         console.error('this event already has listener function,please checkout!')
         return
@@ -56,4 +64,12 @@ export async function trigger(event, data = {}) {
 export async function close(code, reason) {
     const client = getWebsocket(websocketURL);
     client.close(code, reason);
+}
+
+//检查客户端是否准备好
+export async function ready(cb) {
+    const client = getWebsocket(websocketURL)
+    if (client.readyState === 1) {
+        cb()
+    }
 }

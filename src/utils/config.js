@@ -6,7 +6,7 @@ module.exports = {
   logo: '/st.jpg',
   iconFontCSS: '/iconfont.css',
   iconFontJS: '/iconfont.js',
-  websocketURL: 'wss://ws.zsshitan.com',
+  websocketURL: false ? 'ws://127.0.0.1:9502' : 'wss://ws.zsshitan.com',
   baseURL: false ? 'http://api.c.cn/api/v1' : 'https://api.zsshitan.com/api/v1',
   YQL: ['http://www.zuimeitianqi.com'],
   CORS: ['https://api.zsshitan.com/api/vi'],
@@ -76,6 +76,7 @@ module.exports = {
       info: '/admin/:id',
       status: '/admin/:id/status',
       batch: '/admin/batch',
+      members: '/admin/chat_member',
     },
     menu: {
       list: '/menu',

@@ -9,28 +9,36 @@ export default modelExtend(model, {
     namespace: 'message',
 
     state: {
+        msgCenterRadios: [
+            { key: '1', value: '消息通知' },
+            { key: '2', value: '讨论区' }
+        ],
         msgCenterShow: false,
         contentValue: localStorage.getItem(`${prefix}msgContentValue`) || '1',
         msgNotice: [],
-        chatMessage: [],
     },
 
     subscriptions : {
     },
 
     effects: {
-        *sendMessage({ payload }, { put, select }) {
-            const { username } = yield select(({ app }) => app.user)
-            const { chatMessage } = yield select((_) => _.message)
-            payload = payload.replace(/\n/g, '<br />$&')
-            chatMessage.push({data: payload, from: username})
-            yield put({ type: 'updateState', payload: { chatMessage } })
-            ws.sendMsg({ data: payload, from: username })
-        },
 
         *addOrderNotice({ payload }, { put, select }) {
-            const newNotice = `您有一笔新的订单等待处理，订单号：${payload.orderNo}`
-            yield put({ type: 'addMsgNotice', payload: { msg: newNotice } })
+            // console.log(payload)
+            const order_no = payload.orderInfo.order_no
+            // console.log(payload)
+            const newNotice = `您有一笔新的订单等待处理，订单号：${order_no}`
+            const { msgNotice } = yield select((_) => _.message)
+            msgNotice.unshift({ 
+                msgKey: 'order' + payload.orderInfo.id,
+                msg: newNotice, 
+                type: 'order', 
+                orderInfo: payload.orderInfo 
+            })
+            yield put({ 
+                type: 'updateState',
+                payload:  { msgNotice }
+            })
         }
     },
 
@@ -39,22 +47,6 @@ export default modelExtend(model, {
             return {
                 ...state,
                 msgCenterShow: !state.msgCenterShow
-            }
-        },
-
-        receiveMsg(state, { payload }) {
-            return {
-                ...state,
-                chatMessage: state.chatMessage.concat({ data: payload.data, from: payload.from })
-            }
-        },
-
-        addMsgNotice(state, { payload }) {
-            const { msgNotice } = state
-            msgNotice.unshift(payload)
-            return {
-                ...state,
-                msgNotice: msgNotice
             }
         },
 

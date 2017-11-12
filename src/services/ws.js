@@ -9,9 +9,7 @@ function getWebsocket(url) {
     if (!(websocket instanceof WebSocket)) {
         const token = JSON.parse(localStorage.getItem(`${prefix}admin`)).token
         websocket = new WebSocket(url + '?token=' + token)
-    }
-
-    if (websocket instanceof WebSocket && websocket.readyState !== 1) {
+    } else if (websocket instanceof WebSocket && websocket.readyState !== 1) {
         const token = JSON.parse(localStorage.getItem(`${prefix}admin`)).token
         websocket = new WebSocket(url + '?token=' + token)
     }

@@ -12,6 +12,7 @@ class OnlineList extends React.Component
     }
 
     handleSelect = (key) => {
+        console.log(key)
         const { dispatch } = this.props
         dispatch({
             type: 'chat/showChatRoom',
@@ -28,7 +29,7 @@ class OnlineList extends React.Component
             const is_online = (onlineMembers.indexOf(item.id) !== -1) ? '在线' : '离线'
             const nodeTitle = `${item.true_name}(${is_online})`
             return (
-                <TreeNode title={nodeTitle} key={item.id}></TreeNode>
+                <TreeNode title={nodeTitle} key={`member_${item.id}`}></TreeNode>
             )
         })
 
@@ -36,7 +37,7 @@ class OnlineList extends React.Component
             <section className={this.props.className} style={{padding: '0 50px'}}>
                 <Tree onSelect={this.handleSelect}>
                     <TreeNode title='群组' key='group' selectable={false}>
-                        <TreeNode title='讨论组' key='workgroup'></TreeNode>
+                        <TreeNode title='讨论组' key='group_0'></TreeNode>
                     </TreeNode>
                     <TreeNode title={memberOnlineNumber} key='member' selectable={false}>
                         {memberList}

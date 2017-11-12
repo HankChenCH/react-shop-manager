@@ -40,6 +40,6 @@ export default class CommonChatRoom extends React.Component
 
 CommonChatRoom.proptypes = {
     message: PropTypes.array.isRequired,
-    title: PropTypes.string.isRequired,
+    title: PropTypes.string,
     onSend: PropTypes.func.isRequired,
 }

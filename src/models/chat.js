@@ -17,6 +17,7 @@ export default modelExtend(model, {
             chatMessage: [],
             chatRoomVisible: false,
             currentChatKey: 0,
+            currentChat: null,
         },
     
         subscriptions : {
@@ -64,11 +65,42 @@ export default modelExtend(model, {
 
             *sendMessage({ payload }, { put, select }) {
                 const { username } = yield select(({ app }) => app.user)
-                const { chatMessage } = yield select((_) => _.message)
+                const { chatMessage, currentChatKey } = yield select((_) => _.chat)
                 payload = payload.replace(/\n/g, '<br />$&')
-                chatMessage.push({data: payload, from: username})
+                if (!(chatMessage[currentChatKey] instanceof Array)) {
+                    chatMessage[currentChatKey] = []
+                }
+                chatMessage[currentChatKey].push({data: payload, from: username})
+                yield localStorage.setItem(`${prefix}chat_message_${currentChatKey}`, JSON.stringify(chatMessage[currentChatKey]))
                 yield put({ type: 'updateState', payload: { chatMessage } })
                 ws.sendMsg({ data: payload, from: username })
+            },
+
+            *showChatRoom({ payload }, { put, select }) {
+                const { members } = yield select((_) => _.chat)
+                const key = payload.split('_')
+                let currentChat
+                switch (key[0]) {
+                    case 'group':
+                        if (key[1] === '0') {
+                            currentChat = '讨论组'
+                        }
+                        break
+                    case 'member':
+                        currentChat = members.filter( item => item.id.toString() === key[1])[0].true_name
+                        break
+                    default:
+                        currentChat = ''
+                        break
+                }
+                yield put({ 
+                    type: 'updateState', 
+                    payload: { 
+                        chatRoomVisible: true, 
+                        currentChat: currentChat, 
+                        currentChatKey:payload 
+                    } 
+                })
             },
         },
     
@@ -81,11 +113,12 @@ export default modelExtend(model, {
                 }
             },
 
-            showChatRoom(state, { payload }) {
+            hideChatRoom(state) {
                 return {
                     ...state,
-                    chatRoomVisible: true,
-                    currentChatKey: payload
+                    chatRoomVisible: false,
+                    currentChat: '',
+                    currentChatKey: 0,
                 }
             }
         }

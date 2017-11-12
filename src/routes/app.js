@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet'
 import { Row, Col, Radio } from 'antd'
 import { Comments } from './dashboard/components'
 import MessageCenter from './messageCenter'
+import ChatModal from './components/ChatModal'
 import '../themes/index.less'
 import './app.less'
 import NProgress from 'nprogress'
@@ -18,9 +19,10 @@ const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
 let lastHref
 
-const App = ({ children, location, dispatch, app, message, loading }) => {
+const App = ({ children, location, dispatch, app, message, chat, loading }) => {
   const { user, siderFold, notificationCount, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys } = app
-  const { msgCenterShow, msgNotice,chatMessage, contentValue } = message
+  const { msgCenterShow, msgNotice, contentValue } = message
+  const { chatMessage, chatRoomVisible, currentChatKey,currentChat } = chat
   const href = window.location.href
 
   if (lastHref !== href) {
@@ -77,6 +79,27 @@ const App = ({ children, location, dispatch, app, message, loading }) => {
     menu,
   }
 
+  const chatRoomModalProps = {
+    currentChat,
+    currentMessage: chatMessage[currentChatKey] || [],
+    visible: chatRoomVisible,
+    maskCloseable: true,
+    confirmLoading: loading.effects['chat/sendMessage'],
+    title: chatRoomVisible ? currentChat : '',
+    wrapClassName: 'vertical-center-modal',
+    onOk(data) {
+      dispatch({
+        type: 'chat/sendMessage',
+        payload: data
+      })
+    },
+    onCancel() {
+      dispatch({
+        type: 'chat/hideChatRoom',
+      })
+    }
+  }
+
   if (config.openPages && config.openPages.indexOf(location.pathname) > -1) {
     return <div>{children}</div>
   }
@@ -105,37 +128,8 @@ const App = ({ children, location, dispatch, app, message, loading }) => {
                 {children}
               </div>
             </div>
-            {
-              /*消息中心*/
-              /*
-              <aside className={classnames(styles.chatsider, { [styles.chatshow]: msgCenterShow })}>
-                <Row>
-                  <Col span={24} style={{ textAlign: 'center', marginTop: 30 }}>
-                    <RadioGroup defaultValue={contentValue} onChange={handleMsgRadioChange}>
-                      {msgCenterRadios.map((item) => <RadioButton value={item.key}>{item.value}</RadioButton>)}
-                    </RadioGroup>
-                  </Col>
-                </Row>
-                <section
-                  className={styles.msg_content} 
-                  style={{ 
-                    display: 'flex', 
-                    flexDirection: 'row', 
-                    flexWrap: 'no-warp', 
-                    overflow: 'hidden', 
-                    position: 'relative', 
-                    top: 30, 
-                    left: isNavbar ? -100 * (contentValue - 1) + 'vw' : -400 * (contentValue - 1) + 'px' , 
-                    width: isNavbar ? 100 * msgCenterRadios.length + 'vw' : 400 * msgCenterRadios.length + 'px'
-                  }}
-                >
-                  <Comments className={styles.chatshow} dataSource={msgNotice} columns={[{title: '消息', dataIndex: 'msg'}]}/>
-                  <CommonChatRoom className={styles.chatshow} {...chatRoomProps}/>
-                </section>
-              </aside>
-              */
-            }
             <MessageCenter/>
+            {chatRoomVisible && <ChatModal {...chatRoomModalProps} />}
           </div>
           <Footer />
         </div>
@@ -152,4 +146,4 @@ App.propTypes = {
   loading: PropTypes.object,
 }
 
-export default connect(({ app, message, loading }) => ({ app, message, loading }))(App)
+export default connect(({ app, message, chat, loading }) => ({ app, message, chat, loading }))(App)

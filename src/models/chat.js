@@ -31,6 +31,9 @@ export default modelExtend(model, {
                 ws.on('online/notice', (res) => {
                     dispatch({ type: 'chat/updateOnline', payload: res })
                 })
+                ws.on('offline/notice', (res) => {
+                    dispatch({ type: 'chat/updateOffline', payload: res })
+                })
             }
         },
     

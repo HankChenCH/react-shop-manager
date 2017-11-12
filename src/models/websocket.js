@@ -31,7 +31,10 @@ export default modelExtend(model, {
         wsSetup ({ dispatch, history }) {
             history.listen(location => {
                 if (location.pathname !== '/login') {
-                  ws.connect()
+                    //为了保证登录时不会拿旧票据去链接websocket，导致链接失效，登录后延迟.5秒再链接websocket
+                    setTimeout(() => ws.connect(), 500)
+                } else {
+                    ws.close()
                 }
               })
 

@@ -178,7 +178,12 @@ export default {
     quote: {
       avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236',
     },
-    numbers: [],
+    numbers: [
+      { icon: 'user', color: '#292929', title: '用户总量', number: 20 }, 
+      { icon: 'eye-o', color: '#292929', title: '月活总量', number: 20 },
+      { icon: 'bulb', color: '#292929', title: '上月销量', number: 360.33 },
+      { icon: 'api', color: '#292929', title: '本月销量', number: 0.12 }
+    ],
     recentSales: [],
     comments: [],
     completed: [],

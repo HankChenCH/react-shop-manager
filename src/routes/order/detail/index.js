@@ -205,7 +205,7 @@ const Detail = ({ dispatch, express, orderDetail, loading }) => {
         <div>
             {data.id && 
                 <Spin spinning={loading.models.orderDetail}>
-                    <div className="content-inner">
+                    <Card>
                         <div className={styles.content}>
                             <Row gutter={8}>
                                 <Col lg={22} md={24}>
@@ -234,12 +234,12 @@ const Detail = ({ dispatch, express, orderDetail, loading }) => {
                                 </Col>
                             </Row>
                         </div>                
-                    </div>
+                    </Card>
                     <Row gutter={24} style={{ marginTop: 24 }}>
                         <Col lg={12} md={24}>
-                            <Card bordered={false} {...bodyStyle} style={{ textAlign: 'center'  }}>
+                            <Card bordered={false} {...bodyStyle}>
                                 <h3>订单商品：</h3>
-                                <ProductCardList data={orderItems} cardStyle={{ width:210 }} />
+                                <ProductCardList data={orderItems} />
                             </Card>
                         </Col>
                         <Col lg={12} md={24}>

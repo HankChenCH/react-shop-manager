@@ -1,4 +1,5 @@
 import modelExtend from 'dva-model-extend'
+import { Base64 } from 'js-base64'
 import { query, queryProductAll, logout, reToken } from '../services/app'
 import * as ws from '../services/ws'
 import { model } from './common'
@@ -13,7 +14,7 @@ const { EnumAdminStatus } = Enum
 export default modelExtend(model, {
   namespace: 'app',
   state: {
-    user: JSON.parse(localStorage.getItem(`${prefix}admin`)) || {},
+    user: {},
     productAll: [],
     menuPopoverVisible: false,
     siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
@@ -32,6 +33,8 @@ export default modelExtend(model, {
           dispatch({ type: 'changeNavbar' })
         }, 300)
       }
+
+      dispatch({ type: 'fetchUserFromLocal' })
 
       history.listen(location => {
         if (location.pathname !== '/login') {
@@ -86,13 +89,18 @@ export default modelExtend(model, {
         }
     },
 
+    *fetchUserFromLocal({ payload }, { put }) {
+      const userLocal = JSON.parse(localStorage.getItem(`${prefix}admin`))
+      yield put({ type: 'registerUser', payload: userLocal })
+    },
+
     *checkTokenExpire ({
       payload
     }, { put, select }) {
       const { user } = yield(select(_=>_.app))
       let nowTime = Date.parse(new Date()) / 1000;
-      //票据为空或状态不是登录中代表没有登录，直接返回登录页面
-      if (!user || !user.token || user.status !== EnumAdminStatus.LOGIN) {
+      //过期时间为空或状态不是登录中代表没有登录，直接返回登录页面
+      if (!user || !user.exprie_in || user.status !== EnumAdminStatus.LOGIN) {
         yield put({ type: 'logoutSuccess' })        
       }
       //过期时间比现在相差小于10分钟就重新申请令牌
@@ -113,9 +121,10 @@ export default modelExtend(model, {
       payload 
     }, { put, call, select }) {
       //以旧令牌换取新令牌
+      const { user } = yield select((_) => _.app)
       const res = yield call(reToken, {});
       if (res.success && res.data) {
-        localStorage.setItem(`${prefix}admin`, JSON.stringify(res.data))
+        localStorage.setItem(`${prefix}admin`, JSON.stringify({ ...res.data, login_name: user.login_name, status: user.status }))
         yield put({ type: 'registerUser', payload: res.data })
       }
     },
@@ -124,25 +133,20 @@ export default modelExtend(model, {
       payload
     }, { put, select }) {
       if (location.pathname !== '/login') {
-        const { user } = yield select((_) => _.app)
-        const newUser = { ...user, status: EnumAdminStatus.LOCKED }
-        yield localStorage.setItem(`${prefix}admin`, JSON.stringify(newUser))
-        yield put({ type: 'updateState', payload: { user: newUser }  })
+        yield put({ type: 'updateUserStatus', payload: EnumAdminStatus.LOCKED })
         yield put({ type: 'logoutSuccess', payload:"锁屏成功" })
       } else {
         yield put({ type: 'messageError', payload: '请不要在登录界面进行锁屏操作！' })
       }
     },
-
+    
     *logout ({
       payload,
     }, { call, put, select }) {
       const { user } = yield select((_) => _.app)
       const res = yield call(logout, {})
       if (res.success) {
-        const newUser = { ...user, status: EnumAdminStatus.LOGOUT }
-        yield localStorage.setItem(`${prefix}admin`, JSON.stringify(newUser))
-        yield put({ type: 'updateState', payload: { user: newUser }  })
+        yield put({ type: 'updateUserStatus', payload: EnumAdminStatus.LOGOUT })
         yield put({ type: 'logoutSuccess', payload:"登出成功" })
       } else {
         yield put({ type: 'logoutSuccess' })
@@ -177,10 +181,9 @@ export default modelExtend(model, {
     },
 
     *registerUser ({ payload }, { put, call }) {
-      yield put({ type: 'updateState', payload: { user: payload } })
-      ws.trigger('login', {
-        name: payload.username
-      })
+      const tokenPayload = payload.token.split('.')[1]
+      const userInfo = JSON.parse(Base64.decode(tokenPayload))
+      yield put({ type: 'updateState', payload: { user: { ...userInfo.user, exprie_in: userInfo.exp, login_name: payload.login_name, status: payload.status } } })
     },
 
     *addNoticeCount ({ payload }, { put, select }) {
@@ -239,6 +242,19 @@ export default modelExtend(model, {
       return {
         ...state,
         notificationCount: 0,
+      }
+    },
+
+    updateUserStatus(state, { payload }) {
+      const userLocal =  JSON.parse(localStorage.getItem(`${prefix}admin`))
+      const newStorageUser = { ...userLocal, status: payload }
+      localStorage.setItem(`${prefix}admin`, JSON.stringify(newStorageUser))
+
+      const { user } = state
+      const newModelUser = { ...user, status: payload }
+      return {
+        ...state,
+        user: newModelUser
       }
     },
 

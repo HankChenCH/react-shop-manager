@@ -7,6 +7,7 @@
     "dva": "^1.2.0",
     "dva-loading": "^0.2.0",
     "html-to-draftjs": "0.1.0-beta14",
+    "js-base64": "^2.3.2",
     "lodash": "^4.17.4",
     "nprogress": "^0.2.0",
     "particles.js": "^2.0.0",

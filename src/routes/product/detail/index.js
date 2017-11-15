@@ -11,20 +11,10 @@ import styles from './index.less'
 const TabPane = Tabs.TabPane
 const confirm = Modal.confirm
 
-const Detail = ({ productDetail, dispatch, loading }) => {
+const Detail = ({ app, productDetail, dispatch, loading }) => {
   const { list, pagination, selectedRowKeys, data, ticketList, prevProduct, nextProduct, productSales, modalType, modalVisible } = productDetail
+  const { isNavbar } = app
   const { properties } = data
-
-  // let productProp = []
-  
-  // if (properties instanceof Array && properties.length > 0) {
-  //   productProp = properties.map( item => 
-  //     <Col className={styles.item} span={24}>
-  //       <div>{item.name}</div>
-  //       <div>{item.detail}</div>
-  //     </Col>
-  //   )
-  // }
   
   const backToList = () => {
     dispatch({ type: 'productDetail/backList' })
@@ -118,7 +108,7 @@ const Detail = ({ productDetail, dispatch, loading }) => {
     }
   }
 
-  const listProps = {
+  const buyNowTableProps = {
     item: data,
     dataSource: list,
     pagination,
@@ -165,38 +155,40 @@ const Detail = ({ productDetail, dispatch, loading }) => {
   }
 
   return (
-    <div className="content-inner">
-      <div className={styles.content}>
-        <Spin spinning={loading}>
-        <Row gutter={8} justify="center" align="center">
-          <Col lg={22} md={24}>
-            <h2>{data.name}</h2>
-          </Col>
-          <Col className={styles.center} style={{ height: '46px' }} lg={2} md={12}>
-              <DropOption 
-                onMenuClick={e => handleMenuClick(e)} 
-                menuOptions={[{ key: '1', name: '更新基础信息' }, { key: '3', name: '返回列表'}]}
-              />
-          </Col>
-        </Row>
-        <Row gutter={8} justify="center" align="center" style={{ paddingTop: 40 }}>
-          <Col style={{ textAlign: 'center' }} lg={12} md={24}>
-            <img className={styles.main_img} src={data.main_img_url}/>
-          </Col>
-          <Col lg={12} md={24}>
-            <div>简述：{data.summary}</div>
-            <div>单价：￥{data.price}</div>
-            <div>库存量：{data.stock}</div>
-            <div>种类：{data.type === '1' ? '实体商品' : '卡卷商品'}</div>
-            <div>状态：{data.is_on === '1' ? '上架' : '下架'}</div>
-          </Col>
-        </Row>
-        <hr style={{ margin: '20px' }}/>
+    <Spin spinning={loading}>
+      <Card>
+        <div className={styles.content}>
+          <Row gutter={8} justify="center" align="center">
+            <Col lg={22} md={24}>
+              <h2>{data.name}</h2>
+            </Col>
+            <Col className={styles.center} style={{ height: '46px' }} lg={2} md={12}>
+                <DropOption 
+                  onMenuClick={e => handleMenuClick(e)} 
+                  menuOptions={[{ key: '1', name: '更新基础信息' }, { key: '3', name: '返回列表'}]}
+                />
+            </Col>
+          </Row>
+          <Row gutter={8} justify="center" align="center" style={{ paddingTop: 40 }}>
+            <Col style={{ textAlign: 'center' }} lg={12} md={24}>
+              <img className={styles.main_img} src={data.main_img_url}/>
+            </Col>
+            <Col lg={12} md={24}>
+              <div>简述：{data.summary}</div>
+              <div>单价：￥{data.price}</div>
+              <div>库存量：{data.stock}</div>
+              <div>种类：{data.type === '1' ? '实体商品' : '卡卷商品'}</div>
+              <div>状态：{data.is_on === '1' ? '上架' : '下架'}</div>
+            </Col>
+          </Row>
+        </div>
+      </Card>      
+      <Card>
         <Row gutter={8} justify="center" align="center">
           <Tabs
             className={styles.ant_tabs}
             defaultActiveKey="1"
-            tabPosition={document.body.clientWidth < 769 ? 'top' : 'left'}
+            tabPosition={isNavbar ? 'top' : 'left'}
           >
             <TabPane tab="商品详情" key="1">
               <Row gutter={8}>
@@ -232,7 +224,7 @@ const Detail = ({ productDetail, dispatch, loading }) => {
                     <Button onClick={() => handleUpdate('buyNow')}>开启秒杀</Button>
                   </Col>
                   <Col span={24}>
-                    <BuyNowTable {...listProps} />
+                    <BuyNowTable {...buyNowTableProps} />
                   </Col>
                 </Row>
             </TabPane>
@@ -259,7 +251,7 @@ const Detail = ({ productDetail, dispatch, loading }) => {
               prevProduct.name && 
                 <Button style={{ float: 'left' }} onClick={() => handleLocateProduct(prevProduct.id)}>
                   <Icon className={styles.page_icon} type="left"/>
-                  <span className={styles.text_clip} style={{ display: document.body.clientWidth < 769 ? 'none' : 'inline-block' }}>{prevProduct.name}</span>
+                <span className={styles.text_clip} style={{ display: isNavbar ? 'none' : 'inline-block' }}>{prevProduct.name}</span>
                 </Button>              
             }
             </Col>
@@ -267,16 +259,15 @@ const Detail = ({ productDetail, dispatch, loading }) => {
             {
               nextProduct.name &&
                 <Button style={{ float: 'right' }} onClick={() => handleLocateProduct(nextProduct.id)}>
-                  <span className={styles.text_clip} style={{ display: document.body.clientWidth < 769 ? 'none' : 'inline-block' }}>{nextProduct.name}</span>
+                <span className={styles.text_clip} style={{ display: isNavbar ? 'none' : 'inline-block' }}>{nextProduct.name}</span>
                   <Icon className={styles.page_icon} type="right"/>
                 </Button>           
             }
             </Col>
         </Row>
-        <InfoModal {...modalProps}/>
-        </Spin>
-      </div>
-    </div>
+      </Card>
+      <InfoModal {...modalProps}/>
+    </Spin>
   )
 }
 
@@ -285,4 +276,4 @@ Detail.propTypes = {
   loading: PropTypes.bool,
 }
 
-export default connect(({ productDetail, loading }) => ({ productDetail, loading: loading.models.productDetail }))(Detail)
+export default connect(({ app, productDetail, loading }) => ({ app, productDetail, loading: loading.models.productDetail }))(Detail)

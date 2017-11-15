@@ -22,7 +22,7 @@ let lastHref
 const App = ({ children, location, dispatch, app, message, chat, loading }) => {
   const { user, siderFold, notificationCount, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys } = app
   const { msgCenterShow, msgNotice, contentValue } = message
-  const { chatMessage, chatRoomVisible, currentChatKey,currentChat } = chat
+  const { chatMessage, chatRoomVisible, currentChatKey, currentChat, onlineMembers } = chat
   const href = window.location.href
 
   if (lastHref !== href) {
@@ -85,7 +85,7 @@ const App = ({ children, location, dispatch, app, message, chat, loading }) => {
     visible: chatRoomVisible,
     maskCloseable: true,
     confirmLoading: loading.effects['chat/sendMessage'],
-    title: chatRoomVisible ? currentChat : '',
+    title: chatRoomVisible ? currentChat + (onlineMembers.indexOf(parseInt(currentChatKey.split('_')[1])) !== -1 ? '(在线)' : '(离线)') : '',
     wrapClassName: 'vertical-center-modal',
     onOk(data) {
       dispatch({

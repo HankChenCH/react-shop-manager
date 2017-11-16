@@ -12,7 +12,6 @@ class OnlineList extends React.Component
     }
 
     handleSelect = (key) => {
-        console.log(key)
         const { dispatch } = this.props
         dispatch({
             type: 'chat/showChatRoom',

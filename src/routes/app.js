@@ -81,11 +81,13 @@ const App = ({ children, location, dispatch, app, message, chat, loading }) => {
 
   const chatRoomModalProps = {
     currentChat,
+    onlineMembers,
+    currentChatKey,
     currentMessage: chatMessage[currentChatKey] || [],
     visible: chatRoomVisible,
     maskCloseable: true,
     confirmLoading: loading.effects['chat/sendMessage'],
-    title: chatRoomVisible ? currentChat + (onlineMembers.indexOf(parseInt(currentChatKey.split('_')[1])) !== -1 ? '(在线)' : '(离线)') : '',
+    title: chatRoomVisible ? currentChat : '',
     wrapClassName: 'vertical-center-modal',
     onOk(data) {
       dispatch({

@@ -14,7 +14,7 @@ export default class ChatRoomHeader extends React.Component
                 <h2>{title}</h2>
                 {
                     this.props.onlineCount > 0 &&
-                    <div>在线 {this.props.onlineCount} 人</div>
+                    <div style={{ textAlign: 'right' }}>在线 {this.props.onlineCount} 人</div>
                 }
             </div>
         )
@@ -22,5 +22,6 @@ export default class ChatRoomHeader extends React.Component
 }
 
 ChatRoomHeader.proptypes = {
-    title: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    onlineCount: PropTypes.number,
 }

@@ -23,10 +23,11 @@ export default modelExtend(model, {
     
         subscriptions : {
             setup({ history, dispatch }) {
+                dispatch({ type: 'queryMember' })
                 history.listen(location => {
                     if (location.pathname !== '/login') {
                         //登出后重连时查询成员列表
-                        dispatch({ type: 'queryMember' })
+                        console.log(location)
                     }
                 })
             },

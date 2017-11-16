@@ -10,15 +10,19 @@ class ChatRoomBox extends React.Component
         super()
     }
 
-    handleSend = () => {
-        const { onSend } = this.props
-        const { getFieldValue, resetFields } = this.props.form
-
-        const data = getFieldValue('message')
-
-        resetFields()
-
-        onSend(data)
+    handleSend = (e) => {
+        var keyCode = e.keyCode || e.which || e.charCode;
+        var ctrlKey = e.ctrlKey || e.metaKey;
+        if (ctrlKey && keyCode == 13) {
+            const { onSend } = this.props
+            const { getFieldValue, resetFields } = this.props.form
+    
+            const data = getFieldValue('message')
+    
+            resetFields()
+    
+            onSend(data)
+        }
     }
 
     render() {
@@ -29,10 +33,10 @@ class ChatRoomBox extends React.Component
             <div>
                 <Form>
                     <FormItem>
-		                {getFieldDecorator('message')(<Input type='textarea' onPressEnter={this.handleSend} autosize={{ minRows: 4, maxRows: 4 }}/>)}
+		                {getFieldDecorator('message')(<Input type='textarea' onKeyUp={this.handleSend} autosize={{ minRows: 4, maxRows: 4 }}/>)}
                     </FormItem>
                 </Form>
-                <Button style={{ float: 'right' }} type="primary" onClick={this.handleSend}>发送</Button>
+                <Button style={{ float: 'right' }} type="primary" onClick={this.handleSend}>发送 / Ctrl + Enter</Button>
             </div>
         )
     }

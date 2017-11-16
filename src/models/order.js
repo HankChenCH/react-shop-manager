@@ -38,11 +38,11 @@ export default modelExtend(pageModel, {
         }
       })
 
-      setInterval(() => {
-        dispatch({
-          type: 'reloadList'
-        })
-      }, 600000)
+      // setInterval(() => {
+      //   dispatch({
+      //     type: 'reloadList'
+      //   })
+      // }, 600000)
     },
   },
 

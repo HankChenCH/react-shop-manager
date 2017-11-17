@@ -1,11 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import * as themeService from '../services/theme'
-import * as productService from '../services/product'
+import * as ws from '../services/ws'
 import { pageModel } from './common'
 import { config, deleteProps } from '../utils'
 
 const { query, create, remove, update, batchRemove, queryProducts, updateProducts, removeAllProducts, pullOnOff, setRank } = themeService
-const { queryAll } = productService
 const { prefix } = config
 
 export default modelExtend(pageModel, {
@@ -116,7 +115,6 @@ export default modelExtend(pageModel, {
       if (res.success){
         let currentProductKeyList = res.data.map((item) => item.id.toString())
         yield put({ type: 'showManagerModal', payload: { currentProductKeyList: currentProductKeyList, currentItem: currentItem} })
-        // yield put({ type: 'test', payload: { productList: productList } })
       } else {
         throw res
       }
@@ -128,6 +126,7 @@ export default modelExtend(pageModel, {
       if (res.success) {
         yield put({ type: 'hideManagerModal' })
         yield put({ type: 'app/messageSuccess', payload:"更新商品列表成功" })
+        ws.trigger('weapp/syncThemeProduct')
       } else {
         throw res
       }
@@ -140,6 +139,7 @@ export default modelExtend(pageModel, {
         let newList = list.map((item) => item.id === payload.id ? {...item, is_on: payload.is_on ? '1' : '0'} : item)
         yield put({ type: 'updateState', payload: { list: newList } })
         yield put({ type: 'app/messageSuccess', payload: (payload.is_on ? '推荐精选' : '取消精选') + '成功' })
+        ws.trigger('weapp/syncTheme')
       } else {
         throw res
       }
@@ -158,6 +158,7 @@ export default modelExtend(pageModel, {
         yield put({ type: 'hideLayout' })
         yield put({ type: 'app/messageSuccess', payload: "更新排序成功" })
         yield put({ type: 'query' })
+        ws.trigger('weapp/syncTheme')
       } else {
         yield put({ type: 'hideLayout' })
         throw res

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Row, Col, Radio } from 'antd'
+import { Row, Col, Radio, Badge } from 'antd'
 import { classnames } from '../../utils'
 import { Layout, Chat } from '../../components'
 import { NoticeList, OnlineList } from './components'
@@ -12,14 +12,14 @@ const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
 
 const MessageCenter = ({ dispatch, app, message }) => {
-    const { isNavbar } = app
-    const { msgCenterRadios, msgCenterShow, msgNotice, contentValue } = message
+    const { isNavbar, msgCenterRadios, msgCenterShow, contentValue } = app
+    const { msgNotice } = message
 
     const noticeWidth = 350
 
     const handleMsgRadioChange = (e) => {
         dispatch({
-            type: 'message/showContent',
+            type: 'app/showMsgContent',
             payload: e.target.value
         })
     }
@@ -38,7 +38,7 @@ const MessageCenter = ({ dispatch, app, message }) => {
             <Row>
                 <Col span={24} style={{ textAlign: 'center', marginTop: 30 }}>
                     <RadioGroup defaultValue={contentValue} onChange={handleMsgRadioChange}>
-                        {msgCenterRadios.map((item) => <RadioButton key={item.key} value={item.key}>{item.value}</RadioButton>)}
+                        {msgCenterRadios.map((item) => <RadioButton key={item.key} value={item.key}><Badge key={`badge-${item.key}`} count={item.count}>{item.value}</Badge></RadioButton>)}
                     </RadioGroup>
                 </Col>
             </Row>

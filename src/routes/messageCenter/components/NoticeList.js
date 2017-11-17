@@ -14,9 +14,7 @@ class NoticeList extends React.Component
 
     handleOrderClick = (key) => {
         const { onRemoveNotice } = this.props
-        if (onRemoveNotice instanceof Function) {
-            onRemoveNotice(key)
-        }
+        onRemoveNotice(key)
     }
 
     render() {
@@ -28,13 +26,13 @@ class NoticeList extends React.Component
                 if(record.type === 'order') {
                     return (
                         <Row gutter={8}>
-                            <Link to={`/order/${record.orderInfo.id}`} onClick={() => handleOrderClick(record.msgKey)}>
-                            <Col span={4}>
-                                <img src={record.orderInfo.snap_img} style={{maxWidth: '100%'}}/>
-                            </Col>
-                            <Col span={20}>
-                                {text}
-                            </Col>
+                            <Link to={`/order/${record.orderInfo.id}`}>
+                                <Col span={4}>
+                                        <img src={record.orderInfo.snap_img} style={{maxWidth: '100%'}}/>
+                                </Col>
+                                <Col span={20} onClick={() => this.handleOrderClick(record.msgKey)}>
+                                    {text}
+                                </Col>
                             </Link>
                         </Row>
                     )
@@ -50,6 +48,7 @@ class NoticeList extends React.Component
 
 NoticeList.proptypes = {
     dataSource: PropTypes.array.isRequired,
+    onRemoveNotice: PropTypes.func,
 }
 
 export default NoticeList

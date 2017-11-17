@@ -19,9 +19,8 @@ const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
 let lastHref
 
-const App = ({ children, location, dispatch, app, message, chat, loading }) => {
+const App = ({ children, location, dispatch, app, chat, loading }) => {
   const { user, siderFold, notificationCount, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys } = app
-  const { msgCenterShow, msgNotice, contentValue } = message
   const { chatMessage, chatRoomVisible, currentChatKey, currentChat, onlineMembers } = chat
   const href = window.location.href
 
@@ -55,7 +54,7 @@ const App = ({ children, location, dispatch, app, message, chat, loading }) => {
       dispatch({ type: 'app/handleNavOpenKeys', payload: { navOpenKeys: openKeys } })
     },
     checkNotice () {
-      dispatch({ type: 'message/triggerMsgCenter' })
+      dispatch({ type: 'app/triggerMsgCenter' })
       dispatch({ type: 'app/clearNoticeCount' })
     },
   }

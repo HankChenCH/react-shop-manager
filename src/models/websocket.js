@@ -39,7 +39,7 @@ export default modelExtend(model, {
               })
 
             let hreatbeatTimer = setInterval(() => {
-                ws.ready(() =>ws.trigger('heartbeatCheck'))
+                ws.ready(() => ws.trigger('heartbeatCheck'))
             }, 25000) 
             
             window.onunload = () => {
@@ -48,17 +48,25 @@ export default modelExtend(model, {
             }
         },
         wsListen ({ dispatch }) {
-            // ws.on('login',(res) => {
-            //     dispatch({ type: 'app/globalNotice', payload: res })
-            // })
-            ws.on('manager/chat', (res) => {
-                dispatch({ type: 'app/addNoticeCount' })
-                dispatch({ type: 'message/receiveMsg', payload: res })
-            })
+            //weapp通知
             ws.on('pay/notice',(res) => {
-                dispatch({ type: 'app/addNoticeCount' })
+                dispatch({ type: 'app/addNoticeCount', payload: '1' })
                 dispatch({ type: 'app/globalNotice', payload: { from: 'system', data: '您有一笔新的订单等待处理' } })
                 dispatch({ type: 'message/addOrderNotice', payload: res.data })
+            })
+            //IM通知
+            ws.on('offline/notice', (res) => {
+                dispatch({ type: 'chat/offlineUpdate', payload: res })
+            })
+            ws.on('online/notice', (res) => {
+                dispatch({ type: 'chat/onlineUpdate', payload: res })
+            })
+            ws.on('online/count', (res) => {
+                dispatch({ type: 'chat/membersUpdate', payload: res })
+            })
+            ws.on('manager/chat', (res) => {
+                dispatch({ type: 'app/addNoticeCount', payload: '2' })
+                dispatch({ type: 'chat/receiveMsg', payload: res })
             })
         },
     },

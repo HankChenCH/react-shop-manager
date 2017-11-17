@@ -22,6 +22,12 @@ export default modelExtend(model, {
     isNavbar: document.body.clientWidth < 769,
     navOpenKeys: JSON.parse(localStorage.getItem(`${prefix}navOpenKeys`)) || [],
     notificationCount: 0,
+    msgCenterRadios: [
+      { key: '1', value: '消息通知', count: 0 },
+      { key: '2', value: '讨论区', count: 0 }
+    ],
+    msgCenterShow: false,
+    contentValue: localStorage.getItem(`${prefix}msgContentValue`) || '1',
   },
   subscriptions: {
 
@@ -187,10 +193,38 @@ export default modelExtend(model, {
     },
 
     *addNoticeCount ({ payload }, { put, select }) {
-      const { msgCenterShow } = yield select((_) => _.message)
+      const { msgCenterShow, msgCenterRadios } = yield select((_) => _.app)
       if (!msgCenterShow) {
         yield put({ type: 'noticeCountInc' })
       }
+      const newMsgCenterRadios = msgCenterRadios.map(item => {
+        if (item.key === payload) {
+          return {
+            ...item,
+            count: ++item.count,
+          }
+        } else {
+          return item
+        }
+      })
+      yield put({ type: 'updateState', payload: { msgCenterRadios: newMsgCenterRadios } })
+    },
+
+    *showMsgContent ({ payload }, { put, select }) {
+      yield localStorage.setItem(`${prefix}msgContentValue`, payload)
+      const { msgCenterRadios } = yield select((_) => _.app)
+      const newMsgCenterRadios = msgCenterRadios.map(item => {
+        if (item.key === payload) {
+          return {
+            ...item,
+            count: 0,
+          }
+        } else {
+          return item
+        }
+      })
+      
+      yield put({ type: 'updateState', payload: { msgCenterRadios: newMsgCenterRadios, contentValue: payload } })
     },
   },
   reducers: {
@@ -245,6 +279,15 @@ export default modelExtend(model, {
       }
     },
 
+    clearRadioCount (state, { payload }) {
+      const { msgCenterRadios } = state
+      msgCenterRadios[payload].count = 0
+      return {
+        ...state,
+        msgCenterRadios
+      }
+    },
+
     updateUserStatus(state, { payload }) {
       const userLocal =  JSON.parse(localStorage.getItem(`${prefix}admin`))
       const newStorageUser = { ...userLocal, status: payload }
@@ -264,6 +307,14 @@ export default modelExtend(model, {
         ...state,
         user: {}
       }
-    }
+    },
+
+    triggerMsgCenter(state) {
+      return {
+        ...state,
+        msgCenterShow: !state.msgCenterShow
+      }
+    },
+
   },
 })

@@ -19,6 +19,7 @@ class ProductCardList extends React.Component
 					img_src={item.img_url} 
 					title={item.title} 
 					description={item.description} 
+					key={item.id}
 				/>
 			</Col>
 		)

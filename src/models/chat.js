@@ -24,24 +24,16 @@ export default modelExtend(model, {
         subscriptions : {
             setup({ history, dispatch }) {
                 dispatch({ type: 'queryMember' })
+                let onlineCountTimer
                 history.listen(location => {
-                    if (location.pathname !== '/login') {
+                    if (location.pathname !== '/login' && !onlineCountTimer) {
                         //登出后重连时查询成员列表
-                        console.log(location)
+                        onlineCountTimer = setInterval(() => ws.trigger('online/count'), 300000)
+                    } else {
+                        clearInterval(onlineCountTimer)
                     }
                 })
             },
-            wsListen({ dispatch }) {
-                ws.on('offline/notice', (res) => {
-                    dispatch({ type: 'offlineUpdate', payload: res })
-                })
-                ws.on('online/notice', (res) => {
-                    dispatch({ type: 'onlineUpdate', payload: res })
-                })
-                ws.on('online/count', (res) => {
-                    dispatch({ type: 'membersUpdate', payload: res })
-                })
-            }
         },
     
         effects: {

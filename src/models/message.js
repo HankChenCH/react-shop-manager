@@ -11,24 +11,15 @@ export default modelExtend(model, {
     namespace: 'message',
 
     state: {
-        msgCenterRadios: [
-            { key: '1', value: '消息通知' },
-            { key: '2', value: '讨论区' }
-        ],
-        msgCenterShow: false,
-        contentValue: localStorage.getItem(`${prefix}msgContentValue`) || '1',
-        msgNotice: [],
+        msgNotice: JSON.parse(localStorage.getItem(`${prefix}message`)) || [],
     },
 
     subscriptions : {
     },
 
     effects: {
-
         *addOrderNotice({ payload }, { put, select }) {
-            // console.log(payload)
             const order_no = payload.orderInfo.order_no
-            // console.log(payload)
             const newNotice = `您有一笔新的订单等待处理，订单号：${order_no}`
             const { msgNotice } = yield select((_) => _.message)
             msgNotice.unshift({ 
@@ -38,30 +29,37 @@ export default modelExtend(model, {
                 orderInfo: payload.orderInfo 
             })
             yield put({ 
-                type: 'updateState',
-                payload:  { msgNotice }
+                type: 'updateNotice',
+                payload: {
+                    msgNotice
+                }
             })
             const { queryStatus } = yield select((_) => _.order)
             if (queryStatus === EnumOrderStatus.UNDELIVERY) {
                 yield put({ type: 'order/reloadlist' })
             }
+        },
+
+        *removeNotice({ payload }, { put, select }) {
+            const { msgNotice } = yield select((_) => _.message)
+            const newMsgNotice = msgNotice.filter(item => item.msgKey !== payload)
+            yield put({ type: 'app/clearRadioCount', payload: 0 })
+            yield put({
+                type: 'updateNotice',
+                payload: {
+                    msgNotice: newMsgNotice
+                }
+            })
         }
     },
 
     reducers: {
-        triggerMsgCenter (state) {
+        updateNotice(state, { payload }) {
+            localStorage.setItem(`${prefix}message`, JSON.stringify(payload.msgNotice))
             return {
                 ...state,
-                msgCenterShow: !state.msgCenterShow
+                msgNotice: payload.msgNotice
             }
-        },
-
-        showContent (state, { payload }) {
-            localStorage.setItem(`${prefix}msgContentValue`, payload)
-            return {
-                ...state,
-                contentValue: payload
-            }
-        }
+        }    
     }
 })

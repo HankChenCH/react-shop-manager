@@ -48,9 +48,9 @@ export default modelExtend(model, {
             }
         },
         wsListen ({ dispatch }) {
-            ws.on('login',(res) => {
-                dispatch({ type: 'app/globalNotice', payload: res })
-            })
+            // ws.on('login',(res) => {
+            //     dispatch({ type: 'app/globalNotice', payload: res })
+            // })
             ws.on('manager/chat', (res) => {
                 dispatch({ type: 'app/addNoticeCount' })
                 dispatch({ type: 'message/receiveMsg', payload: res })

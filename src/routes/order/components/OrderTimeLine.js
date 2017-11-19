@@ -16,7 +16,7 @@ export default class OrderTimeLine extends React.Component
         return (
             <Timeline pending={data.length !== count ? <span style={{ cursor: 'pointer' }} onClick={onComplete}>{state}</span> : false}>
                 {data.map( (item, key) => 
-                    <TimelineItem>
+                    <TimelineItem key={key}>
                         { key === 0 && 
                             <article>
                                 创建订单 {item}

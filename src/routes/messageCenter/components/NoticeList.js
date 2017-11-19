@@ -12,6 +12,13 @@ class NoticeList extends React.Component
         super(props)
     }
 
+    handleOrderClick = (key) => {
+        const { onRemoveNotice } = this.props
+        if (onRemoveNotice instanceof Function) {
+            onRemoveNotice(key)
+        }
+    }
+
     render() {
         const columns = [{
             title: '消息',
@@ -21,7 +28,7 @@ class NoticeList extends React.Component
                 if(record.type === 'order') {
                     return (
                         <Row gutter={8}>
-                            <Link to={`/order/${record.orderInfo.id}`}>
+                            <Link to={`/order/${record.orderInfo.id}`} onClick={() => handleOrderClick(record.msgKey)}>
                             <Col span={4}>
                                 <img src={record.orderInfo.snap_img} style={{maxWidth: '100%'}}/>
                             </Col>

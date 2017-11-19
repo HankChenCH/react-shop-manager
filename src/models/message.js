@@ -1,8 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import { model } from './common'
 import * as ws from '../services/ws.js'
-import { config, hasProp } from '../utils'
+import { config, hasProp, Enum } from '../utils'
 const { prefix } = config
+
+const { EnumOrderStatus } = Enum
 
 export default modelExtend(model, {
 
@@ -39,6 +41,10 @@ export default modelExtend(model, {
                 type: 'updateState',
                 payload:  { msgNotice }
             })
+            const { queryStatus } = yield select((_) => _.order)
+            if (queryStatus === EnumOrderStatus.UNDELIVERY) {
+                yield put({ type: 'order/reloadlist' })
+            }
         }
     },
 

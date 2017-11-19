@@ -22,7 +22,7 @@ let lastHref
 const App = ({ children, location, dispatch, app, message, chat, loading }) => {
   const { user, siderFold, notificationCount, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys } = app
   const { msgCenterShow, msgNotice, contentValue } = message
-  const { chatMessage, chatRoomVisible, currentChatKey,currentChat } = chat
+  const { chatMessage, chatRoomVisible, currentChatKey, currentChat, onlineMembers } = chat
   const href = window.location.href
 
   if (lastHref !== href) {
@@ -81,6 +81,8 @@ const App = ({ children, location, dispatch, app, message, chat, loading }) => {
 
   const chatRoomModalProps = {
     currentChat,
+    onlineMembers,
+    currentChatKey,
     currentMessage: chatMessage[currentChatKey] || [],
     visible: chatRoomVisible,
     maskCloseable: true,

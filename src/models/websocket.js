@@ -32,14 +32,14 @@ export default modelExtend(model, {
             history.listen(location => {
                 if (location.pathname !== '/login') {
                     //为了保证登录时不会拿旧票据去链接websocket，导致链接失效，登录后延迟.5秒再链接websocket
-                    setTimeout(() => ws.connect(), 500)
+                    setTimeout(() => ws.connect(location.pathname), 500)
                 } else {
                     ws.close()
                 }
               })
 
             let hreatbeatTimer = setInterval(() => {
-                ws.trigger('heartbeatCheck')
+                ws.ready(() =>ws.trigger('heartbeatCheck'))
             }, 25000) 
             
             window.onunload = () => {

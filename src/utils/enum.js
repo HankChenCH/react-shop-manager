@@ -16,8 +16,14 @@ const EnumAdminStatus = {
     LOGIN: '1',
 }
 
+const EnumChatStatus = {
+    Online: 1,
+    Offline: 0,
+}
+
 module.exports = {
     EnumTipsType,
     EnumOrderStatus,
     EnumAdminStatus,
+    EnumChatStatus,
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Row, Col, Card, Calendar } from 'antd'
-import { Quote, Sales, Weather, RecentSales, Comments, Completed, Browser, Cpu, User } from './components'
+import { Sales, RecentSales, NumberCard } from './components'
 import styles from './index.less'
 import { color } from '../../utils'
 
@@ -14,7 +14,11 @@ const bodyStyle = {
 }
 
 function Dashboard ({ dashboard, dispatch, loading }) {
-  const { weather, sales, quote, recentSales, comments, completed, browser, cpu, user } = dashboard
+  const { sales, recentSales, numbers } = dashboard
+
+  const numberCards = numbers.map((item, key) => <Col key={key} lg={6} md={12}>
+    <NumberCard {...item} />
+  </Col>)
 
   const salesProps = {
     data: sales,
@@ -27,6 +31,7 @@ function Dashboard ({ dashboard, dispatch, loading }) {
 
   return (
     <Row gutter={24}>
+      {numberCards}
       <Col lg={16} md={24}>
         <Card bordered={false} {...bodyStyle}>
           <RecentSales data={recentSales} />

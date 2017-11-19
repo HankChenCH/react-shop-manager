@@ -110,6 +110,13 @@ module.exports = [
     router: '/setting/permission/source',
   },
   {
+    id: 9,
+    bpid: 1,
+    mpid: -1,
+    name: '客服中心',
+    router: 'https://mpkf.weixin.qq.com/',
+  },
+  {
     id: 10,
     bpid: 1,
     mpid: -1,

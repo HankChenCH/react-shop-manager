@@ -106,7 +106,7 @@ export default modelExtend(pageModel, {
           return item 
         })
         yield put({ type: 'updateState', payload: { list: newList } })
-        const message = "管理员" + (res.state ? '启用' : '禁用') + '成功'
+        const message = "管理员" + (res.state === '1' ? '启用' : '禁用') + '成功'
         yield put({ type: 'app/messageSuccess', payload: message })
       } else {
         throw res
@@ -125,7 +125,7 @@ export default modelExtend(pageModel, {
           return item
         })
         yield put({ type: 'updateState', payload: { list: newList, selectedRowKeys: [] } })
-        yield put({ type: 'app/messageSuccess', payload: '批量' + (res.data.is_on === '1' ? '启' : '禁') + '用成功' })
+        yield put({ type: 'app/messageSuccess', payload: '批量' + (res.data.state === '1' ? '启' : '禁') + '用成功' })
       } else {
         yield put({ type: 'query' })
         throw res

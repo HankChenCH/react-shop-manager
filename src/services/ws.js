@@ -1,3 +1,4 @@
+import { Base64 } from 'js-base64'
 import { config, deleteProps } from '../utils/'
 
 const { prefix, websocketURL } = config
@@ -11,7 +12,8 @@ function getWebsocket(url, from = null) {
     
         if (!(websocket instanceof WebSocket)) {
             const token = JSON.parse(localStorage.getItem(`${prefix}admin`)).token
-            websocket = new WebSocket(url + '?token=' + token)
+            const ip = JSON.parse(Base64.decode(token.split('.')[1])).user.ip
+            websocket = new WebSocket(url + '?token=' + token + '&ip=' + ip)
         } else if (websocket instanceof WebSocket && websocket.readyState !== 1) {
             const token = JSON.parse(localStorage.getItem(`${prefix}admin`)).token
             websocket = new WebSocket(url + '?token=' + token)

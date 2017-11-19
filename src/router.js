@@ -144,7 +144,8 @@ const Routers = function ({ history, app }) {
           path: 'setting/personal',
           getComponent (nextState, cb) {
             require.ensure([], require => {
-              cb(null, require('./routes/unbuild'))
+              // cb(null, require('./routes/unbuild'))
+              cb(null, require('./routes/personal'))
             },'personal')
           }
         }, {

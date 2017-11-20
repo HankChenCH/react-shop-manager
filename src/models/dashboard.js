@@ -1,4 +1,4 @@
-import { myCity, queryWeather, query, queryRecentOrder, allSales } from '../services/dashboard'
+import { myCity, queryWeather, query, queryRecentOrder, queryNumberCount, allSales } from '../services/dashboard'
 import { parse } from 'qs'
 
 // zuimei 摘自 http://www.zuimeitianqi.com/res/js/index.js
@@ -179,10 +179,10 @@ export default {
       avatar: 'http://img.hb.aicdn.com/bc442cf0cc6f7940dcc567e465048d1a8d634493198c4-sPx5BR_fw236',
     },
     numbers: [
-      { icon: 'user', color: '#292929', title: '用户总量', number: 20 }, 
-      { icon: 'eye-o', color: '#292929', title: '月活总量', number: 20 },
-      { icon: 'bulb', color: '#292929', title: '上月销量', number: 360.33 },
-      { icon: 'api', color: '#292929', title: '本月销量', number: 0.12 }
+      { icon: 'user', color: '#292929', title: '用户总量', number: 0 }, 
+      { icon: 'eye-o', color: '#292929', title: '月活总量', number: 0 },
+      { icon: 'bulb', color: '#292929', title: '上月销量', number: 0 },
+      { icon: 'api', color: '#292929', title: '本月销量', number: 0 }
     ],
     recentSales: [],
     comments: [],
@@ -198,6 +198,7 @@ export default {
       // dispatch({ type: 'query' })
       // dispatch({ type: 'queryWeather' })
       dispatch({ type: 'querySales' })
+      dispatch({ type: 'queryCount' })
       dispatch({ type: 'queryRecentSales' })
     },
   },
@@ -208,6 +209,7 @@ export default {
       const data = yield call(query, parse(payload))
       yield put({ type: 'queryWeather', payload: { ...data } })
     },
+
     *queryWeather ({
       payload,
     }, { call, put }) {
@@ -219,7 +221,8 @@ export default {
         weather,
       } })
     },
-    *querySales ({ payload }, { call, put, select }) {
+
+    *querySales ({ payload }, { call, put }) {
       const res = yield call(allSales, { countMonth: 6 })
       if (res.success) {
         const sales = res.data.map((item) => { return { "销售额": parseFloat(item.month_sales), "销售量": parseInt(item.month_counts), date: item.count_date } })
@@ -228,10 +231,18 @@ export default {
         throw res
       }
     },
-    *queryRecentSales ({ payload }, { call, put, select }) {
+
+    *queryRecentSales ({ payload }, { call, put }) {
       const res = yield call(queryRecentOrder, { status: 2 })
       if (res.success) {
         yield put({ type: 'updateState', payload: { recentSales: res.data.data } })
+      }
+    },
+
+    *queryCount ({ payload }, { call, put }) {
+      const res = yield call(queryNumberCount)
+      if (res.success) {
+        yield put ({ type: 'updateState', payload: { numbers: res.data } })
       }
     },
   },

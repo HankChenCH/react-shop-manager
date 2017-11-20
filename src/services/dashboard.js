@@ -2,6 +2,7 @@ import { request, config } from '../utils'
 const { api } = config
 const { dashboard } = api
 const { countAllSales } = api.product
+const { numberCount } = dashboard
 const orderList = api.order.list
 
 export async function myCity (params) {
@@ -29,6 +30,14 @@ export async function query (params) {
 export async function queryRecentOrder (params) {
   return request({
     url: orderList,
+    method: 'get',
+    data: params,
+  })
+}
+
+export async function queryNumberCount (params) {
+  return request({
+    url: numberCount,
     method: 'get',
     data: params,
   })

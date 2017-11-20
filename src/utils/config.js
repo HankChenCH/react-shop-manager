@@ -19,7 +19,8 @@ module.exports = {
       alogout: '/token/admin',
     },
     dashboard: {
-      home: '/home'
+      home: '/home',
+      numberCount: '/data/dashboard',
     },
     product: {
       all: '/product/all',

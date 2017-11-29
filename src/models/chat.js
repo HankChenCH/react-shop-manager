@@ -28,7 +28,7 @@ export default modelExtend(model, {
                 history.listen(location => {
                     if (location.pathname !== '/login' && !onlineCountTimer) {
                         //登出后重连时查询成员列表
-                        onlineCountTimer = setInterval(() => ws.trigger('online/count'), 300000)
+                        onlineCountTimer = setInterval(() => ws.trigger('manager/online/count', { userType: 'manager' }), 300000)
                     } else {
                         clearInterval(onlineCountTimer)
                     }
@@ -41,7 +41,7 @@ export default modelExtend(model, {
                 const res = yield call(queryMembers)
                 if (res.success) {
                     yield put({ type: 'updateState', payload: { members: res.data } })
-                    ws.trigger('online/count', { userType: 'manager' })
+                    ws.trigger('manager/online/count')
                 }
             },
 

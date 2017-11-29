@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Radio, Modal } from 'antd'
-import city from '../../utils/city'
+import { Validate } from '../../utils'
 
 const FormItem = Form.Item
+const { confirmPassword } = Validate
 
 const formItemLayout = {
   labelCol: {
@@ -46,13 +47,8 @@ const modal = ({
   }
 
   const handleConfirmPassword = (rule, value, callback) => {
-        const first = getFieldValue('password')
-        if (first && value !== first) {
-            callback('The second password should be same with first!')
-        }
-
-        // Note: 必须总是返回一个 callback，否则 validateFieldsAndScroll 无法响应
-        callback()
+    const password = getFieldValue('password')
+    confirmPassword(password, value, callback)
   }
 
   const pwdMessage = modalType === 'create' ? '请输入密码' : '如不需要更改密码，请勿填写'
@@ -78,7 +74,7 @@ const modal = ({
             rules: [{
               required: modalType === 'create',
               pattern: /^[A-Za-z0-9]{6,14}$/,
-              message: 'The password shoule be mixin number and letter,length between 6 and 14'
+              message: '密码长度必须为6-14位且英文加数字组合'
             }],
           })(<Input type="password" placeholder={pwdMessage}/>)}
         </FormItem>

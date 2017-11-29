@@ -10,6 +10,14 @@ export async function query (params) {
   })
 }
 
+export async function queryOne (params) {
+  return request({
+    url: info,
+    method: 'get',
+    data: params,
+  })
+}
+
 export async function create (params) {
   return request({
     url: info.replace('/:id', ''),

@@ -145,6 +145,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], require => {
               // cb(null, require('./routes/unbuild'))
+              registerModel(app, require('./models/admin'))
               cb(null, require('./routes/personal'))
             },'personal')
           }

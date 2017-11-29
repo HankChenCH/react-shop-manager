@@ -2,6 +2,7 @@ import config from './config'
 import menu from './menu'
 import request from './request'
 import * as Enum from './enum'
+import * as Validate from './validates'
 import classnames from 'classnames'
 import { color } from './theme'
 import lodash from 'lodash'
@@ -155,6 +156,7 @@ module.exports = {
   menu,
   request,
   Enum,
+  Validate,
   color,
   classnames,
   queryURL,

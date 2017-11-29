@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { query, create, remove, update, enableOrDisable, batchUpdate, batchRemove } from '../services/admin'
+import { query, queryOne, create, remove, update, enableOrDisable, batchUpdate, batchRemove } from '../services/admin'
 import { pageModel } from './common'
 import { config } from '../utils'
 
@@ -24,6 +24,10 @@ export default modelExtend(pageModel, {
             payload: location.query,
           })
         }
+
+        if (location.pathname === '/setting/personal') {
+          dispatch({ type: 'querySelf' })
+        }
       })
     },
   },
@@ -45,6 +49,22 @@ export default modelExtend(pageModel, {
             },
           },
         })
+      }
+    },
+
+    *querySelf({ payload }, { call, put, select }) {
+      const { uid } = yield select(({ app }) => app.user)
+      const res = yield call(queryOne, { id: uid })
+      if (res.success) {
+        const { data } = res
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: data
+          }
+        })
+      } else {
+        throw res
       }
     },
 

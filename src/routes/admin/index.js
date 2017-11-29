@@ -20,7 +20,6 @@ const Admin = ({ location, dispatch, admin, loading }) => {
     title: `${modalType === 'create' ? '创建管理员' : '更新管理员'}`,
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
-      console.log(data)
       dispatch({
         type: `admin/${modalType}`,
         payload: data,

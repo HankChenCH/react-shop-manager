@@ -85,6 +85,16 @@ module.exports = {
       subInfo: '/menu/:id/sub/:sid',
       batch: '/menu/batch',
     },
+    resource : {
+      list: '/resource',
+      info: '/resource/:id',
+      batch: '/resource/batch',
+    },
+    role: {
+      list: '/role',
+      info: '/role/:id',
+      batch: '/role/batch',
+    },
     image: {
       themeTopic: 'image/theme_topic_img',
       themeHead: 'image/theme_head_img',

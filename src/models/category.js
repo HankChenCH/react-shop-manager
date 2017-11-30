@@ -125,7 +125,7 @@ export default modelExtend(pageModel, {
       if (res.success) {
         yield put({ type: 'hideManagerModal' })
         yield put({ type: 'app/messageSuccess', payload:"更新商品列表成功" })
-        ws.trigger('weapp/syncCategoryProduct')
+        ws.trigger('weapp/category/syncProduct', { id: id })
       } else {
         throw res
       }

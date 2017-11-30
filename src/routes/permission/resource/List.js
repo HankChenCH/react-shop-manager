@@ -1,0 +1,73 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Table, Modal, Icon } from 'antd'
+import styles from './List.less'
+import classnames from 'classnames'
+import { DropOption } from '../../../components'
+
+const confirm = Modal.confirm
+
+const List = ({ onManagerItem, onDeleteItem, onEditItem, ...tableProps }) => {
+  const handleMenuClick = (record, e) => {
+    if(e.key === '2') {
+      onEditItem(record)
+    } else if (e.key === '3') {
+      confirm({
+        title: '确定要删除资源权限 ' + record.name + ' ?',
+        onOk () {
+          onDeleteItem(record.id)
+        },
+      })
+    }
+  }
+
+  const resourceType = []
+  resourceType[1] = '公共资源'
+  resourceType[2] = '权限资源'
+  resourceType[3] = '私人资源'
+
+  const columns = [
+    {
+      title: '资源权限名称',
+      dataIndex: 'name',
+      key: 'name',
+    }, {
+      title: '资源权限描述',
+      dataIndex: 'description',
+      key: 'description',
+    }, {
+      title: '资源权限类型',
+      dataIndex: 'type',
+      key: 'type',
+      render: (text, record) => <span>{resourceType[text]}</span>
+    }, {
+      title: '操作',
+      key: 'operation',
+      width: 100,
+      render: (text, record) => {
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
+      },
+    },
+  ]
+
+  return (
+    <div>
+      <Table
+        {...tableProps}
+        className={classnames({ [styles.table]: true })}
+        pagination={false}
+        scroll={{ x: 900 }}
+        columns={columns}
+        simple
+        rowKey={record => record.id}
+      />
+    </div>
+  )
+}
+
+List.propTypes = {
+  onDeleteItem: PropTypes.func,
+  onEditItem: PropTypes.func,
+}
+
+export default List

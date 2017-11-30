@@ -95,6 +95,7 @@ export default modelExtend(pageModel, {
       const res = yield call(create, payload)
       if (res.success) {
         yield put({ type: 'hideModal' })
+        yield put({ type: 'app/messageSuccess', payload: '创建信息成功' })
         yield put({ type: 'query' })
       } else {
         throw res
@@ -107,6 +108,7 @@ export default modelExtend(pageModel, {
       const res = yield call(update, newAdmin)
       if (res.success) {
         yield put({ type: 'hideModal' })
+        yield put({ type: 'app/messageSuccess', payload: '更新信息成功' })
         yield put({ type: 'query' })
       } else {
         throw res
@@ -133,7 +135,7 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *'multiUpdateStatus'({ payload }, { call, put, select }) {
+    *multiUpdateStatus ({ payload }, { call, put, select }) {
       const { list, selectedRowKeys } = yield select(({ admin }) => admin)
       const res = yield call(batchUpdate, { ids: payload.ids.join(','), state: payload.state })
       if (res.success) {

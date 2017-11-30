@@ -66,7 +66,7 @@ export default modelExtend(model, {
             ws.on('manager/online/count', (res) => {
                 dispatch({ type: 'chat/membersUpdate', payload: res })
             })
-            ws.on('manager/chat', (res) => {
+            ws.on('manager/chat/message', (res) => {
                 dispatch({ type: 'app/addNoticeCount', payload: '2' })
                 dispatch({ type: 'chat/receiveMsg', payload: res })
             })

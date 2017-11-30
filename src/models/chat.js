@@ -115,16 +115,21 @@ export default modelExtend(model, {
             },
 
             *sendMessage({ payload }, { put, select }) {
-                const { username } = yield select(({ app }) => app.user)
-                const { chatMessage, currentChatKey } = yield select((_) => _.chat)
+                const { uid, username } = yield select(({ app }) => app.user)
+                const { chatMessage, currentChatKey, currentChatType } = yield select((_) => _.chat)
                 payload = payload.replace(/\n/g, '<br />$&')
                 if (!(chatMessage[currentChatKey] instanceof Array)) {
                     chatMessage[currentChatKey] = []
                 }
-                chatMessage[currentChatKey].push({data: payload, from: username})
+                chatMessage[currentChatKey].push({ data: payload, from: username })
                 yield localStorage.setItem(`${prefix}chat_message_${currentChatKey}`, JSON.stringify(chatMessage[currentChatKey]))
                 yield put({ type: 'updateState', payload: { chatMessage } })
-                ws.sendMsg({ data: payload, from: username })
+                ws.sendMsg({ data: payload, from: uid, to: currentChatKey })
+            },
+
+            *receiveMsg({ payload }, { put, select }) {
+                const { chatMessage } = yield select((_) => _.chat)
+
             },
 
             *showChatRoom({ payload }, { put, select }) {
@@ -149,7 +154,7 @@ export default modelExtend(model, {
                     type: 'updateState', 
                     payload: { 
                         chatRoomVisible: true, 
-                        currentChat: currentChat, 
+                        currentChat: currentChat,
                         currentChatKey:payload 
                     } 
                 })

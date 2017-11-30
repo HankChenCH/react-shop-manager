@@ -5,7 +5,7 @@ import { connect } from 'dva'
 import { Row, Col, Button, Popconfirm } from 'antd'
 import List from './List'
 import Filter from './Filter'
-import Modal from './Modal'
+import InfoModal from './Modal'
 
 const Admin = ({ location, dispatch, admin, loading }) => {
   const { list, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys } = admin
@@ -170,7 +170,7 @@ const Admin = ({ location, dispatch, admin, loading }) => {
            </Row>
       }
       <List {...listProps} />
-      {modalVisible && <Modal {...modalProps} />}
+      {modalVisible && <InfoModal {...modalProps} />}
     </div>
   )
 }

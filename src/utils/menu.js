@@ -107,7 +107,7 @@ module.exports = [
     bpid: 63,
     mpid: 63,
     name: '资源管理',
-    router: '/setting/permission/source',
+    router: '/setting/permission/resource',
   },
   {
     id: 9,

@@ -53,7 +53,7 @@ export function on(event, cb) {
 export async function sendMsg(data = {}) {
     ready(() => {
         const client = getWebsocket(websocketURL)
-        const sendBody = { ...data, event: 'manager/chat'}
+        const sendBody = { ...data, event: 'manager/chat/message'}
         client.send(JSON.stringify(sendBody))
     })
 }

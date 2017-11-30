@@ -126,7 +126,7 @@ export default modelExtend(pageModel, {
       if (res.success) {
         yield put({ type: 'hideManagerModal' })
         yield put({ type: 'app/messageSuccess', payload:"更新商品列表成功" })
-        ws.trigger('weapp/syncThemeProduct')
+        ws.trigger('weapp/theme/syncProduct', { id: id })
       } else {
         throw res
       }
@@ -139,7 +139,7 @@ export default modelExtend(pageModel, {
         let newList = list.map((item) => item.id === payload.id ? {...item, is_on: payload.is_on ? '1' : '0'} : item)
         yield put({ type: 'updateState', payload: { list: newList } })
         yield put({ type: 'app/messageSuccess', payload: (payload.is_on ? '推荐精选' : '取消精选') + '成功' })
-        ws.trigger('weapp/syncTheme')
+        ws.trigger('weapp/theme/syncRank')
       } else {
         throw res
       }
@@ -158,7 +158,7 @@ export default modelExtend(pageModel, {
         yield put({ type: 'hideLayout' })
         yield put({ type: 'app/messageSuccess', payload: "更新排序成功" })
         yield put({ type: 'query' })
-        ws.trigger('weapp/syncTheme')
+        ws.trigger('weapp/theme/syncRank')
       } else {
         yield put({ type: 'hideLayout' })
         throw res

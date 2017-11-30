@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Card } from 'antd'
-import BaseForm from './components/BaseForm' 
+import BaseForm from '../components/AdminBaseForm'
 import NoticeSettingForm from './components/NoticeSettingForm'
 import { loadavg } from 'os';
 
@@ -41,6 +41,7 @@ const Personal = ({
 
     const baseFormProps = {
         item: currentItem,
+        modalType: 'update',
         buttonLoading: loading.effects['admin/update'],
         formItemLayout,
         tailFormItemLayout,

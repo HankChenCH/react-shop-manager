@@ -126,25 +126,22 @@ const Routers = function ({ history, app }) {
           path: 'setting/permission/role',
           getComponent (nextState, cb) {
             require.ensure([], require => {
-              // registerModel(app, require('./models/user/detail'))
-              cb(null, require('./routes/unbuild/'))
-              // cb(null, require('./routes/user/detail/'))
+              registerModel(app, require('./models/role'))
+              cb(null, require('./routes/permission/role/'))
             }, 'permission-role')
           },
         }, {
-          path: 'setting/permission/source',
+          path: 'setting/permission/resource',
           getComponent (nextState, cb) {
             require.ensure([], require => {
-              // registerModel(app, require('./models/user/detail'))
-              cb(null, require('./routes/unbuild/'))
-              // cb(null, require('./routes/user/detail/'))
-            }, 'permission-source')
+              registerModel(app, require('./models/resource'))
+              cb(null, require('./routes/permission/resource/'))
+            }, 'permission-resource')
           },
         }, {
           path: 'setting/personal',
           getComponent (nextState, cb) {
             require.ensure([], require => {
-              // cb(null, require('./routes/unbuild'))
               registerModel(app, require('./models/admin'))
               cb(null, require('./routes/personal'))
             },'personal')

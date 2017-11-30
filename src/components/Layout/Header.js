@@ -42,10 +42,10 @@ const Header = ({ user, logout, notificationCount, switchSider, siderFold, isNav
           <SubMenu className={styles.center} style={{
             float: 'right',
             zIndex: 100,
-          }} title={< span > <Icon type="user" />
-            {user.username} < /span>}
+          }} title={<span> <Icon type="user" />
+            {user.username} </span>}
           >
-            <Menu.Item key="">
+            <Menu.Item key="mpkf">
               <Link to="https://mpkf.weixin.qq.com/" target="_blank">客服中心</Link>
             </Menu.Item>
             <Menu.Item key="personal">

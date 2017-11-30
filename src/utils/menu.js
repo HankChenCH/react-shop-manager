@@ -93,7 +93,6 @@ module.exports = [
     bpid: 6,
     mpid: 6,
     name: '权限管理',
-    router: '/setting/permission',
   },
   {
     id: 631,

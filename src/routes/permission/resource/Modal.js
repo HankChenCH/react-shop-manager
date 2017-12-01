@@ -1,10 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Form, Input, Radio } from 'antd'
+import { Modal, Form, Input, Radio, Select } from 'antd'
+import { Enum } from '../../../utils'
 import styles from './Modal.less'
 
 const FormItem = Form.Item
 const RadioGroup = Radio.Group
+const { Option } = Select
+const { EnumPermissionType, EnumResourceType } = Enum
 
 class InfoModal extends React.Component
 {
@@ -19,12 +22,33 @@ class InfoModal extends React.Component
             if (errors) {
                 return
             }
+            const fieldsValue = getFieldsValue()
             const data = {
-                ...getFieldsValue(),
-                id: item.id,
+                ...fieldsValue,
             }
+
+            console.log(data)
             onOk(data)
         })
+    }
+
+    addDescriptionBefore = () => {
+        const { getFieldValue, getFieldDecorator } = this.props.form
+
+        if (getFieldValue('resource_type') === '1') {
+            return null
+        }
+
+        return getFieldDecorator('method',{
+            initialValue: 'GET /'
+        })(
+            <Select style={{ width: 80 }}>
+                <Option value="GET /">GET</Option>
+                <Option value="POST /">POST</Option>
+                <Option value="PUT /">PUT</Option>
+                <Option value="DELETE /">DELETE</Option>
+            </Select>
+        )
     }
 
     render() {
@@ -44,6 +68,8 @@ class InfoModal extends React.Component
             ...modalProps,
             onOk: this.handleOk,
         }
+
+        const descriptionBefore = this.addDescriptionBefore()
 
         return (
             <Modal {...modalOpts}>
@@ -68,25 +94,42 @@ class InfoModal extends React.Component
                                     message: '请输入资源权限描述'
                                 },
                             ],
-                        })(<Input />)}
+                        })(<Input addonBefore={descriptionBefore} style={{ width: '100%' }} />)}
                     </FormItem>
-                    <FormItem label="资源权限类型" hasFeedback {...formItemLayout}>
-                        {getFieldDecorator('type', {
-                            initialValue: item.type || '1',
+                    <FormItem label="资源类型" hasFeedback {...formItemLayout}>
+                        {getFieldDecorator('resource_type', {
+                            initialValue: item.resource_type || '2',
                             rules: [
                                 {
                                     required: true,
-                                    message: '请选择资源权限类型'
+                                    message: '请选择资源类型'
                                 },
                             ],
                         })(
                             <RadioGroup>
-                                <Radio value="1">公共资源</Radio>
-                                <Radio value="2">权限资源</Radio>
-                                <Radio value="3">私人资源</Radio>
+                                <Radio value={EnumResourceType.View} >视图</Radio>
+                                <Radio value={EnumResourceType.Data} >数据</Radio>
                             </RadioGroup>
                         )}
                     </FormItem>
+                    <FormItem label="权限类型" hasFeedback {...formItemLayout}>
+                        {getFieldDecorator('permission_type', {
+                            initialValue: item.permission_type || '1',
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '请选择权限类型'
+                                },
+                            ],
+                        })(
+                            <RadioGroup>
+                                <Radio value={EnumPermissionType.Public} >公共资源</Radio>
+                                <Radio value={EnumPermissionType.Protected} >保护资源</Radio>
+                                <Radio value={EnumPermissionType.Private} >私人资源</Radio>
+                            </RadioGroup>
+                        )}
+                    </FormItem>
+                    
                 </Form>
             </Modal>
         )

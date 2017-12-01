@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal, Icon } from 'antd'
-import styles from './List.less'
 import classnames from 'classnames'
 import { DropOption } from '../../../components'
+import { Enum } from '../../../utils'
+import styles from './List.less'
 
 const confirm = Modal.confirm
+const { EnumPermissionType, EnumResourceType } = Enum
 
 const List = ({ onManagerItem, onDeleteItem, onEditItem, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
@@ -21,10 +23,14 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, ...tableProps }) => {
     }
   }
 
+  const premissionType = []
+  premissionType[EnumPermissionType.Public] = '公共资源'
+  premissionType[EnumPermissionType.Protected] = '保护资源'
+  premissionType[EnumPermissionType.Private] = '私人资源'
+
   const resourceType = []
-  resourceType[1] = '公共资源'
-  resourceType[2] = '权限资源'
-  resourceType[3] = '私人资源'
+  resourceType[EnumResourceType.View] = '视图'
+  resourceType[EnumResourceType.Data] = '数据'
 
   const columns = [
     {
@@ -39,7 +45,7 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, ...tableProps }) => {
       title: '资源权限类型',
       dataIndex: 'type',
       key: 'type',
-      render: (text, record) => <span>{resourceType[text]}</span>
+      render: (text, record) => <div><p>{resourceType[record.resource_ype]}</p><p>{premissionType[record.premission_type]}</p></div>
     }, {
       title: '操作',
       key: 'operation',

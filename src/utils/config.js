@@ -82,7 +82,6 @@ module.exports = {
     menu: {
       list: '/menu',
       info: '/menu/:id',
-      subInfo: '/menu/:id/sub/:sid',
       batch: '/menu/batch',
     },
     resource : {

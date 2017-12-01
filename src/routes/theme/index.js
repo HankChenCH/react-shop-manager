@@ -64,14 +64,6 @@ const Theme = ({ location, dispatch, app, theme, loading }) => {
       dispatch({
         type: 'theme/hideManagerModal',
       })
-    },
-    onChangeProductItem (nextTargetKeys) {
-      dispatch({
-        type: 'theme/updateState',
-        payload: {
-          currentProductKeyList: nextTargetKeys
-        }
-      })
     }
   }
 

@@ -1,4 +1,5 @@
 import config from './config'
+import env from './env'
 import menu from './menu'
 import request from './request'
 import * as Enum from './enum'
@@ -154,6 +155,7 @@ module.exports = {
   config,
   particlesConfig,
   menu,
+  env,
   request,
   Enum,
   Validate,

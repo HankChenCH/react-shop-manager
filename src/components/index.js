@@ -6,6 +6,7 @@ import * as Editor from './Editor/index.js'
 import FilterItem from './FilterItem'
 import * as Layout from './Layout/index.js'
 import * as Chat from './Chat/index.js'
+import * as Transfer from './Transfer/index.js'
 
 import layer from './layer'
 
@@ -19,4 +20,5 @@ export {
   FilterItem,
   layer,
   Chat,
+  Transfer,
  }

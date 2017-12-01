@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Form, Input } from 'antd'
+import { Transfer } from '../../../components'
 import styles from './Modal.less'
 
 const FormItem = Form.Item
+const { FormTransfer } = Transfer
 
 class InfoModal extends React.Component
 {
@@ -41,6 +43,7 @@ class InfoModal extends React.Component
 
         const modalOpts = {
             ...modalProps,
+            width: 800,
             onOk: this.handleOk,
         }
 
@@ -68,6 +71,15 @@ class InfoModal extends React.Component
                                 },
                             ],
                         })(<Input />)}
+                    </FormItem>
+                    <FormItem label="角色资源" hasFeedback {...formItemLayout} >
+                        {getFieldDecorator('role_permission',{
+                            initialValue: item.role_permission
+                        })(
+                            <FormTransfer
+                                showSearch
+                            />
+                        )}
                     </FormItem>
                 </Form>
             </Modal>

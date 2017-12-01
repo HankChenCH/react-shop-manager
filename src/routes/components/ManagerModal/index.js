@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Transfer } from 'antd'
+import { Form, Input, Modal } from 'antd'
+import { Transfer } from '../../../components'
 import styles from './ManagerModal.css'
 
 const FormItem = Form.Item
+const { FormTransfer } = Transfer
 
 const formItemLayout = {
   labelCol: {
@@ -34,13 +36,16 @@ const managerModal = ({
       const data = {
         ...getFieldsValue(),
       }
+
+      data.product_id = data.product_id.join(',')
+      
       onOk(data)
     })
   }
 
-  const handleChange = (nextTargetKeys, direction, moveKeys) => {
-    onChangeProductItem(nextTargetKeys)
-  }
+  // const handleChange = (nextTargetKeys, direction, moveKeys) => {
+  //   onChangeProductItem(nextTargetKeys)
+  // }
 
   const modalOpts = {
     ...managerModalProps,
@@ -67,16 +72,15 @@ const managerModal = ({
       <Form layout="vertical">
       	<FormItem label="选择商品" hasFeedback {...formItemLayout}>
           {getFieldDecorator('product_id', {
-            initialValue: currentProductKeyList.join(',')
-          })(<Input type='hidden'/>)}
-          <Transfer
-  	        dataSource={productAll}
-            showSearch
-  	        titles={['来源', '已选']}
-  	        targetKeys={currentProductKeyList}
-  	        onChange={handleChange}
-  	        render={renderItem}
-	        />
+            initialValue: currentProductKeyList
+          })(
+            <FormTransfer
+              dataSource={productAll}
+              showSearch
+              titles={['来源', '已选']}
+              render={renderItem}
+            />
+          )}
         </FormItem>
       </Form>
     </Modal>

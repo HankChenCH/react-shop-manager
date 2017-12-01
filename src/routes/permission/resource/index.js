@@ -6,6 +6,9 @@ import { Row, Col, Button, Popconfirm } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import InfoModal from './Modal'
+import { Layout } from '../../../components'
+
+const { Notice } = Layout
 
 const Resource = ({ location, dispatch, resource, loading }) => {
     const { list, pagination, currentItem, modalVisible, modalType, selectedRowKeys } = resource
@@ -130,6 +133,7 @@ const Resource = ({ location, dispatch, resource, loading }) => {
                 </Row>
             }
             <List {...listProps} />
+            <Notice>切勿随意修改或删除视图资源，这可能导致页面显示错误，如需修改请联系超级管理员</Notice>
             {modalVisible && <InfoModal {...modalProps} /> }
         </div>
     )

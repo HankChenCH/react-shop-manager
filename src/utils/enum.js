@@ -21,9 +21,22 @@ const EnumChatStatus = {
     Offline: 0,
 }
 
+const EnumResourceType = {
+    View: '1',
+    Data: '2',
+}
+
+const EnumPermissionType = {
+    Public: '1',
+    Protected: '2',
+    Private: '3',
+}
+
 module.exports = {
     EnumTipsType,
     EnumOrderStatus,
     EnumAdminStatus,
     EnumChatStatus,
+    EnumResourceType,
+    EnumPermissionType,
 }

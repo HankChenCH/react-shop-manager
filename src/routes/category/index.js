@@ -64,14 +64,6 @@ const Category = ({ location, dispatch, app, category, loading }) => {
       dispatch({
         type: 'category/hideManagerModal',
       })
-    },
-    onChangeProductItem (nextTargetKeys) {
-      dispatch({
-        type: 'category/updateState',
-        payload: {
-          currentProductKeyList: nextTargetKeys
-        }
-      })
     }
   }
 

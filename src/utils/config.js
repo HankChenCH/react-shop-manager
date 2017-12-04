@@ -7,7 +7,7 @@ module.exports = {
   iconFontCSS: '/iconfont.css',
   iconFontJS: '/iconfont.js',
   websocketURL: false ? 'ws://120.78.217.148:9502' : 'wss://ws.zsshitan.com',
-  baseURL: false ? 'http://api.c.cn/api/v1' : 'https://api.zsshitan.com/api/v1',
+  baseURL: true ? 'http://api.c.cn/api/v1' : 'https://api.zsshitan.com/api/v1',
   YQL: ['http://www.zuimeitianqi.com'],
   CORS: ['https://api.zsshitan.com/api/vi'],
   openPages: ['/login'],
@@ -75,6 +75,7 @@ module.exports = {
     admin: {
       list: '/admin',
       info: '/admin/:id',
+      authRole: '/admin/:id/role',
       status: '/admin/:id/status',
       batch: '/admin/batch',
       members: '/admin/chat_member',
@@ -86,11 +87,13 @@ module.exports = {
     },
     resource : {
       list: '/resource',
+      all: '/resource/all',
       info: '/resource/:id',
       batch: '/resource/batch',
     },
     role: {
       list: '/role',
+      all: '/role/all',
       info: '/role/:id',
       batch: '/role/batch',
     },

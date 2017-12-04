@@ -119,6 +119,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], require => {
               registerModel(app, require('./models/admin'))
+              registerModel(app, require('./models/role'))
               cb(null, require('./routes/admin'))
             }, 'admin')
           },
@@ -127,6 +128,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], require => {
               registerModel(app, require('./models/role'))
+              registerModel(app, require('./models/resource'))
               cb(null, require('./routes/permission/role/'))
             }, 'permission-role')
           },

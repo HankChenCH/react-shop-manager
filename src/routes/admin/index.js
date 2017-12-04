@@ -6,9 +6,11 @@ import { Row, Col, Button, Popconfirm } from 'antd'
 import List from './List'
 import Filter from './Filter'
 import InfoModal from './Modal'
+import AuthModal from './AuthModal'
 
-const Admin = ({ location, dispatch, admin, loading }) => {
-  const { list, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys } = admin
+const Admin = ({ location, dispatch, admin, role, loading }) => {
+  const { list, pagination, currentItem, modalVisible, modalType, authModalVisible, selectedRowKeys } = admin
+  const roleList = role.list
   const { pageSize } = pagination
 
   const modalProps = {
@@ -28,6 +30,27 @@ const Admin = ({ location, dispatch, admin, loading }) => {
     onCancel () {
       dispatch({
         type: 'admin/hideModal',
+      })
+    },
+  }
+
+  const authModalProps = {
+    item: currentItem,
+    visible: authModalVisible,
+    modalType,
+    maskClosable: false,
+    confirmLoading: loading.effects['admin/auth'],
+    title: '管理员角色授权',
+    wrapClassName: 'vertical-center-modal',
+    onOk (data) {
+      dispatch({
+        type: `admin/auth`,
+        payload: data,
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: 'admin/hideAuthModal',
       })
     },
   }
@@ -61,6 +84,15 @@ const Admin = ({ location, dispatch, admin, loading }) => {
           modalType: 'update',
           currentItem: item,
         },
+      })
+    },
+    onAuthItem (item) {
+      dispatch({
+        type: 'admin/showAuthModal',
+        payload: {
+          modalType: 'auth',
+          currentItem: item
+        }
       })
     },
     onAbleItem (id, status) {
@@ -171,6 +203,7 @@ const Admin = ({ location, dispatch, admin, loading }) => {
       }
       <List {...listProps} />
       {modalVisible && <InfoModal {...modalProps} />}
+      {authModalVisible && <AuthModal {...authModalProps} />}
     </div>
   )
 }
@@ -182,4 +215,4 @@ Admin.propTypes = {
   loading: PropTypes.object,
 }
 
-export default connect(({ admin, loading }) => ({ admin, loading }))(Admin)
+export default connect(({ admin, role, loading }) => ({ admin, role, loading }))(Admin)

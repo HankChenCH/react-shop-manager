@@ -16,50 +16,6 @@ const formItemLayout = {
   },
 }
 
-// const modal = ({
-//   item = {},
-//   modalType,
-//   onOk,
-//   form: {
-//     getFieldDecorator,
-//     validateFields,
-//     getFieldsValue,
-//     getFieldValue,
-//   },
-//   ...modalProps
-// }) => {
-//   const handleOk = () => {
-//     validateFields((errors) => {
-//       if (errors) {
-//         return
-//       }
-//       const data = {
-//         ...getFieldsValue(),
-//         // key: item.key,
-//       }
-
-//       onOk(data)
-//     })
-//   }
-
-//   const modalOpts = {
-//     ...modalProps,
-//     onOk: handleOk,
-//   }
-
-//   const baseFormProps = {
-//     item,
-//     modalType,
-//     formItemLayout
-//   }
-
-//   return (
-//     <Modal {...modalOpts}>
-//       <BaseForm ref="adminBaseForm" {...baseFormProps} />
-//     </Modal>
-//   )
-// }
-
 class InfoModal extends React.Component
 {
   constructor(props){

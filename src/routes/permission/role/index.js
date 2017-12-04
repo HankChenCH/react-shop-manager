@@ -7,12 +7,14 @@ import List from './List'
 import Filter from './Filter'
 import InfoModal from './Modal'
 
-const Role = ({ location, dispatch, role, loading }) => {
+const Role = ({ location, dispatch, role, resource, loading }) => {
     const { list, pagination, currentItem, modalVisible, modalType, selectedRowKeys } = role
+    const resourceList = resource.list
     const { pageSize } = pagination
 
     const modalProps = {
         item: (modalType === 'create' ? {} : currentItem),
+        resourceList: resourceList.map(item => { return { key: item.id, ...item } }),
         modalType: modalType,
         visible: modalVisible,
         maskClosable: false,
@@ -135,4 +137,4 @@ const Role = ({ location, dispatch, role, loading }) => {
     )
 }
 
-export default connect(({ role, loading }) => ({ role, loading }))(Role)
+export default connect(({ role, resource, loading }) => ({ role, resource, loading }))(Role)

@@ -1,6 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
-const { list, info, batch } = api.role
+const { list, all, info, batch } = api.role
 
 export async function query(params) {
     return request({
@@ -10,9 +10,17 @@ export async function query(params) {
     })
 }
 
+export async function queryAll(params) {
+    return request({
+        url: all,
+        method: 'get',
+        data: params,
+    })
+}
+
 export async function create(params) {
     return request({
-        url: info.replace('/:id'),
+        url: list,
         method: 'post',
         data: params
     })

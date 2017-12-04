@@ -43,7 +43,7 @@ const Filter = ({
 
   const handleSubmit = () => {
     let fields = getFieldsValue()
-    fields = handleFields(fields)
+    // fields = handleFields(fields)
     onFilterChange(fields)
   }
 
@@ -75,7 +75,7 @@ const Filter = ({
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
         {getFieldDecorator('name', { initialValue: name })(<Search placeholder="输入资源权限名称搜索" size="large" onSearch={handleSubmit} />)}
       </Col>
-      <Col {...ColProps} xl={{ span: 14 }} md={{ span: 18 }}>
+      <Col {...ColProps} xl={{ span: 20 }} md={{ span: 16 }}>
         <div >
           <Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>搜索</Button>
           <Button size="large" className="margin-right" onClick={handleReset}>重置搜索</Button>

@@ -1,9 +1,9 @@
 import modelExtend from 'dva-model-extend'
-import * as resourceService from '../services/resource'
+import * as roleService from '../services/role'
 import { pageModel } from './common'
 import { config, deleteProps } from '../utils'
 
-const { query, create, update, remove, batchRemove } = resourceService
+const { query, queryAll, create, update, remove, batchRemove } = roleService
 
 export default modelExtend(pageModel, {
   namespace: 'role',
@@ -18,10 +18,16 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen(location => {
-        if (location.pathname === '/setting/resource') {
+        if (location.pathname === '/setting/permission/role') {
           dispatch({
             type: 'query',
             payload: location.query,
+          })
+        }
+
+        if (localtion.pathname === '/setting/admin') {
+          dispatch({
+            type: 'queryAll'
           })
         }
       })
@@ -36,13 +42,25 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: res.data,
+            list: res.data.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: res.total,
+              total: res.data.total,
             },
           },
+        })
+      }
+    },
+
+    *queryAll ({ payload={} }, { call, put }) {
+      const res = yield call(queryAll, payload)
+      if (res.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            list: res.data
+          }
         })
       }
     },
@@ -82,7 +100,7 @@ export default modelExtend(pageModel, {
     },
 
     *update ({ payload }, { select, call, put }) {
-      const id = yield select(({ menu }) => menu.currentItem.id)
+      const id = yield select(({ role }) => role.currentItem.id)
 
       const res = yield call(update, { ...payload, id })
       if (res.success) {

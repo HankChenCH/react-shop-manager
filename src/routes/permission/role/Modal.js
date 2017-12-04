@@ -2,10 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Form, Input } from 'antd'
 import { Transfer } from '../../../components'
+import { Enum } from '../../../utils'
 import styles from './Modal.less'
 
 const FormItem = Form.Item
 const { FormTransfer } = Transfer
+const { EnumResourceType, EnumPermissionType } = Enum
 
 class InfoModal extends React.Component
 {
@@ -22,15 +24,43 @@ class InfoModal extends React.Component
             }
             const data = {
                 ...getFieldsValue(),
-                id: item.id,
             }
+
+            data.role_resource = data.role_resource.join(',')
+
             onOk(data)
         })
     }
 
+    renderPermission = (record) => {
+        const resourceType = []
+        resourceType[EnumResourceType.View] = '视图'
+        resourceType[EnumResourceType.Data] = '数据'
+
+        const permissionType = []
+        permissionType[EnumPermissionType.Public] = '公共'
+        permissionType[EnumPermissionType.Protected] = '保护'
+        permissionType[EnumPermissionType.Private] = '私人'
+
+        const title = `[${resourceType[record.resource_type]}/${permissionType[record.permission_type]}] - ${record.name}`
+
+        const label = (
+            <span>
+                {title}
+            </span>
+        )
+
+        return {
+            label: label,
+            value: title
+        }
+    }
+
     render() {
-        const { item, ...modalProps } = this.props
+        const { item, resourceList, ...modalProps } = this.props
         const { getFieldDecorator } = this.props.form
+
+        const role_resource = item.resources ? item.resources.map(i => i.id) : []
 
         const formItemLayout = {
             labelCol: {
@@ -43,7 +73,7 @@ class InfoModal extends React.Component
 
         const modalOpts = {
             ...modalProps,
-            width: 800,
+            width: 900,
             onOk: this.handleOk,
         }
 
@@ -73,11 +103,18 @@ class InfoModal extends React.Component
                         })(<Input />)}
                     </FormItem>
                     <FormItem label="角色资源" hasFeedback {...formItemLayout} >
-                        {getFieldDecorator('role_permission',{
-                            initialValue: item.role_permission
+                        {getFieldDecorator('role_resource',{
+                            initialValue: role_resource
                         })(
                             <FormTransfer
+                                dataSource={resourceList}
                                 showSearch
+                                listStyle={{
+                                    width: 225,
+                                    height: 250,
+                                }}
+                                titles={['来源', '已选']}
+                                render={this.renderPermission}
                             />
                         )}
                     </FormItem>

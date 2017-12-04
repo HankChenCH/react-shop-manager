@@ -11,6 +11,7 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     modalVisible: false,
+    authModalVisible: false,
     selectedRowKeys: [],
     modalType: 'create',
   },
@@ -152,6 +153,11 @@ export default modelExtend(pageModel, {
         yield put({ type: 'query' })
         throw res
       }
+    },
+
+    *auth ({ payload }, { call, put, select }) {
+      const { id } = yield select(({ admin }) => admin.currentItem)
+      
     }
   },
 
@@ -161,9 +167,17 @@ export default modelExtend(pageModel, {
       return { ...state,  ...payload , modalVisible: true }
     },
 
+    showAuthModal (state, { payload }) {
+      return { ...state, ...payload, authModalVisible: true }
+    },
+
     hideModal (state) {
       return { ...state, modalVisible: false }
     },
+
+    hideAuthModal (state) {
+      return { ...state, authModalVisible: false }
+    }
 
   },
 })

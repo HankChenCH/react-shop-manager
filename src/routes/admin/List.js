@@ -9,10 +9,10 @@ import { Link } from 'dva/router'
 
 const confirm = Modal.confirm
 
-const List = ({ onDeleteItem, onEditItem, onAbleItem, location, ...tableProps }) => {
+const List = ({ onAuthItem, onDeleteItem, onEditItem, onAbleItem, location, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
-      
+      onAuthItem(record)
     }else if (e.key === '2') {
       onEditItem(record)
     } else if (e.key === '3') {
@@ -71,7 +71,6 @@ const List = ({ onDeleteItem, onEditItem, onAbleItem, location, ...tableProps })
       <Table
         {...tableProps}
         className={classnames({ [styles.table]: true})}
-        scroll={{ x: 900 }}
         columns={columns}
         simple
         rowKey={record => record.id}

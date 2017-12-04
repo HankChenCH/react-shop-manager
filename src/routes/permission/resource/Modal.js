@@ -8,27 +8,23 @@ const FormItem = Form.Item
 const RadioGroup = Radio.Group
 const { Option } = Select
 const { EnumPermissionType, EnumResourceType } = Enum
+const methodArr = ['GET', 'POST', 'PUT', 'DELETE']
 
 class InfoModal extends React.Component
 {
     constructor(props){
         super(props)
+        const { item } = this.props
 
         this.state = {
+            resource_type: item.resource_type || '2',
             descriptionBefore: null
         }
     }
 
-    componentDidMount() {
-        const { getFieldValue } = this.props.form
-        this.setState({
-            descriptionBefore: this.addDescriptionBefore(getFieldValue('resource_type'))
-        })
-    }
-
     handleOk = () => {
         const { onOk } = this.props
-        const { validateFields, getFieldsValue, getFieldValue } = this.props.form
+        const { validateFields, getFieldsValue } = this.props.form
         validateFields((errors) => {
             if (errors) {
                 return
@@ -38,7 +34,7 @@ class InfoModal extends React.Component
                 ...fieldsValue,
             }
 
-            if (getFieldValue('resource_type') === '2') {
+            if (this.state.resource_type === '2') {
                 data.description = data.method + ' ' + data.description
                 delete data.method
             }
@@ -50,40 +46,28 @@ class InfoModal extends React.Component
 
     handleResourceTypeChange = (e) => {
         this.setState({
-            descriptionBefore: this.addDescriptionBefore(e.target.value)
+            resource_type: e.target.value
         })
-    }
-
-    addDescriptionBefore = (resource_type) => {
-        const { item, modalType } = this.props
-        const { getFieldValue, getFieldDecorator } = this.props.form
-        const methodArr = ['GET','POST','PUT','DELETE']
-        let method
-
-        if (resource_type === '1') {
-            return null
-        }
-
-        if (modalType === 'create') {
-            method = 'GET'
-        } else {
-            method = methodArr.indexOf(item.description.split(' ')[0]) !== -1 ? item.description.split(' ')[0] : 'GET'
-        }
-
-        return getFieldDecorator('method',{
-            initialValue: method
-        })(
-            <Select style={{ width: 80 }}>
-                {methodArr.map((item) => 
-                    <Option key={item} value={item}>{item}</Option>
-                )}
-            </Select>
-        )
     }
 
     render() {
         const { item, modalType, ...modalProps } = this.props
         const { getFieldDecorator, getFieldValue } = this.props.form
+        const { resource_type } = this.state
+
+        const descriptionBefore = (
+            resource_type === '1' ? 
+            null : 
+            getFieldDecorator('method', {
+                initialValue: (item.description && methodArr.indexOf(item.description.split(' ')[0]) !== -1) ? item.description.split(' ')[0] : 'GET'
+            })(
+                <Select style={{ width: 80 }}>
+                    {methodArr.map((item) =>
+                        <Option key={item} value={item}>{item}</Option>
+                    )}
+                </Select>
+            )
+        )
 
         const formItemLayout = {
             labelCol: {
@@ -122,7 +106,7 @@ class InfoModal extends React.Component
                                     message: '请输入资源权限描述'
                                 },
                             ],
-                        })(<Input addonBefore={this.state.descriptionBefore} style={{ width: '100%' }} />)}
+                        })(<Input addonBefore={descriptionBefore} style={{ width: '100%' }} />)}
                     </FormItem>
                     <FormItem label="资源类型" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('resource_type', {

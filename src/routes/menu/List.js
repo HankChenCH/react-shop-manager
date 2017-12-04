@@ -54,7 +54,6 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
         {...tableProps}
         className={classnames({ [styles.table]: true })}
         pagination={false}
-        scroll={{ x: 900 }}
         columns={columns}
         simple
         rowKey={record => record.id}

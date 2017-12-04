@@ -8,7 +8,7 @@ import styles from './Modal.css'
 const FormItem = Form.Item
 const { TextArea } = Input
 const { categoryTopic } = api.image
-const uploadImageApi = `${baseURL}/${categoryTopic}`
+const uploadImageApi = `${baseURL}${categoryTopic}`
 
 const formItemLayout = {
   labelCol: {

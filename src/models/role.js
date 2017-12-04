@@ -25,7 +25,7 @@ export default modelExtend(pageModel, {
           })
         }
 
-        if (localtion.pathname === '/setting/admin') {
+        if (location.pathname === '/setting/admin') {
           dispatch({
             type: 'queryAll'
           })

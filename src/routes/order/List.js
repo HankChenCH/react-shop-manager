@@ -112,7 +112,6 @@ const List = ({ queryStatus, express, onChangeItemPrice, onDeleteItem, onCloseIt
     <div>
       <Table
         {...tableProps}
-        scroll={{ x: 900 }}
         columns={columns}
         simple
         className={styles.table}

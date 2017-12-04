@@ -1,5 +1,6 @@
 import modelExtend from 'dva-model-extend'
-import { query, queryOne, create, remove, update, enableOrDisable, batchUpdate, batchRemove } from '../services/admin'
+import { query, queryOne, create, remove, update, enableOrDisable, batchUpdate, batchRemove, auth } from '../services/admin'
+import * as ws from '../services/ws'
 import { pageModel } from './common'
 import { config } from '../utils'
 
@@ -157,7 +158,15 @@ export default modelExtend(pageModel, {
 
     *auth ({ payload }, { call, put, select }) {
       const { id } = yield select(({ admin }) => admin.currentItem)
-      
+      const res = yield call(auth, { ...payload, id })
+      if (res.success) {
+        yield put({ type: 'hideModal' })
+        yield put({ type: 'app/messageSuccess', payload: '授权成功' })
+        ws.trigger('manager/admin/permission_reload', { id })
+        yield put({ type: 'query' })
+      } else {
+        throw res
+      }
     }
   },
 

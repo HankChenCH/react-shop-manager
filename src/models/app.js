@@ -74,12 +74,15 @@ export default modelExtend(model, {
       }
     },
 
-    *globalNotice ({ payload }) {
-      notification.open({
+    *globalNotice ({ payload }, { select }) {
+      const { notificationOn } = yield select(({ websocket }) => websocket)
+      if (notificationOn) {
+        notification.open({
           message: payload.from,
           description: payload.data,
           icon: <Icon type="smile-circle" style={{ color: '#292929' }} />,
-      });
+        });
+      }
     },
 
     *queryProduct ({ payload }, { call, put, select }) {

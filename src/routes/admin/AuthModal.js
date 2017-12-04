@@ -47,6 +47,7 @@ class AuthModal extends React.Component
 
     const modalOpts = {
       ...modalProps,
+      width: 900,
       onOk: this.handleOk,
     }
 
@@ -59,14 +60,25 @@ class AuthModal extends React.Component
     return (
       <Modal {...modalOpts}>
         <Form>
-            <FormItem>
+            <FormItem 
+              label="角色授权"
+              hasFeedback
+              {...formItemLayout}
+            >
                 {getFieldDecorator('admin_role', {
-                    initialValue: item.roles ? item.roles.map(i => ({ key: i.id })) : []
+                    initialValue: item.roles && item.roles.length > 0 ? item.roles.map(i => i.id) : [],
+                    rules: [
+                      { required: true }
+                    ]
                 })(
                     <FormTransfer
                         dataSource={roleList}
                         showSearch
                         titles={['来源', '已选']}
+                        listStyle={{
+                          width: 218,
+                          height: 250,
+                        }}
                         render={(item) => ({ label: item.name, value: item.name })}
                     />
                 )}

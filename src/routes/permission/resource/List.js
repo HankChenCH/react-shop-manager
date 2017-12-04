@@ -24,9 +24,9 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, ...tableProps }) => {
   }
 
   const permissionType = []
-  permissionType[EnumPermissionType.Public] = '公共资源'
-  permissionType[EnumPermissionType.Protected] = '保护资源'
-  permissionType[EnumPermissionType.Private] = '私人资源'
+  permissionType[EnumPermissionType.Public] = '公共'
+  permissionType[EnumPermissionType.Protected] = '保护'
+  permissionType[EnumPermissionType.Private] = '私人'
 
   const resourceType = []
   resourceType[EnumResourceType.View] = '视图'
@@ -34,18 +34,10 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, ...tableProps }) => {
 
   const columns = [
     {
-      title: '资源权限名称',
-      dataIndex: 'name',
-      key: 'name',
-    }, {
-      title: '资源权限描述',
-      dataIndex: 'description',
-      key: 'description',
-    }, {
-      title: '资源权限类型',
-      dataIndex: 'type',
-      key: 'type',
-      render: (text, record) => <div><p>{resourceType[record.resource_type]}</p><p>{permissionType[record.permission_type]}</p></div>
+      title: '资源权限',
+      dataIndex: 'resource',
+      key: 'resource',
+      render: (text, record) => <div><p>[{permissionType[record.permission_type]}/{resourceType[record.resource_type]}] - {record.name}</p><p>{record.description}</p></div>
     }, {
       title: '操作',
       key: 'operation',
@@ -62,7 +54,6 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, ...tableProps }) => {
         {...tableProps}
         className={classnames({ [styles.table]: true })}
         pagination={false}
-        scroll={{ x: 900 }}
         columns={columns}
         simple
         rowKey={record => record.id}

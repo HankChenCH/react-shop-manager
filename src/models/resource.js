@@ -64,8 +64,6 @@ export default modelExtend(pageModel, {
             list: res.data,
           },
         })
-      } else {
-        throw res
       }
     },
 
@@ -104,7 +102,7 @@ export default modelExtend(pageModel, {
     },
 
     *update ({ payload }, { select, call, put }) {
-      const id = yield select(({ role }) => role.currentItem.id)
+      const id = yield select(({ resource }) => resource.currentItem.id)
 
       const res = yield call(update, { ...payload, id })
       if (res.success) {

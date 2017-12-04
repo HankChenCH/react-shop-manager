@@ -42,7 +42,7 @@ class InfoModal extends React.Component
         permissionType[EnumPermissionType.Protected] = '保护'
         permissionType[EnumPermissionType.Private] = '私人'
 
-        const title = `[${resourceType[record.resource_type]}/${permissionType[record.permission_type]}] - ${record.name}`
+        const title = `[${permissionType[record.permission_type]}/${resourceType[record.resource_type]}] - ${record.name}`
 
         const label = (
             <span>
@@ -60,7 +60,7 @@ class InfoModal extends React.Component
         const { item, resourceList, ...modalProps } = this.props
         const { getFieldDecorator } = this.props.form
 
-        const role_resource = item.resources ? item.resources.map(i => i.id) : []
+        const role_resource = item.resources && item.resources.length > 0 ? item.resources.map(i => i.id) : []
 
         const formItemLayout = {
             labelCol: {
@@ -110,7 +110,7 @@ class InfoModal extends React.Component
                                 dataSource={resourceList}
                                 showSearch
                                 listStyle={{
-                                    width: 225,
+                                    width: 218,
                                     height: 250,
                                 }}
                                 titles={['来源', '已选']}

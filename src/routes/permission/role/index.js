@@ -14,7 +14,7 @@ const Role = ({ location, dispatch, role, resource, loading }) => {
 
     const modalProps = {
         item: (modalType === 'create' ? {} : currentItem),
-        resourceList: resourceList.map(item => { return { key: item.id, ...item } }),
+        resourceList: resourceList.map(i => ({ key: i.id, ...i })),
         modalType: modalType,
         visible: modalVisible,
         maskClosable: false,

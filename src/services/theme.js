@@ -1,6 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
-const { list, info, batch, products, setProducts, pull, rank } = api.theme
+const { list, info, batch, products, pull, rank } = api.theme
 
 export async function query (params) {
   return request({
@@ -68,7 +68,7 @@ export async function batchRemove (params) {
 
 export async function updateProducts (params) {
   return request({
-    url: setProducts,
+    url: products,
     method: 'put',
     data: params,
   })
@@ -76,7 +76,7 @@ export async function updateProducts (params) {
 
 export async function removeAllProducts (params) {
   return request({
-    url: setProducts,
+    url: products,
     method: 'delete',
     data: params,
   })

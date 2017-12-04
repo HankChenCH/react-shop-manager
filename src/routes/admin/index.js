@@ -37,6 +37,7 @@ const Admin = ({ location, dispatch, admin, role, loading }) => {
   const authModalProps = {
     item: currentItem,
     visible: authModalVisible,
+    roleList: roleList.map( i => ({ key: i.id, ...i })),
     modalType,
     maskClosable: false,
     confirmLoading: loading.effects['admin/auth'],

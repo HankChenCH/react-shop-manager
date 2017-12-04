@@ -62,13 +62,13 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       title: '商品名',
       dataIndex: 'name',
       key: 'title',
-      width: 200,
+      width: 300,
       render: (text, record) => <Link to={`product/${record.id}`}>{text}</Link>,
     }, {
       title: '商品摘要',
       dataIndex: 'summary',
       key: 'summary',
-      width: 200
+      width: 300
     }, {
       title: '单价',
       dataIndex: 'price',
@@ -130,7 +130,6 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       <Table
         {...tableProps}
         className={classnames({ [styles.table]: true })}
-        scroll={{ x: 900 }}
         columns={columns}
         simple
         rowKey={record => record.id}

@@ -10,7 +10,7 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 const { productMain } = api.image
-const uploadMainImageApi = `${baseURL}/${productMain}`
+const uploadMainImageApi = `${baseURL}${productMain}`
 
 class BaseInfoForm extends React.Component
 {

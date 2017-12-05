@@ -3,16 +3,12 @@ import PropTypes from 'prop-types'
 import { Editor } from '../../../components'
 import { BaseInfoForm, DetailInfoForm, ParamsInfoForm, BuyNowForm, TicketsTable } from '../components'
 import { Form, Input, InputNumber, Modal, Button, Upload, Icon, message } from 'antd'
-import { apiPrefix, api } from '../../../utils/config'
 import draftToHtml from 'draftjs-to-html';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import styles from '../Modal.css'
 
 const FormItem = Form.Item
 const HtmlEditor = Editor.HtmlEditor
-const { productMain, productDetail } = api.image
-const uploadMainImageApi = `${apiPrefix}/${productMain}`
-const uploadDetailImageApi = `${apiPrefix}/${productDetail}`
 
 const formItemLayout = {
   labelCol: {

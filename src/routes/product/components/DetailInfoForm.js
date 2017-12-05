@@ -8,7 +8,7 @@ import styles from '../Modal.css'
 const FormItem = Form.Item
 const HtmlEditor = Editor.HtmlEditor
 const { productDetail } = api.image
-const uploadDetailImageApi = `${apiPrefix}/${productDetail}`
+const uploadDetailImageApi = `${apiPrefix}${productDetail}`
 
 class DetailInfoForm extends React.Component
 {

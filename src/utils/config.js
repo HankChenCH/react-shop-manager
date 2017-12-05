@@ -73,7 +73,7 @@ module.exports = {
     admin: {
       list: '/admin',
       info: '/admin/:id',
-      authRole: '/admin/:id/role',
+      role: '/admin/:id/role',
       status: '/admin/:id/status',
       batch: '/admin/batch',
       members: '/admin/chat_member',
@@ -82,6 +82,13 @@ module.exports = {
       list: '/menu',
       info: '/menu/:id',
       batch: '/menu/batch',
+    },
+    group: {
+      list: '/group',
+      my: '/group/my',
+      info: '/group/:id',
+      batch: '/group/batch',
+      admin: '/group/:id/admin',
     },
     resource : {
       list: '/resource',

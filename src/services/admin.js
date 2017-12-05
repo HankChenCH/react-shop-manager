@@ -1,6 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
-const { list, info, authRole, status, batch } = api.admin
+const { list, info, role, status, batch, members } = api.admin
 
 export async function query (params) {
   return request({
@@ -18,6 +18,14 @@ export async function queryOne (params) {
   })
 }
 
+export async function queryMembers (params) {
+  return request({
+    url: members,
+    method: 'get',
+    data: params,
+  })
+}
+
 export async function create (params) {
   return request({
     url: info.replace('/:id', ''),
@@ -28,7 +36,7 @@ export async function create (params) {
 
 export async function auth (params) {
   return request({
-    url: authRole,
+    url: role,
     method: 'put',
     data: params
   })

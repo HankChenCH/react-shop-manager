@@ -124,12 +124,21 @@ const Routers = function ({ history, app }) {
             }, 'admin')
           },
         }, {
+          path: 'setting/group',
+          getComponent(nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/group'))
+              registerModel(app, require('./models/admin'))
+              cb(null, require('./routes/group'))
+            }, 'group')
+          },
+        }, {
           path: 'setting/permission/role',
           getComponent (nextState, cb) {
             require.ensure([], require => {
               registerModel(app, require('./models/role'))
               registerModel(app, require('./models/resource'))
-              cb(null, require('./routes/permission/role/'))
+              cb(null, require('./routes/permission/role'))
             }, 'permission-role')
           },
         }, {
@@ -137,7 +146,7 @@ const Routers = function ({ history, app }) {
           getComponent (nextState, cb) {
             require.ensure([], require => {
               registerModel(app, require('./models/resource'))
-              cb(null, require('./routes/permission/resource/'))
+              cb(null, require('./routes/permission/resource'))
             }, 'permission-resource')
           },
         }, {

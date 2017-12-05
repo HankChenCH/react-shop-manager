@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Editor } from '../../components'
 import { BaseInfoForm, DetailInfoForm, ParamsInfoForm } from './components'
 import { Form, Input, InputNumber, Modal, Steps, Button, Upload, Icon, message } from 'antd'
-import { apiPrefix, api } from '../../utils/config'
 import draftToHtml from 'draftjs-to-html';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import styles from './Modal.css'
@@ -11,9 +10,6 @@ import styles from './Modal.css'
 const FormItem = Form.Item
 const Step = Steps.Step;
 const HtmlEditor = Editor.HtmlEditor
-const { productMain, productDetail } = api.image
-const uploadMainImageApi = `${apiPrefix}/${productMain}`
-const uploadDetailImageApi = `${apiPrefix}/${productDetail}`
 
 const formItemLayout = {
   labelCol: {

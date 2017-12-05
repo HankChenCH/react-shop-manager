@@ -11,7 +11,7 @@ const { RangePicker } = DatePicker
 const { Notice } = Layout
 const HtmlEditor = Editor.HtmlEditor
 const { buyNowRules } = api.image
-const uploadRulesImageApi = `${apiPrefix}/${buyNowRules}`
+const uploadRulesImageApi = `${apiPrefix}${buyNowRules}`
 
 class BuyNowForm extends React.Component
 {

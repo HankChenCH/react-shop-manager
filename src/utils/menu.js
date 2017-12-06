@@ -1,8 +1,11 @@
+import * as env from './env'
+
 module.exports = [
   {
     id: 1,
     name: '首页',
     icon: 'home',
+    auth: env.dashboard,
     router: '/dashboard',
   },
   {
@@ -10,6 +13,7 @@ module.exports = [
     bpid: 1,
     name: '分类管理',
     icon: 'bars',
+    auth: env.categoryList,
     router: '/category',
   },
   {
@@ -17,12 +21,14 @@ module.exports = [
     bpid: 1,
     name: '主题管理',
     icon: 'shop',
+    auth: env.themeList,
     router: '/theme',
   },
   {
     id: 3,
     bpid: 1,
     name: '商品管理',
+    auth: env.productList,
     icon: 'barcode',
     router: '/product',
   },
@@ -31,12 +37,14 @@ module.exports = [
     mpid: -1,
     bpid: 3,
     name: '商品详情',
+    auth: env.productDetail,
     router: '/product/:id',
   },
   {
     id: 8,
     bpid: 1,
     name: '快递管理',
+    auth: env.expressList,
     icon: 'car',
     router: '/express',
   },
@@ -44,6 +52,7 @@ module.exports = [
     id: 7,
     bpid: 1,
     name: '订单管理',
+    auth: env.orderList,
     icon: 'shopping-cart',
     router: '/order',
   },
@@ -52,12 +61,14 @@ module.exports = [
     mpid: -1,
     bpid: 7,
     name: '订单详情',
+    auth: env.orderDetail,
     router: '/order/:id',
   },
   {
     id: 2,
     bpid: 1,
     name: '客户管理',
+    auth: env.userList,
     icon: 'user',
     router: '/user',
   },
@@ -66,12 +77,14 @@ module.exports = [
     mpid: -1,
     bpid: 2,
     name: '客户详情',
+    auth: env.userDetail,
     router: '/user/:id',
   },
   {
     id: 6,
     bpid: 1,
     name: '系统管理',
+    auth: env.systemList,
     icon: 'setting',
   },
   {
@@ -79,6 +92,7 @@ module.exports = [
     bpid: 6,
     mpid: 6,
     name: '菜单管理',
+    auth: env.menuList,
     router: '/setting/menu',
   },
   {
@@ -86,6 +100,7 @@ module.exports = [
     bpid: 6,
     mpid: 6,
     name: '管理员管理',
+    auth: env.adminList,
     router: '/setting/admin',
   },
   {
@@ -93,6 +108,7 @@ module.exports = [
     bpid: 6,
     mpid: 6,
     name: '群组管理',
+    auth: env.groupList,
     router: '/setting/group',
   },
   {
@@ -100,12 +116,14 @@ module.exports = [
     bpid: 6,
     mpid: 6,
     name: '权限管理',
+    auth: env.permissionList,
   },
   {
     id: 641,
     bpid: 64,
     mpid: 64,
     name: '角色管理',
+    auth: env.roleAuth,
     router: '/setting/permission/role',
   },
   {
@@ -113,6 +131,7 @@ module.exports = [
     bpid: 64,
     mpid: 64,
     name: '资源管理',
+    auth: env.resourceList,
     router: '/setting/permission/resource',
   },
   {
@@ -120,6 +139,7 @@ module.exports = [
     bpid: 1,
     mpid: -1,
     name: '客服中心',
+    auth: env.customerService,
     router: 'https://mpkf.weixin.qq.com/',
   },
   {
@@ -127,6 +147,7 @@ module.exports = [
     bpid: 1,
     mpid: -1,
     name: '个人中心',
+    auth: env.personalCenter,
     router: '/setting/personal',
   },
 ]

@@ -9,7 +9,7 @@ import { parse } from 'qs'
 import { config, Enum } from '../utils'
 import { message, notification, Icon } from 'antd'
 const { prefix } = config
-const { EnumAdminStatus } = Enum
+const { EnumAdminStatus, EnumResourceType } = Enum
 
 
 export default modelExtend(model, {
@@ -193,11 +193,18 @@ export default modelExtend(model, {
     *registerUser ({ payload }, { put, call }) {
       const tokenPayload = payload.token.split('.')[1]
       const userInfo = JSON.parse(Base64.decode(tokenPayload))
+      const user = { 
+        exprie_in: userInfo.exp, 
+        login_name: payload.login_name, 
+        status: payload.status,
+        view: [],       
+        ...userInfo.user,        
+      }
+      yield put({ type: 'updateState', payload: { user } })
       const res = yield call(queryMy);
       if (res.success) {
-        yield put({ type: 'updateState', payload: { user: { ...userInfo.user, permission: res.data, exprie_in: userInfo.exp, login_name: payload.login_name, status: payload.status } } })
-      } else {
-        yield put({ type: 'logoutSuccess' })
+        const view = res.data[EnumResourceType.View] || []
+        yield put({ type: 'injectUserPermission', payload: view })
       }
     },
 
@@ -324,6 +331,15 @@ export default modelExtend(model, {
         msgCenterShow: !state.msgCenterShow
       }
     },
+
+    injectUserPermission(state, { payload }) {
+      const { user } = state
+      const newModelUser = { ...user, view: payload }
+      return {
+        ...state,
+        user: newModelUser
+      }
+    }
 
   },
 })

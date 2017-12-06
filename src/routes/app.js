@@ -35,6 +35,7 @@ const App = ({ children, location, dispatch, app, chat, loading }) => {
   const headerProps = {
     menu,
     user,
+    userAuth: user.view,
     siderFold,
     location,
     isNavbar,
@@ -61,6 +62,7 @@ const App = ({ children, location, dispatch, app, chat, loading }) => {
 
   const siderProps = {
     menu,
+    userAuth: user.view,
     siderFold,
     darkTheme,
     location,

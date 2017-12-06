@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Form, Input, Radio, Select } from 'antd'
-import { Enum } from '../../../utils'
+import lodash from 'lodash'
+import { Modal, Form, Input, Radio, Select, AutoComplete } from 'antd'
+import { Enum, env } from '../../../utils'
 import styles from './Modal.less'
 
 const FormItem = Form.Item
@@ -35,8 +36,12 @@ class InfoModal extends React.Component
             }
 
             if (this.state.resource_type === '2') {
-                data.description = data.method + ' ' + data.description
+                data.description = data.method + ' ' + data.description_data
                 delete data.method
+                delete data.description_data
+            } else {
+                data.description = data.description_view
+                delete data.description_view
             }
 
             // console.log(data)
@@ -54,6 +59,7 @@ class InfoModal extends React.Component
         const { item, modalType, ...modalProps } = this.props
         const { getFieldDecorator, getFieldValue } = this.props.form
         const { resource_type } = this.state
+        let descriptionDom
 
         const descriptionBefore = (
             resource_type === '1' ? 
@@ -68,6 +74,20 @@ class InfoModal extends React.Component
                 </Select>
             )
         )
+
+        if (resource_type === '1') {
+            const envArr = lodash.values(env)
+            descriptionDom = (
+                <Select
+                    showSearch
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                    {envArr.map((item,key) => <Option key={key} value={item}>{item}</Option>)}
+                </Select>
+            )
+        } else {
+            descriptionDom = <Input addonBefore={descriptionBefore} style={{ width: '100%' }} />
+        }
 
         const formItemLayout = {
             labelCol: {
@@ -98,7 +118,9 @@ class InfoModal extends React.Component
                         })(<Input />)}
                     </FormItem>
                     <FormItem label="资源权限描述" hasFeedback {...formItemLayout}>
-                        {getFieldDecorator('description', {
+                        {
+                        resource_type === '2' ?
+                        getFieldDecorator('description_data', {
                             initialValue: modalType === 'update' && item.resource_type === '2' ? item.description.split(' ')[1] : item.description,
                             rules: [
                                 {
@@ -106,7 +128,17 @@ class InfoModal extends React.Component
                                     message: '请输入资源权限描述'
                                 },
                             ],
-                        })(<Input addonBefore={descriptionBefore} style={{ width: '100%' }} />)}
+                        })(descriptionDom) :
+                        getFieldDecorator('description_view', {
+                            initialValue: modalType === 'update' && item.resource_type === '2' ? item.description.split(' ')[1] : item.description,
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '请输入资源权限描述'
+                                },
+                            ],
+                        })(descriptionDom)
+                        }
                     </FormItem>
                     <FormItem label="资源类型" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('resource_type', {

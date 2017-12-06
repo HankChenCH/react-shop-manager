@@ -14,7 +14,7 @@ let wrapAuth = ComposedComponent => class WrapComponent extends Component {
 
     static propTypes = {
         auth: PropTypes.string.isRequired,
-        userAuth: PropTypes.object.isRequired,
+        userAuth: PropTypes.array.isRequired,
         unAuthType: PropTypes.string,
         alertText: PropTypes.string,
     };
@@ -26,7 +26,7 @@ let wrapAuth = ComposedComponent => class WrapComponent extends Component {
             switch (this.props.unAuthType) {
                 case 'alert':
                     return <ComposedComponent onClick={() => alert(this.props.alertText ? this.props.alertText : "权限不足，请找管理员申请")} { ...this.props} />
-                case 'disable':
+                case 'disabled':
                     return <ComposedComponent disabled={true}  { ...this.props} />
                 case 'null':
                 default:

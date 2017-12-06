@@ -6,7 +6,7 @@ import pathToRegexp from 'path-to-regexp'
 import { AuthSubMenu, AuthMenuItem } from '../WrapAuth'
 import { arrayToTree, queryArray } from '../../utils'
 
-const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys, changeOpenKeys, menu }) => {
+const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys, changeOpenKeys, menu, userAuth }) => {
   // 生成树状
   const menuTree = arrayToTree(menu.filter(_ => _.mpid !== -1), 'id', 'mpid')
   const levelMap = {}
@@ -21,7 +21,8 @@ const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys
         return (
           <AuthSubMenu
             key={item.id}
-            auth="submenu"
+            auth={item.auth}
+            userAuth={userAuth}
             title={<span>
               {item.icon && <Icon type={item.icon} />}
               {(!siderFoldN || menuTree.indexOf(item) < 0) && item.name}
@@ -32,7 +33,7 @@ const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys
         )
       }
       return (
-        <AuthMenuItem key={item.id} auth="menuitem">
+        <AuthMenuItem key={item.id} auth={item.auth} userAuth={userAuth}>
           <Link to={item.router}>
             {item.icon && <Icon type={item.icon} />}
             {(!siderFoldN || menuTree.indexOf(item) < 0) && item.name}

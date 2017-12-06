@@ -153,7 +153,11 @@ const queryObjToString = (queryObj) => {
 }
 
 const getAuth = (permission, userAuth) => {
-  return true
+  if(userAuth.indexOf(permission) !== -1) {
+    return true
+  }
+
+  return false
 }
 
 module.exports = {

@@ -37,12 +37,6 @@ export default modelExtend(pageModel, {
           dispatch({ type: 'express/query' })
         }
       })
-
-      // setInterval(() => {
-      //   dispatch({
-      //     type: 'reloadList'
-      //   })
-      // }, 600000)
     },
   },
 

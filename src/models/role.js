@@ -50,6 +50,8 @@ export default modelExtend(pageModel, {
             },
           },
         })
+      } else {
+        throw res
       }
     },
 
@@ -67,7 +69,7 @@ export default modelExtend(pageModel, {
 
     *'delete' ({ payload }, { call, put, select }) {
       const res = yield call(remove, { id: payload })
-      const { selectedRowKeys } = yield select(_ => _.category)
+      const { selectedRowKeys } = yield select(_ => _.role)
       if (res.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'app/messageSuccess', payload:"删除资源成功" })

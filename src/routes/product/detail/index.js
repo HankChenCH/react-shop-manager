@@ -159,10 +159,10 @@ const Detail = ({ app, productDetail, dispatch, loading }) => {
       <Card>
         <div className={styles.content}>
           <Row gutter={8} justify="center" align="center">
-            <Col lg={22} md={24}>
+            <Col md={22} xs={18}>
               <h2>{data.name}</h2>
             </Col>
-            <Col className={styles.center} style={{ height: '46px' }} lg={2} md={12}>
+            <Col className={styles.center} style={{ height: '46px' }} md={2} xs={6}>
                 <DropOption 
                   onMenuClick={e => handleMenuClick(e)} 
                   menuOptions={[{ key: '1', name: '更新基础信息' }, { key: '3', name: '返回列表'}]}
@@ -183,7 +183,7 @@ const Detail = ({ app, productDetail, dispatch, loading }) => {
           </Row>
         </div>
       </Card>      
-      <Card>
+      <Card style={{marginTop: 20}}>
         <Row gutter={8} justify="center" align="center">
           <Tabs
             className={styles.ant_tabs}
@@ -230,14 +230,10 @@ const Detail = ({ app, productDetail, dispatch, loading }) => {
             </TabPane>
             <TabPane tab="商品销量" key="4">
               <Row gutter={8}>
-                <Col span={22}>
+                <Col span={24}>
                   {
                     productSales.length > 0 ?
-                    <Card bordered={false} bodyStyle={{
-                      padding: '24px 36px 24px 0',
-                    }}>
-                      <Sales {...salesProps}/>
-                    </Card> : 
+                    <Sales {...salesProps}/> : 
                     '暂无销售记录'
                   }
                 </Col>

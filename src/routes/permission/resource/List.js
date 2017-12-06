@@ -53,7 +53,6 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, ...tableProps }) => {
       <Table
         {...tableProps}
         className={classnames({ [styles.table]: true })}
-        pagination={false}
         columns={columns}
         simple
         rowKey={record => record.id}

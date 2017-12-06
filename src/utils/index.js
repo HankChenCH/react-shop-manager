@@ -7,6 +7,7 @@ import * as Validate from './validates'
 import classnames from 'classnames'
 import { color } from './theme'
 import lodash from 'lodash'
+import { Base64 } from 'js-base64'
 import particlesConfig from './particlesCofig'
 
 // 连字符转驼峰
@@ -151,6 +152,10 @@ const queryObjToString = (queryObj) => {
   return queryArr.join('&')
 }
 
+const getAuth = (permission, userAuth) => {
+  return true
+}
+
 module.exports = {
   config,
   particlesConfig,
@@ -167,5 +172,6 @@ module.exports = {
   deleteProps,
   hasProp,
   sleep,
-  queryObjToString,  
+  queryObjToString,
+  getAuth 
 }

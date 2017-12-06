@@ -1,6 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
-const { list, info, batch, products, pull, rank } = api.theme
+const { list, info, batch, products, onoff, rank } = api.theme
 
 export async function query (params) {
   return request({
@@ -28,7 +28,7 @@ export async function create (params) {
 
 export async function pullOnOff (params) {
   return request({
-    url: pull,
+    url: onoff,
     method: 'put',
     data: params,
   })

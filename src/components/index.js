@@ -7,6 +7,7 @@ import FilterItem from './FilterItem'
 import * as Layout from './Layout/index.js'
 import * as Chat from './Chat/index.js'
 import * as Transfer from './Transfer/index.js'
+import * as Auth from './WrapAuth'
 
 import layer from './layer'
 
@@ -21,4 +22,5 @@ export {
   layer,
   Chat,
   Transfer,
- }
+  Auth,
+}

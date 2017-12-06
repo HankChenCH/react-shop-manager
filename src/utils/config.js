@@ -1,6 +1,6 @@
 module.exports = {
   name: '探小店后台',
-  version: '1.1.13@beta',
+  version: '1.2.2@beta',
   prefix: 'tan_shop_',
   footerText: '探小店后台  © 2017 中山食探工作室',
   logo: '/st.jpg',
@@ -30,7 +30,7 @@ module.exports = {
       stockAndPrice: '/product/:id/stock_and_price',
       detail: '/product/:id/detail',
       properties: '/product/:id/properties',
-      pull: '/product/:id/pullOnOff',
+      onoff: '/product/:id/pullOnOff',
       recent: '/product/recent',
       countAllSales: '/product/sales',
       countOneSales: '/product/:id/sales',
@@ -58,7 +58,7 @@ module.exports = {
       info: '/theme/:id',
       batch: '/theme/batch',
       products: '/theme/:id/product',
-      pull: '/theme/:id/pullOnOff',
+      onoff: '/theme/:id/pullOnOff',
       rank: '/theme/rank',
     },
     express: {
@@ -93,6 +93,7 @@ module.exports = {
     resource : {
       list: '/resource',
       all: '/resource/all',
+      my: '/resource/my',
       info: '/resource/:id',
       batch: '/resource/batch',
     },

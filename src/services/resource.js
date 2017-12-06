@@ -1,6 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
-const { list, all, info, batch } = api.resource
+const { list, all, info, batch, my } = api.resource
 
 export async function query(params) {
     return request({
@@ -15,6 +15,14 @@ export async function queryAll(params) {
         url: all,
         method: 'get',
         data: params,
+    })
+}
+
+export async function queryMy(params) {
+    return request({
+        url: my,
+        method: 'get',
+        data: params
     })
 }
 

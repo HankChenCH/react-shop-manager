@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { Base64 } from 'js-base64'
 import { query, queryProductAll, logout, reToken } from '../services/app'
+import { queryMy } from '../services/resource'
 import * as ws from '../services/ws'
 import { model } from './common'
 import { routerRedux } from 'dva/router'
@@ -192,7 +193,12 @@ export default modelExtend(model, {
     *registerUser ({ payload }, { put, call }) {
       const tokenPayload = payload.token.split('.')[1]
       const userInfo = JSON.parse(Base64.decode(tokenPayload))
-      yield put({ type: 'updateState', payload: { user: { ...userInfo.user, exprie_in: userInfo.exp, login_name: payload.login_name, status: payload.status } } })
+      const res = yield call(queryMy);
+      if (res.success) {
+        yield put({ type: 'updateState', payload: { user: { ...userInfo.user, permission: res.data, exprie_in: userInfo.exp, login_name: payload.login_name, status: payload.status } } })
+      } else {
+        yield put({ type: 'logoutSuccess' })
+      }
     },
 
     *addNoticeCount ({ payload }, { put, select }) {

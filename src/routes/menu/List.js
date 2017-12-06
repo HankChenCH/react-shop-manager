@@ -38,14 +38,15 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
       render: (text, record) => {
         return text == null ? '-' : text;
       }
-    }, {
-      title: '操作',
-      key: 'operation',
-      width: 100,
-      render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
-      },
-    },
+    }, 
+    // {
+    //   title: '操作',
+    //   key: 'operation',
+    //   width: 100,
+    //   render: (text, record) => {
+    //     return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
+    //   },
+    // },
   ]
 
   return (

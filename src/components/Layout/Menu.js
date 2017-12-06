@@ -2,8 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu, Icon } from 'antd'
 import { Link } from 'dva/router'
-import { arrayToTree, queryArray } from '../../utils'
 import pathToRegexp from 'path-to-regexp'
+import { AuthSubMenu, AuthMenuItem } from '../WrapAuth'
+import { arrayToTree, queryArray } from '../../utils'
 
 const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys, changeOpenKeys, menu }) => {
   // 生成树状
@@ -18,24 +19,25 @@ const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys
           levelMap[item.id] = item.mpid
         }
         return (
-          <Menu.SubMenu
+          <AuthSubMenu
             key={item.id}
+            auth="submenu"
             title={<span>
               {item.icon && <Icon type={item.icon} />}
               {(!siderFoldN || menuTree.indexOf(item) < 0) && item.name}
             </span>}
           >
             {getMenus(item.children, siderFoldN)}
-          </Menu.SubMenu>
+          </AuthSubMenu>
         )
       }
       return (
-        <Menu.Item key={item.id}>
+        <AuthMenuItem key={item.id} auth="menuitem">
           <Link to={item.router}>
             {item.icon && <Icon type={item.icon} />}
             {(!siderFoldN || menuTree.indexOf(item) < 0) && item.name}
           </Link>
-        </Menu.Item>
+        </AuthMenuItem>
       )
     })
   }

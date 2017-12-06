@@ -33,19 +33,21 @@ export default modelExtend(pageModel, {
   effects: {
 
     *query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
-      if (data) {
+      const res = yield call(query, payload)
+      if (res.success) {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data,
+            list: res.data,
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
+              total: res.total,
             },
           },
         })
+      } else {
+        throw res
       }
     },
 

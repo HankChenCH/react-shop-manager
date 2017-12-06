@@ -38,7 +38,7 @@ export default modelExtend(pageModel, {
 
     *query ({ payload = {} }, { call, put }) {
       const res = yield call(query, payload)
-      if (res) {
+      if (res.success) {
         yield put({
           type: 'querySuccess',
           payload: {
@@ -50,6 +50,8 @@ export default modelExtend(pageModel, {
             },
           },
         })
+      } else {
+        throw res
       }
     },
 

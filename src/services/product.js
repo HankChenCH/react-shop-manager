@@ -1,6 +1,6 @@
 import { request, config } from '../utils'
 const { api } = config
-const { all, list, info, batch, stockAndPrice, detail, properties, pull, countOneSales, buyNow, buyNowInfo } = api.product
+const { all, list, info, batch, stockAndPrice, detail, properties, onoff, countOneSales, buyNow, buyNowInfo } = api.product
 
 export async function query (params) {
   return request({
@@ -100,7 +100,7 @@ export async function updateParams (params) {
 
 export async function pullOnOff (params) {
   return request({
-    url: pull,
+    url: onoff,
     method: 'put',
     data: params,
   })

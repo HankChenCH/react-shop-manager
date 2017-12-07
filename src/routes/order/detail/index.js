@@ -136,6 +136,7 @@ const Detail = ({ dispatch, express, app, orderDetail, loading }) => {
 
     const orderItems = hasProp(data, 'snap_items') ? data.snap_items.map( goods => {
         return {
+          key: goods.name,
           title: goods.name,
           description: <div><p>已购 {goods.counts} 件</p><p>共 ￥ {goods.price * goods.counts} 元</p></div>
         }
@@ -149,18 +150,18 @@ const Detail = ({ dispatch, express, app, orderDetail, loading }) => {
 
     const menuList = () => {
         const menu = []
-        const status = data.status.toString()
-        if (status === EnumOrderStatus.UNDELIVERY) {
+        const status = data.status
+        if (status === parseInt(EnumOrderStatus.UNDELIVERY)) {
             if (data.type === '1') {
                 menu.push({ key: '3', name: '订单发货', auth: env.orderDelivery })
             } else if (data.type === '2') {
                 menu.push({ key: '4', name: '订单出票', auth: env.orderIssue })
             }
-        } else if (status === EnumOrderStatus.UNPAY) {
+        } else if (status === parseInt(EnumOrderStatus.UNPAY)) {
             menu.push({ key: '1', name: '关闭订单', auth: env.orderClose })
         }
 
-        menu.push({ key: '5', name: '返回列表'})
+        menu.push({ key: '5', name: '返回列表' })
 
         return menu;
     }

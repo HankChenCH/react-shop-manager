@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { Row, Col, Button, Popconfirm } from 'antd'
+import { AuthButton } from '../../../components/Auth'
+import { env } from '../../../utils'
 import List from './List'
 import Filter from './Filter'
 import InfoModal from './Modal'
@@ -10,8 +12,9 @@ import { Layout } from '../../../components'
 
 const { Notice } = Layout
 
-const Resource = ({ location, dispatch, resource, loading }) => {
+const Resource = ({ location, dispatch, app, resource, loading }) => {
     const { list, pagination, currentItem, modalVisible, modalType, selectedRowKeys } = resource
+    const { userAuth } = app
     const { pageSize } = pagination
 
     const modalProps = {
@@ -43,6 +46,7 @@ const Resource = ({ location, dispatch, resource, loading }) => {
 
     const listProps = {
         dataSource: list,
+        userAuth,
         loading: loading.effects['resource/query'],
         pagination,
         location,
@@ -86,6 +90,7 @@ const Resource = ({ location, dispatch, resource, loading }) => {
     }
 
     const filterProps = {
+        userAuth,
         filter: {
             ...location.query,
         },
@@ -126,8 +131,8 @@ const Resource = ({ location, dispatch, resource, loading }) => {
                 <Row style={{ marginBottom: 18, textAlign: 'right', fontSize: 13 }}>
                 <Col>
                     {`选择了 ${selectedRowKeys.length} 条资源权限 `}
-                        <Popconfirm title={'确定要删除选中的资源权限?'} placement="bottomRight" onConfirm={handleDeleteItems}>
-                    <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
+                    <Popconfirm title={'确定要删除选中的资源权限?'} placement="bottomRight" onConfirm={handleDeleteItems}>
+                        <AuthButton auth={env.resourceRemove} userAuth={userAuth} type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</AuthButton>
                     </Popconfirm>
                 </Col>
                 </Row>
@@ -139,4 +144,4 @@ const Resource = ({ location, dispatch, resource, loading }) => {
     )
 }
 
-export default connect(({ resource, loading }) => ({ resource, loading }))(Resource)
+export default connect(({ app, resource, loading }) => ({ app, resource, loading }))(Resource)

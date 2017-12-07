@@ -3,13 +3,16 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { Row, Col, Button, Popconfirm } from 'antd'
+import { AuthButton } from '../../../components/Auth'
+import { env } from '../../../utils'
 import List from './List'
 import Filter from './Filter'
 import InfoModal from './Modal'
 
-const Role = ({ location, dispatch, role, resource, loading }) => {
+const Role = ({ location, dispatch, app, role, resource, loading }) => {
     const { list, pagination, currentItem, modalVisible, modalType, selectedRowKeys } = role
     const resourceList = resource.list
+    const { userAuth } = app
     const { pageSize } = pagination
 
     const modalProps = {
@@ -45,6 +48,7 @@ const Role = ({ location, dispatch, role, resource, loading }) => {
         loading: loading.effects['role/query'],
         pagination,
         location,
+        userAuth,
         onChange (page) {
             const { query, pathname } = location
             dispatch(routerRedux.push({
@@ -85,6 +89,7 @@ const Role = ({ location, dispatch, role, resource, loading }) => {
     }
 
     const filterProps = {
+        userAuth,
         filter: {
             ...location.query,
         },
@@ -125,8 +130,8 @@ const Role = ({ location, dispatch, role, resource, loading }) => {
                 <Row style={{ marginBottom: 18, textAlign: 'right', fontSize: 13 }}>
                 <Col>
                     {`选择了 ${selectedRowKeys.length} 条角色 `}
-                        <Popconfirm title={'确定要删除选中的角色?'} placement="bottomRight" onConfirm={handleDeleteItems}>
-                    <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
+                    <Popconfirm title={'确定要删除选中的角色?'} placement="bottomRight" onConfirm={handleDeleteItems}>
+                        <AuthButton auth={env.roleRemove} userAuth={userAuth} type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</AuthButton>
                     </Popconfirm>
                 </Col>
                 </Row>
@@ -137,4 +142,4 @@ const Role = ({ location, dispatch, role, resource, loading }) => {
     )
 }
 
-export default connect(({ role, resource, loading }) => ({ role, resource, loading }))(Role)
+export default connect(({ app, role, resource, loading }) => ({ app, role, resource, loading }))(Role)

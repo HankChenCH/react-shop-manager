@@ -120,7 +120,7 @@ const BuyNowTable = ({ item, userAuth, onDeleteItem, onShowTicketList, ...tableP
       title: '操作',
       key: 'operation',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
+        return <AuthDropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
       },
     }
   ]

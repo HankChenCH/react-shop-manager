@@ -66,7 +66,7 @@ const List = ({ userAuth, currentItem, onShowEidt, onChangeItemStock, onUpdateIt
       title: '商品名',
       dataIndex: 'name',
       key: 'title',
-      width: '50%',
+      width: '40%',
       render: (text, record) => canDetail ? <Link to={`product/${record.id}`}>{text}</Link> : text,
     }, {
       title: '单价',

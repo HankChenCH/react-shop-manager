@@ -3,14 +3,17 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { Row, Col, Button, Popconfirm } from 'antd'
+import { AuthButton } from '../../components/Auth'
+import { env } from '../../utils'
 import List from './List'
 import Filter from './Filter'
 import InfoModal from './Modal'
 import AllotModal from './AllotModal'
 
-const Group = ({ location, dispatch, admin, group, loading }) => {
+const Group = ({ location, dispatch, app, admin, group, loading }) => {
   const { list, pagination, currentItem, modalVisible, modalType, allotModalVisible, selectedRowKeys } = group
   const adminList = admin.list
+  const { userAuth } = app
   const { pageSize } = pagination
 
   const modalProps = {
@@ -61,6 +64,7 @@ const Group = ({ location, dispatch, admin, group, loading }) => {
     loading: loading.effects['group/query'],
     pagination,
     location,
+    userAuth,
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -110,6 +114,7 @@ const Group = ({ location, dispatch, admin, group, loading }) => {
   }
 
   const filterProps = {
+    userAuth,
     filter: {
       ...location.query,
     },
@@ -162,7 +167,7 @@ const Group = ({ location, dispatch, admin, group, loading }) => {
              <Col>
                {`选择了 ${selectedRowKeys.length} 个群组 `}
                <Popconfirm title={'确定要删除这些群组吗?'} placement="left" onConfirm={handleDeleteItems}>
-                 <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
+                 <AuthButton auth={env.groupRemove} userAuth={userAuth} type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</AuthButton>
                </Popconfirm>
              </Col>
            </Row>
@@ -175,6 +180,7 @@ const Group = ({ location, dispatch, admin, group, loading }) => {
 }
 
 Group.propTypes = {
+  app: PropTypes.object,
   admin: PropTypes.object,
   group: PropTypes.object,
   location: PropTypes.object,
@@ -182,4 +188,4 @@ Group.propTypes = {
   loading: PropTypes.object,
 }
 
-export default connect(({ admin, group, loading }) => ({ admin, group, loading }))(Group)
+export default connect(({ app, admin, group, loading }) => ({ app, admin, group, loading }))(Group)

@@ -3,11 +3,13 @@ import PropTypes from 'prop-types'
 import { Table, Modal, Icon } from 'antd'
 import styles from './List.less'
 import classnames from 'classnames'
-import { DropOption } from '../../../components'
+import { AuthDropOption } from '../../../components/Auth'
+import { env, getDropdownMenuOptions } from '../../../utils'
+import Mention from 'antd/lib/mention';
 
 const confirm = Modal.confirm
 
-const List = ({ onManagerItem, onDeleteItem, onEditItem, ...tableProps }) => {
+const List = ({ onManagerItem, onDeleteItem, onEditItem, userAuth, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if(e.key === '2') {
       onEditItem(record)
@@ -20,6 +22,8 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, ...tableProps }) => {
       })
     }
   }
+
+  const menuOptions = getDropdownMenuOptions([{ key: '2', name: '更新', auth: env.roleUpdate }, { key: '3', name: '删除', auth: env.roleRemove }], userAuth)
 
   const columns = [
     {
@@ -35,7 +39,7 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, ...tableProps }) => {
       key: 'operation',
       width: 100,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
+        return <AuthDropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
       },
     },
   ]

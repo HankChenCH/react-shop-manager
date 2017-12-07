@@ -2,14 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal, Icon } from 'antd'
 import classnames from 'classnames'
-import { DropOption } from '../../../components'
-import { Enum } from '../../../utils'
+import { AuthDropOption } from '../../../components/Auth'
+import { Enum, env, getDropdownMenuOptions } from '../../../utils'
 import styles from './List.less'
 
 const confirm = Modal.confirm
 const { EnumPermissionType, EnumResourceType } = Enum
 
-const List = ({ onManagerItem, onDeleteItem, onEditItem, ...tableProps }) => {
+const List = ({ onManagerItem, onDeleteItem, onEditItem, userAuth, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if(e.key === '2') {
       onEditItem(record)
@@ -32,6 +32,8 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, ...tableProps }) => {
   resourceType[EnumResourceType.View] = '视图'
   resourceType[EnumResourceType.Data] = '数据'
 
+  const menuOptions = getDropdownMenuOptions([{ key: '2', name: '更新', auth: env.resourceUpdate }, { key: '3', name: '删除', auth: env.resourceRemove }], userAuth)
+
   const columns = [
     {
       title: '资源权限',
@@ -43,7 +45,7 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, ...tableProps }) => {
       key: 'operation',
       width: 100,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
+        return <AuthDropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
       },
     },
   ]

@@ -52,7 +52,7 @@ module.exports = {
     groupCreate: 'createGroup',
     groupUpdate: 'updateGroup',
     groupRemove: 'removeGroup',
-    groupAllot: 'AllotGroup',
+    groupAllot: 'allotGroup',
     roleList: 'roleList',
     roleCreate: 'createRole',
     roleUpdate: 'updateRole',

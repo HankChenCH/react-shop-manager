@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { FilterItem } from '../../components'
 import { Form, Button, Row, Col, DatePicker, Input, Cascader, Switch } from 'antd'
-import city from '../../utils/city'
+import { AuthButton } from '../../components/Auth'
+import { env } from '../../utils'
 
 const Search = Input.Search
 const { RangePicker } = DatePicker
@@ -24,6 +25,7 @@ const TwoColProps = {
 const Filter = ({
   onAdd,
   onFilterChange,
+  userAuth,
   filter,
   form: {
     getFieldDecorator,
@@ -93,7 +95,7 @@ const Filter = ({
           <div>
             <Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>搜索</Button>
             <Button size="large" className="margin-right" onClick={handleReset}>刷新</Button>
-            <Button size="large" type="ghost" onClick={onAdd}>创建</Button>
+            <AuthButton auth={env.groupCreate} userAuth={userAuth} size="large" type="ghost" onClick={onAdd}>创建</AuthButton>
           </div>
         </div>
       </Col>
@@ -103,8 +105,6 @@ const Filter = ({
 
 Filter.propTypes = {
   onAdd: PropTypes.func,
-  isMotion: PropTypes.bool,
-  switchIsMotion: PropTypes.func,
   form: PropTypes.object,
   filter: PropTypes.object,
   onFilterChange: PropTypes.func,

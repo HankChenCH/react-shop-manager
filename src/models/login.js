@@ -23,6 +23,7 @@ export default {
         yield localStorage.setItem(`${prefix}admin`, JSON.stringify(admin))
         const from = queryURL('from')
         yield put({ type: 'app/registerUser', payload: admin })
+        yield put({ type: 'app/fetchUserAuth', payload: { reload: true } })
         if (from) {
           yield put(routerRedux.push(from))
         } else {

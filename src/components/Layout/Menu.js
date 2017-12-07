@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { Menu, Icon } from 'antd'
 import { Link } from 'dva/router'
 import pathToRegexp from 'path-to-regexp'
-import { AuthSubMenu, AuthMenuItem } from '../WrapAuth'
-import { arrayToTree, queryArray } from '../../utils'
+import { AuthSubMenu, AuthMenuItem } from '../Auth'
+import { arrayToTree, queryArray, getAuth } from '../../utils'
 
 const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys, changeOpenKeys, menu, userAuth }) => {
   // 生成树状
@@ -28,7 +28,7 @@ const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys
               {(!siderFoldN || menuTree.indexOf(item) < 0) && item.name}
             </span>}
           >
-            {getMenus(item.children, siderFoldN)}
+            {getAuth(item.auth, userAuth) && getMenus(item.children, siderFoldN)}
           </AuthSubMenu>
         )
       }
@@ -118,7 +118,7 @@ const Menus = ({ siderFold, darkTheme, location, handleClickNavMenu, navOpenKeys
       onClick={handleClickNavMenu}
       defaultSelectedKeys={defaultSelectedKeys}
     >
-      {menuItems}
+        {menuItems}
     </Menu>
   )
 }

@@ -77,12 +77,13 @@ class InfoModal extends React.Component
 
         if (resource_type === '1') {
             const envArr = lodash.values(env)
+            const envKeys = Object.keys(env)
             descriptionDom = (
                 <Select
                     showSearch
                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
-                    {envArr.map((item,key) => <Option key={key} value={item}>{item}</Option>)}
+                    {envKeys.map((item) => <Option key={item} value={env[item]}>{env[item]}</Option>)}
                 </Select>
             )
         } else {

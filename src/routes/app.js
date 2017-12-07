@@ -20,7 +20,7 @@ const RadioGroup = Radio.Group
 let lastHref
 
 const App = ({ children, location, dispatch, app, chat, loading }) => {
-  const { user, siderFold, notificationCount, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys } = app
+  const { user, userAuth, siderFold, notificationCount, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys } = app
   const { chatMessage, chatRoomVisible, currentChatKey, currentChat, onlineMembers } = chat
   const href = window.location.href
 
@@ -35,7 +35,7 @@ const App = ({ children, location, dispatch, app, chat, loading }) => {
   const headerProps = {
     menu,
     user,
-    userAuth: user.view,
+    userAuth,
     siderFold,
     location,
     isNavbar,
@@ -62,7 +62,7 @@ const App = ({ children, location, dispatch, app, chat, loading }) => {
 
   const siderProps = {
     menu,
-    userAuth: user.view,
+    userAuth,
     siderFold,
     darkTheme,
     location,

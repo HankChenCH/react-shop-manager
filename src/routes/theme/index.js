@@ -3,13 +3,15 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { Row, Col, Button, Popconfirm } from 'antd'
+import { AuthButton } from '../../components/Auth'
+import { env } from '../../utils'
 import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
 import ManagerModal from '../components/ManagerModal/'
 
 const Theme = ({ location, dispatch, app, theme, loading }) => {
-  const { productAll } = app
+  const { productAll, userAuth } = app
   const { list, pagination, currentItem, modalVisible, managerModalVisible, currentProductKeyList, modalType, selectedRowKeys, layoutVisible, layoutList } = theme
   const { pageSize } = pagination
 
@@ -73,6 +75,7 @@ const Theme = ({ location, dispatch, app, theme, loading }) => {
     layoutVisible,
     pagination,
     location,
+    userAuth,
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -151,6 +154,7 @@ const Theme = ({ location, dispatch, app, theme, loading }) => {
   }
 
   const filterProps = {
+    userAuth,
     filter: {
       ...location.query,
     },
@@ -208,13 +212,13 @@ const Theme = ({ location, dispatch, app, theme, loading }) => {
              <Col>
                {`选择了 ${selectedRowKeys.length} 条主题 `}
                <Popconfirm title={'确定要取消选中的主题的精选推荐?'} placement="bottomRight" onConfirm={handleDeleteItems}>
-                 <Button type="ghost" size="small" style={{ marginLeft: 8 }}>批量取消精选</Button>
+                 <AuthButton auth={env.themeOnOff} userAuth={userAuth} type="ghost" size="small" style={{ marginLeft: 8 }}>批量取消精选</AuthButton>
                </Popconfirm>
                <Popconfirm title={'确定要推荐选中的主题为精选?'} placement="bottomRight" onConfirm={handleDeleteItems}>
-                 <Button type="ghost" size="small" style={{ marginLeft: 8 }}>批量推荐精选</Button>
+                <AuthButton auth={env.themeOnOff} userAuth={userAuth} type="ghost" size="small" style={{ marginLeft: 8 }}>批量推荐精选</AuthButton>
                </Popconfirm>
                <Popconfirm title={'确定要删除选中的主题?'} placement="bottomRight" onConfirm={handleDeleteItems}>
-                 <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
+                 <AuthButton auth={env.themeRemove} userAuth={userAuth} type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</AuthButton>
                </Popconfirm>
              </Col>
            </Row>

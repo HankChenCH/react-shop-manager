@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import styles from './List.less'
 import classnames from 'classnames'
-import AnimTableBody from '../../components/DataTable/AnimTableBody'
-import { DropOption } from '../../components'
 import { Link } from 'dva/router'
+import { AuthButton, AuthDropOption } from '../../components/Auth'
+import { env, getDropdownMenuOptions } from '../../utils'
 
 const confirm = Modal.confirm
 
-const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps }) => {
+const List = ({ userAuth, onManagerItem, onDeleteItem, onEditItem, location, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onManagerItem(record)
@@ -24,6 +24,8 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
       })
     }
   }
+
+  const menuOptions = getDropdownMenuOptions([{ key: '1', name: '商品管理', auth: env.categoryManagerProduct }, { key: '2', name: '更新', auth: env.categoryUpdate }, { key: '3', name: '删除', auth: env.categoryRemove }], userAuth)
 
   const columns = [
     {
@@ -49,7 +51,7 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, location, ...tableProps
       key: 'operation',
       width: 100,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '商品管理' }, { key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
+        return <AuthDropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
       },
     },
   ]

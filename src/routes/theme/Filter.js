@@ -2,8 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { FilterItem } from '../../components'
+import { AuthButton } from '../../components/Auth'
+import { env } from '../../utils'
 import { Form, Button, Row, Col, DatePicker, Input, Cascader, Switch } from 'antd'
-import city from '../../utils/city'
 
 const Search = Input.Search
 const { RangePicker } = DatePicker
@@ -23,6 +24,7 @@ const TwoColProps = {
 
 const Filter = ({
   onAdd,
+  userAuth,
   onShowLayout,
   switchIsMotion,
   onFilterChange,
@@ -79,8 +81,8 @@ const Filter = ({
         <div >
           {/*<Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>搜索</Button>
           <Button size="large" className="margin-right" onClick={handleReset}>重置搜索</Button>*/}
-          <Button className="margin-right"  size="large" type="ghost" onClick={onAdd}>创建主题</Button>
-          <Button size="large" type="ghost" onClick={onShowLayout}>排序布局</Button>
+          <AuthButton auth={env.themeCreate} userAuth={userAuth} className="margin-right"  size="large" type="ghost" onClick={onAdd}>创建主题</AuthButton>
+          <AuthButton auth={env.themeRank} userAuth={userAuth} size="large" type="ghost" onClick={onShowLayout}>排序布局</AuthButton>
         </div>
       </Col>
     </Row>
@@ -89,8 +91,6 @@ const Filter = ({
 
 Filter.propTypes = {
   onAdd: PropTypes.func,
-  isMotion: PropTypes.bool,
-  switchIsMotion: PropTypes.func,
   form: PropTypes.object,
   filter: PropTypes.object,
   onFilterChange: PropTypes.func,

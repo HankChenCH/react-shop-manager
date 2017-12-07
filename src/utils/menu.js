@@ -123,7 +123,7 @@ module.exports = [
     bpid: 64,
     mpid: 64,
     name: '角色管理',
-    auth: env.roleAuth,
+    auth: env.roleList,
     router: '/setting/permission/role',
   },
   {

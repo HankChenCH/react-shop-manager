@@ -7,15 +7,17 @@ import DeliveryModal from './DeliveryModal'
 import ModalForm from './ModalForm'
 import { routerRedux } from 'dva/router'
 import List from './List'
-import { Enum } from '../../utils'
+import { AuthButton } from '../../components/Auth'
+import { env, Enum } from '../../utils'
 
 const TabPane = Tabs.TabPane
 
 const { EnumOrderStatus } = Enum
 
-const Index = ({ order, express, dispatch, loading, location }) => {
+const Order = ({ app, order, express, dispatch, loading, location }) => {
   const { list, pagination, selectedRowKeys, currentItem, modalType, modalVisible, priceModalVisible, deliveryModalVisible, queryStatus } = order
   const expresses = express.list
+  const { userAuth } = app
   const { query = {}, pathname } = location
 
   const listProps = {
@@ -23,6 +25,7 @@ const Index = ({ order, express, dispatch, loading, location }) => {
     pagination,
     express: expresses,
     dataSource: list,
+    userAuth,
     loading: loading.effects['order/query'],
     onChange (page) {
       dispatch(routerRedux.push({
@@ -148,10 +151,10 @@ const Index = ({ order, express, dispatch, loading, location }) => {
                 <Col>
                   {`选中了 ${selectedRowKeys.length} 条订单 `}
                   <Popconfirm title={'确定关闭选中的订单？'} placement="bottomRight" onConfirm={handleCloseItems}>
-                    <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量关闭</Button>
+                    <AuthButton auth={env.orderClose} userAuth={userAuth} type="danger" size="small" style={{ marginLeft: 8 }}>批量关闭</AuthButton>
                   </Popconfirm>
                   <Popconfirm title={'确定删除选中的订单？'} placement="bottomRight" onConfirm={handleDeleteItems}>
-                    <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
+                    <AuthButton auth={env.orderRemove} userAuth={userAuth} type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</AuthButton>
                   </Popconfirm>
                 </Col>
               </Row>
@@ -170,11 +173,12 @@ const Index = ({ order, express, dispatch, loading, location }) => {
   )
 }
 
-Index.propTypes = {
+Order.propTypes = {
+  app: PropTypes.object,
   order: PropTypes.object,
   loading: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
 }
 
-export default connect(({ order, express, loading }) => ({ order, express, loading }))(Index)
+export default connect(({ app, order, express, loading }) => ({ app, order, express, loading }))(Order)

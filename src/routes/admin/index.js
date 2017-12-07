@@ -2,13 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { Row, Col, Button, Popconfirm } from 'antd'
+import { Row, Col, Popconfirm } from 'antd'
+import { AuthButton } from '../../components/Auth'
 import List from './List'
 import Filter from './Filter'
 import InfoModal from './Modal'
 import AuthModal from './AuthModal'
+import { env } from '../../utils'
 
-const Admin = ({ location, dispatch, admin, role, loading }) => {
+const Admin = ({ app, location, dispatch, admin, role, loading }) => {
+  const { userAuth } = app
   const { list, pagination, currentItem, modalVisible, modalType, authModalVisible, selectedRowKeys } = admin
   const roleList = role.list
   const { pageSize } = pagination
@@ -61,6 +64,7 @@ const Admin = ({ location, dispatch, admin, role, loading }) => {
     loading: loading.effects['admin/query'],
     pagination,
     location,
+    userAuth,
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -122,6 +126,7 @@ const Admin = ({ location, dispatch, admin, role, loading }) => {
     filter: {
       ...location.query,
     },
+    userAuth,
     onFilterChange (value) {
       dispatch(routerRedux.push({
         pathname: location.pathname,
@@ -191,13 +196,13 @@ const Admin = ({ location, dispatch, admin, role, loading }) => {
              <Col>
                {`选择了 ${selectedRowKeys.length} 个管理员 `}
                <Popconfirm title={'确定启用选中的商品？'} placement="bottomLeft" onConfirm={handlePullOnItems}>
-                 <Button size="small" style={{ marginLeft: 8 }}>批量启用</Button>
+                <AuthButton auth={env.adminStatus} userAuth={userAuth} size="small" style={{ marginLeft: 8 }}>批量启用</AuthButton>
                </Popconfirm>
                <Popconfirm title={'确定禁用选中的商品？'} placement="bottom" onConfirm={handlePullOffItems}>
-                 <Button size="small" style={{ marginLeft: 8 }}>批量禁用</Button>
+                <AuthButton auth={env.adminStatus} userAuth={userAuth} size="small" style={{ marginLeft: 8 }}>批量禁用</AuthButton>
                </Popconfirm>
                <Popconfirm title={'确定要删除这些管理员吗?'} placement="left" onConfirm={handleDeleteItems}>
-                 <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
+                <AuthButton auth={env.adminRemove} userAuth={userAuth} type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</AuthButton>
                </Popconfirm>
              </Col>
            </Row>
@@ -216,4 +221,4 @@ Admin.propTypes = {
   loading: PropTypes.object,
 }
 
-export default connect(({ admin, role, loading }) => ({ admin, role, loading }))(Admin)
+export default connect(({ app, admin, role, loading }) => ({ app, admin, role, loading }))(Admin)

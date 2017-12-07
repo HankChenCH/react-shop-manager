@@ -3,13 +3,15 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { Row, Col, Button, Popconfirm } from 'antd'
+import { env } from '../../utils'
+import { AuthButton } from '../../components/Auth'
 import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
 import ManagerModal from '../components/ManagerModal/'
 
 const Category = ({ location, dispatch, app, category, loading }) => {
-  const { productAll } = app
+  const { productAll, userAuth } = app
   const { list, pagination, currentItem, modalVisible, managerModalVisible, currentProductKeyList, modalType, selectedRowKeys, uploadTempItem } = category
   const { pageSize } = pagination
 
@@ -72,6 +74,7 @@ const Category = ({ location, dispatch, app, category, loading }) => {
     loading: loading.effects['category/query'],
     pagination,
     location,
+    userAuth,
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -120,6 +123,7 @@ const Category = ({ location, dispatch, app, category, loading }) => {
   }
 
   const filterProps = {
+    userAuth,
     filter: {
       ...location.query,
     },
@@ -172,7 +176,7 @@ const Category = ({ location, dispatch, app, category, loading }) => {
              <Col>
                {`选择了 ${selectedRowKeys.length} 条分类 `}
                <Popconfirm title={'确定要删除选中的分类?'} placement="bottomRight" onConfirm={handleDeleteItems}>
-                 <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
+                 <AuthButton auth={env.categoryRemove} userAuth={userAuth} type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</AuthButton>
                </Popconfirm>
              </Col>
            </Row>

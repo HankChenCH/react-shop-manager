@@ -16,6 +16,7 @@ export default modelExtend(model, {
   namespace: 'app',
   state: {
     user: {},
+    userAuth: [],
     productAll: [],
     menuPopoverVisible: false,
     siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
@@ -41,11 +42,10 @@ export default modelExtend(model, {
         }, 300)
       }
 
-      dispatch({ type: 'fetchUserFromLocal' })
-
+      
       history.listen(location => {
         if (location.pathname !== '/login') {
-          dispatch({ type: 'checkTokenExpire' })
+          dispatch({ type: 'checkUserInfo' })
           dispatch({ type: 'queryProduct' })
         }
       })
@@ -88,7 +88,7 @@ export default modelExtend(model, {
 
     *queryProduct ({ payload }, { call, put, select }) {
         const { productAll } = yield select(({ app }) => app)
-        if (productAll.length === 0) {
+        if (productAll.length === 0 || payload.reload) {
           const res = yield call(queryProductAll, payload)
           if (res.success) {
             let productAll = res.data.map((item) => {return { key: item.id.toString(), title: item.name, main_img_url: item.main_img_url }})
@@ -99,9 +99,27 @@ export default modelExtend(model, {
         }
     },
 
-    *fetchUserFromLocal({ payload }, { put }) {
-      const userLocal = JSON.parse(localStorage.getItem(`${prefix}admin`))
-      yield put({ type: 'registerUser', payload: userLocal })
+    *checkUserInfo({ payload }, { put, call, select }) {
+      const { user } = yield (select(_ => _.app))
+
+      if (!user.exprie_in) {
+        const userLocal = yield JSON.parse(localStorage.getItem(`${prefix}admin`))
+        yield put({ type: 'registerUser', payload: userLocal })
+      } 
+
+      yield put({ type: 'checkTokenExpire' })
+      yield put({ type: 'fetchUserAuth' })
+    },
+
+    *fetchUserAuth({ payload }, { call, put, select }) {
+      const { userAuth } = yield select(({ app }) => app)
+      if (userAuth.length === 0 || payload.reload) {
+        const res = yield call(queryMy);
+        if (res.success) {
+          const view = res.data[EnumResourceType.View] || []
+          yield put({ type: 'injectUserAuth', payload: view })
+        }
+      }
     },
 
     *checkTokenExpire ({
@@ -110,7 +128,7 @@ export default modelExtend(model, {
       const { user } = yield(select(_=>_.app))
       let nowTime = Date.parse(new Date()) / 1000;
       //过期时间为空或状态不是登录中代表没有登录，直接返回登录页面
-      if (!user || !user.exprie_in || user.status !== EnumAdminStatus.LOGIN) {
+      if (!user.exprie_in || user.status !== EnumAdminStatus.LOGIN) {
         yield put({ type: 'logoutSuccess' })        
       }
       //过期时间比现在相差小于10分钟就重新申请令牌
@@ -134,8 +152,9 @@ export default modelExtend(model, {
       const { user } = yield select((_) => _.app)
       const res = yield call(reToken, {});
       if (res.success && res.data) {
-        localStorage.setItem(`${prefix}admin`, JSON.stringify({ ...res.data, login_name: user.login_name, status: user.status }))
+        yield localStorage.setItem(`${prefix}admin`, JSON.stringify({ ...res.data, login_name: user.login_name, status: user.status }))
         yield put({ type: 'registerUser', payload: res.data })
+        yield put({ type: 'fetchUserAuth' })
       }
     },
 
@@ -190,22 +209,16 @@ export default modelExtend(model, {
       }
     },
 
-    *registerUser ({ payload }, { put, call }) {
+    *registerUser ({ payload }, { put }) {
       const tokenPayload = payload.token.split('.')[1]
       const userInfo = JSON.parse(Base64.decode(tokenPayload))
       const user = { 
         exprie_in: userInfo.exp, 
         login_name: payload.login_name, 
         status: payload.status,
-        view: [],       
         ...userInfo.user,        
       }
       yield put({ type: 'updateState', payload: { user } })
-      const res = yield call(queryMy);
-      if (res.success) {
-        const view = res.data[EnumResourceType.View] || []
-        yield put({ type: 'injectUserPermission', payload: view })
-      }
     },
 
     *addNoticeCount ({ payload }, { put, select }) {
@@ -332,12 +345,10 @@ export default modelExtend(model, {
       }
     },
 
-    injectUserPermission(state, { payload }) {
-      const { user } = state
-      const newModelUser = { ...user, view: payload }
+    injectUserAuth(state, { payload }) {
       return {
         ...state,
-        user: newModelUser
+        userAuth: payload
       }
     }
 

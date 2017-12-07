@@ -160,6 +160,10 @@ const getAuth = (permission, userAuth) => {
   return false
 }
 
+const getDropdownMenuOptions = (menuOptions, userAuth) => {
+  return menuOptions.filter( item => getAuth(item.auth, userAuth) || !hasProp(item, 'auth'))
+}
+
 module.exports = {
   config,
   particlesConfig,
@@ -177,5 +181,6 @@ module.exports = {
   hasProp,
   sleep,
   queryObjToString,
-  getAuth 
+  getAuth,
+  getDropdownMenuOptions
 }

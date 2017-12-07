@@ -2,15 +2,15 @@ import React from 'react'
 import { Link } from 'dva/router'
 import { Table, Modal } from 'antd'
 import moment from 'moment'
-import { Enum } from '../../utils'
-import { DropOption } from '../../components'
+import { AuthDropOption } from '../../components/Auth'
+import { Enum, env, getDropdownMenuOptions, getAuth } from '../../utils'
 import styles from './List.less'
 
 const confirm = Modal.confirm
 const warning = Modal.warning
 const { EnumOrderStatus } = Enum
 
-const List = ({ queryStatus, express, onChangeItemPrice, onDeleteItem, onCloseItem, onDeliveryItem, onIssueItem, ...tableProps }) => {
+const List = ({ userAuth, queryStatus, express, onChangeItemPrice, onDeleteItem, onCloseItem, onDeliveryItem, onIssueItem, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     switch (e.key) {
       case '1':
@@ -50,26 +50,28 @@ const List = ({ queryStatus, express, onChangeItemPrice, onDeleteItem, onCloseIt
     const menu = []
     switch (queryStatus){
       case EnumOrderStatus.UNPAY:
-          menu.push({ key: '1', name: '订单改价' }) 
-          menu.push({ key: '2', name: '关闭订单' }) 
-          menu.push({ key: '3', name: '删除订单' }) 
+          menu.push({ key: '1', name: '订单改价', auth: env.orderPrice }) 
+          menu.push({ key: '2', name: '关闭订单', auth: env.orderClose }) 
+          menu.push({ key: '3', name: '删除订单', auth: env.orderRemove }) 
         break
       case EnumOrderStatus.UNDELIVERY:
           if (record.type === '2') {
-            menu.push({ key: '5', name: '订单出票' }) 
+            menu.push({ key: '5', name: '订单出票', auth: env.orderIssue }) 
           } else {
-            menu.push({ key: '4', name: '订单发货' }) 
+            menu.push({ key: '4', name: '订单发货', auth: env.orderDelivery }) 
           }
         break
     }
     return menu
   }
 
+  const canDetail = getAuth(env.orderDetail, userAuth)
+
   const columns = [
     {
       title: '订单号',
       dataIndex: 'order_no',
-      render: (text, record) => <Link to={`/order/${record.id}`}>{text}</Link>
+      render: (text, record) => canDetail ? <Link to={`/order/${record.id}`}>{text}</Link> : text
     }, {
       title: '用户',
       dataIndex: 'user.nickname',
@@ -103,8 +105,9 @@ const List = ({ queryStatus, express, onChangeItemPrice, onDeleteItem, onCloseIt
     title: '操作',
     dataIndex: 'opteration',
     render: (text, record) => {
-      let menuOptions = renderMenuByStatus(record)
-      return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
+      const menuOptions = renderMenuByStatus(record)
+      const authMenuOptions = getDropdownMenuOptions(menuOptions, userAuth)
+      return <AuthDropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={authMenuOptions} />
     }
   })
 

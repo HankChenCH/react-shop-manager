@@ -1,15 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Modal, Switch } from 'antd'
-import styles from './List.less'
+import { Table, Modal, Switch, Icon } from 'antd'
 import classnames from 'classnames'
-import AnimTableBody from '../../components/DataTable/AnimTableBody'
-import { DropOption } from '../../components'
+import { AuthDropOption, AuthSwtich } from '../../components/Auth'
 import { Link } from 'dva/router'
+import { env, getDropdownMenuOptions } from '../../utils'
+import styles from './List.less'
+
 
 const confirm = Modal.confirm
 
-const List = ({ onAuthItem, onDeleteItem, onEditItem, onAbleItem, location, ...tableProps }) => {
+const List = ({ userAuth, onAuthItem, onDeleteItem, onEditItem, onAbleItem, location, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onAuthItem(record)
@@ -28,6 +29,8 @@ const List = ({ onAuthItem, onDeleteItem, onEditItem, onAbleItem, location, ...t
   const handleSwitchChange = (record, checked) => {
     onAbleItem(record.id, checked)
   }
+
+  const menuOptions = getDropdownMenuOptions([{ key: '1', name: '授权', auth: env.adminAuth }, { key: '2', name: '更新', auth: env.adminUpdate }, { key: '3', name: '删除', auth: env.adminRemove }], userAuth)
 
   const columns = [
     {
@@ -51,7 +54,7 @@ const List = ({ onAuthItem, onDeleteItem, onEditItem, onAbleItem, location, ...t
       title: '启用',
       dataIndex: 'state',
       key: 'state',
-      render: (text, record) => <Switch checked={text === '1' ? true : false} checkedChildren="禁用" unCheckedChildren="启用" onChange={checked => handleSwitchChange(record, checked)}/>,
+      render: (text, record) => <AuthSwtich auth={env.adminStatus} userAuth={userAuth} unAuthType="disabled" checked={text === '1' ? true : false} checkedChildren="禁用" unCheckedChildren="启用" onChange={checked => handleSwitchChange(record, checked)}/>,
     }, {
       title: '创建时间',
       dataIndex: 'create_time',
@@ -61,7 +64,7 @@ const List = ({ onAuthItem, onDeleteItem, onEditItem, onAbleItem, location, ...t
       key: 'operation',
       width: 100,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '授权' }, { key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
+        return <AuthDropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
       },
     },
   ]

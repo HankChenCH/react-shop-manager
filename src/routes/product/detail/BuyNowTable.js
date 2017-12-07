@@ -3,13 +3,14 @@ import PropTypes from 'prop-types'
 import { Table, Modal, Switch, InputNumber, Row, Col } from 'antd'
 import styles from './BuyNowTable.less'
 import classnames from 'classnames'
-import { DropOption } from '../../../components'
+import { AuthButton, AuthDropOption } from '../../../components/Auth'
+import { env, getDropdownMenuOptions } from '../../../utils'
 import { Link } from 'dva/router'
 
 const confirm = Modal.confirm
 const info = Modal.info
 
-const BuyNowTable = ({ item, onDeleteItem, onShowTicketList, ...tableProps }) => {
+const BuyNowTable = ({ item, userAuth, onDeleteItem, onShowTicketList, ...tableProps }) => {
 
   const handleMenuClick = (record, e) => {
     if (e.key === '3') {
@@ -28,16 +29,19 @@ const BuyNowTable = ({ item, onDeleteItem, onShowTicketList, ...tableProps }) =>
     }
   }
 
-  const menuOptions = [{ 
+  const menuOptions = getDropdownMenuOptions([{ 
       key: '1',
-      name: '页面路径' 
+      name: '页面路径',
+      auth: env.productBuyNowWeapp
     }, { 
       key: '2',
-      name: '出票列表'
+      name: '出票列表',
+      auth: env.productBuyNowTicket,
     }, { 
       key: '3',
-      name: '删除'
-  }]
+      name: '删除',
+      auth: env.productBuyNowRemove
+  }], userAuth)
 
   const columns = document.body.clientWidth < 769 ? 
   [
@@ -77,7 +81,7 @@ const BuyNowTable = ({ item, onDeleteItem, onShowTicketList, ...tableProps }) =>
       title: '操作',
       key: 'operation',
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
+        return <AuthDropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
       },
     }
   ] :  

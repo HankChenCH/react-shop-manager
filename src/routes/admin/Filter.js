@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { FilterItem } from '../../components'
+import { FilterItem, Auth } from '../../components'
 import { Form, Button, Row, Col, DatePicker, Input, Cascader, Switch } from 'antd'
-import city from '../../utils/city'
+import { env } from '../../utils'
 
 const Search = Input.Search
 const { RangePicker } = DatePicker
+const { AuthButton } = Auth
 
 const ColProps = {
   xs: 24,
@@ -25,6 +26,7 @@ const Filter = ({
   onAdd,
   onFilterChange,
   filter,
+  userAuth,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -81,16 +83,6 @@ const Filter = ({
       <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
         {getFieldDecorator('name', { initialValue: name })(<Search placeholder="搜索真实姓名" size="large" onSearch={handleSubmit} />)}
       </Col>
-      {/*<Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('address', { initialValue: address })(
-          <Cascader
-            size="large"
-            style={{ width: '100%' }}
-            options={city}
-            placeholder="Please pick an address"
-            onChange={handleChange.bind(null, 'address')}
-          />)}
-      </Col>*/}
       <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
         <FilterItem label="创建时间">
           {getFieldDecorator('createTime', { initialValue: initialCreateTime })(
@@ -103,7 +95,7 @@ const Filter = ({
           <div>
             <Button type="primary" size="large" className="margin-right" onClick={handleSubmit}>搜索</Button>
             <Button size="large" className="margin-right" onClick={handleReset}>刷新</Button>
-            <Button size="large" type="ghost" onClick={onAdd}>创建</Button>
+            <AuthButton size="large" type="ghost" onClick={onAdd} auth={env.adminCreate} userAuth={userAuth}>创建</AuthButton>
           </div>
         </div>
       </Col>

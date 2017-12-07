@@ -3,14 +3,14 @@ import PropTypes from 'prop-types'
 import { Table, Modal, Switch, InputNumber } from 'antd'
 import styles from './List.less'
 import classnames from 'classnames'
-import { config } from '../../utils'
-import { DropOption } from '../../components'
+import { AuthDropOption, AuthSwtich } from '../../components/Auth'
+import { env, config, getDropdownMenuOptions, getAuth } from '../../utils'
 import { Link } from 'dva/router'
 
 const confirm = Modal.confirm
 const { imgStyle } = config
 
-const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChangeItemPrice, onDeleteItem, onEditItem, onPullShelvesItem, location, ...tableProps }) => {
+const List = ({ userAuth, currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChangeItemPrice, onDeleteItem, onEditItem, onPullShelvesItem, location, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onEditItem(record, e.key)
@@ -50,6 +50,10 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
     }
   }
 
+  const menuOptions = getDropdownMenuOptions([{ key: '1', name: '更新基础信息', auth: env.productUpdateBase }, { key: '2', name: '更新详情信息', auth: env.productUpdateDetail }, { key: '3', name: '更新规格参数', auth: env.productUpdateParams }, { key: '4', name: '删除', auth: env.productRemove }], userAuth)
+
+  const canDetail = getAuth(env.productDetail, userAuth)
+
   const columns = [
     {
       title: '商品图',
@@ -63,13 +67,13 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       dataIndex: 'name',
       key: 'title',
       width: '50%',
-      render: (text, record) => <Link to={`product/${record.id}`}>{text}</Link>,
+      render: (text, record) => canDetail ? <Link to={`product/${record.id}`}>{text}</Link> : text,
     }, {
       title: '单价',
       dataIndex: 'price',
       key: 'price',
       render: (text, record) => {
-        return currentItem.id === record.id ? 
+        return currentItem.id === record.id && getAuth(env.productPriceStock, userAuth) ? 
         <InputNumber
           style={{width: '65px'}} 
           defaultValue={text} 
@@ -87,7 +91,7 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       dataIndex: 'stock',
       key: 'stock',
       render: (text, record) => {
-        return currentItem.id === record.id ? 
+        return currentItem.id === record.id && getAuth(env.productPriceStock, userAuth) ? 
         <InputNumber
           style={{width: '65px'}} 
           defaultValue={text} 
@@ -104,7 +108,7 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       title: '上架',
       dataIndex: 'is_on',
       key: 'is_on',
-      render: (text, record) => <Switch checked={text === '1' ? true : false} checkedChildren="下架" unCheckedChildren="上架" onChange={checked => handleSwitchChange(record, checked)}/>,
+      render: (text, record) => <AuthSwtich auth={env.productOnOff} userAuth={userAuth} unAuthType="disabled" checked={text === '1' ? true : false} checkedChildren="下架" unCheckedChildren="上架" onChange={checked => handleSwitchChange(record, checked)}/>,
     }, {
       title: '创建时间',
       dataIndex: 'create_time',
@@ -115,7 +119,7 @@ const List = ({ currentItem, onShowEidt, onChangeItemStock, onUpdateItem, onChan
       key: 'operation',
       width: 100,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '更新基础信息' }, { key: '2', name: '更新详情信息' }, { key: '3', name: '更新规格参数'}, { key: '4', name: '删除' }]} />
+        return <AuthDropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
       },
     },
   ]

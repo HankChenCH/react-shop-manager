@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Spin, Timeline, Card, Row, Col, Modal } from 'antd'
-import { classnames, Enum, hasProp } from '../../../utils'
-import { DropOption } from '../../../components'
+import { classnames, Enum, hasProp, env, getDropdownMenuOptions } from '../../../utils'
+import { AuthDropOption } from '../../../components/Auth'
 import { ProductCardList } from '../../../components/ProductCardList/'
 import { Comments } from '../../dashboard/components'
 import { OrderTimeLine } from '../components'
@@ -21,9 +21,10 @@ const bodyStyle = {
     },
 }
 
-const Detail = ({ dispatch, express, orderDetail, loading }) => {
+const Detail = ({ dispatch, express, app, orderDetail, loading }) => {
     const { data, modalVisible, modalType } = orderDetail
     const expresses = express.list
+    const { userAuth } = app
 
     const handleMenuClick = (e) => {
         switch (e.key) {
@@ -151,12 +152,12 @@ const Detail = ({ dispatch, express, orderDetail, loading }) => {
         const status = data.status.toString()
         if (status === EnumOrderStatus.UNDELIVERY) {
             if (data.type === '1') {
-                menu.push({ key: '3', name: '订单发货' })
+                menu.push({ key: '3', name: '订单发货', auth: env.orderDelivery })
             } else if (data.type === '2') {
-                menu.push({ key: '4', name: '订单出票' })
+                menu.push({ key: '4', name: '订单出票', auth: env.orderIssue })
             }
         } else if (status === EnumOrderStatus.UNPAY) {
-            menu.push({ key: '1', name: '关闭订单' })
+            menu.push({ key: '1', name: '关闭订单', auth: env.orderClose })
         }
 
         menu.push({ key: '5', name: '返回列表'})
@@ -201,6 +202,9 @@ const Detail = ({ dispatch, express, orderDetail, loading }) => {
         },
     }
 
+    const menuOptions = menuList()
+    const authMenuOptions = getDropdownMenuOptions(menuOptions, userAuth)
+
     return  (
         <div>
             {data.id && 
@@ -212,9 +216,9 @@ const Detail = ({ dispatch, express, orderDetail, loading }) => {
                                     <h2>订单号：{data.order_no}</h2>
                                 </Col>
                                 <Col className={styles.center} style={{ height: '46px' }} lg={2} md={0}>
-                                    <DropOption 
+                                    <AuthDropOption 
                                         onMenuClick={e => handleMenuClick(e)} 
-                                        menuOptions={(menuList)()}
+                                        menuOptions={authMenuOptions}
                                     />
                                 </Col>
                             </Row>
@@ -261,4 +265,4 @@ Detail.propTypes = {
     orderDetail: PropTypes.object.isRequired,
 }
 
-export default connect(({ express, orderDetail, loading }) => ({ express, orderDetail, loading }))(Detail)
+export default connect(({ app, express, orderDetail, loading }) => ({ app, express, orderDetail, loading }))(Detail)

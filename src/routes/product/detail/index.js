@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Row, Col, Tabs, Button, Icon, Spin, Modal, Card, Table } from 'antd'
-import { DropOption } from '../../../components'
+import { AuthButton, AuthDropOption } from '../../../components/Auth'
+import { env, getDropdownMenuOptions } from '../../../utils'
 import { Sales } from '../../dashboard/components'
 import BuyNowTable from './BuyNowTable'
 import { connect } from 'dva'
@@ -13,7 +14,7 @@ const confirm = Modal.confirm
 
 const Detail = ({ app, productDetail, dispatch, loading }) => {
   const { list, pagination, selectedRowKeys, data, ticketList, prevProduct, nextProduct, productSales, modalType, modalVisible } = productDetail
-  const { isNavbar } = app
+  const { isNavbar, userAuth } = app
   const { properties } = data
   
   const backToList = () => {
@@ -112,6 +113,7 @@ const Detail = ({ app, productDetail, dispatch, loading }) => {
     item: data,
     dataSource: list,
     pagination,
+    userAuth,
     onShowTicketList(id) {
       dispatch({
         type: 'productDetail/showTicketModal',
@@ -154,6 +156,8 @@ const Detail = ({ app, productDetail, dispatch, loading }) => {
     }
   }
 
+  const headerMenuOptions = getDropdownMenuOptions([{ key: '1', name: '更新基础信息', auth: env.productUpdateBase }, { key: '3', name: '返回列表' }], userAuth)
+
   return (
     <Spin spinning={loading}>
       <Card>
@@ -163,9 +167,9 @@ const Detail = ({ app, productDetail, dispatch, loading }) => {
               <h2>{data.name}</h2>
             </Col>
             <Col className={styles.center} style={{ height: '46px' }} md={2} xs={6}>
-                <DropOption 
+                <AuthDropOption 
                   onMenuClick={e => handleMenuClick(e)} 
-                  menuOptions={[{ key: '1', name: '更新基础信息' }, { key: '3', name: '返回列表'}]}
+                  menuOptions={headerMenuOptions}
                 />
             </Col>
           </Row>
@@ -193,7 +197,7 @@ const Detail = ({ app, productDetail, dispatch, loading }) => {
             <TabPane tab="商品详情" key="1">
               <Row gutter={8}>
                 <Col span={4}>
-                  <Button onClick={() => handleUpdate('detail')}>更新商品详情</Button>
+                  <AuthButton auth={env.productUpdateDetail} userAuth={userAuth} onClick={() => handleUpdate('detail')}>更新商品详情</AuthButton>
                 </Col>
                 <Col span={24}>
                 {
@@ -207,7 +211,7 @@ const Detail = ({ app, productDetail, dispatch, loading }) => {
             <TabPane tab="商品参数" key="2">
               <Row gutter={8}>
                 <Col span={4}>
-                  <Button onClick={() => handleUpdate('params')}>更新规格参数</Button>
+                  <AuthButton auth={env.productUpdateParams} userAuth={userAuth} onClick={() => handleUpdate('params')}>更新规格参数</AuthButton>
                 </Col>
                 <Col span={24}>
                 {
@@ -221,7 +225,7 @@ const Detail = ({ app, productDetail, dispatch, loading }) => {
             <TabPane tab="秒杀抢购" key="3">
                 <Row gutter={8}>
                   <Col span={4}>
-                    <Button onClick={() => handleUpdate('buyNow')}>开启秒杀</Button>
+                    <AuthButton auth={env.productBuyNowCreate} userAuth={userAuth} onClick={() => handleUpdate('buyNow')}>开启秒杀</AuthButton>
                   </Col>
                   <Col span={24}>
                     <BuyNowTable {...buyNowTableProps} />

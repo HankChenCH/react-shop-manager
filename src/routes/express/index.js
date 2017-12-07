@@ -3,11 +3,14 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { Row, Col, Button, Popconfirm } from 'antd'
+import { AuthButton } from '../../components/Auth'
+import { env } from '../../utils'
 import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
 
-const Express = ({ location, dispatch, express, loading }) => {
+const Express = ({ location, dispatch, app, express, loading }) => {
+  const { userAuth } = app
   const { list, pagination, currentItem, modalVisible, modalType, selectedRowKeys } = express
   const { pageSize } = pagination
 
@@ -43,6 +46,7 @@ const Express = ({ location, dispatch, express, loading }) => {
     loading: loading.effects['express/query'],
     pagination,
     location,
+    userAuth,
     onChange (page) {
       const { query, pathname } = location
       dispatch(routerRedux.push({
@@ -83,6 +87,7 @@ const Express = ({ location, dispatch, express, loading }) => {
   }
 
   const filterProps = {
+    userAuth,
     filter: {
       ...location.query,
     },
@@ -135,7 +140,7 @@ const Express = ({ location, dispatch, express, loading }) => {
              <Col>
                {`选择了 ${selectedRowKeys.length} 条快递公司 `}
                <Popconfirm title={'确定要删除选中的快递公司?'} placement="bottomRight" onConfirm={handleDeleteItems}>
-                 <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
+                  <AuthButton auth={env.expressRemove} userAuth={userAuth} type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</AuthButton>
                </Popconfirm>
              </Col>
            </Row>
@@ -147,10 +152,11 @@ const Express = ({ location, dispatch, express, loading }) => {
 }
 
 Express.propTypes = {
-  user: PropTypes.object,
+  app: PropTypes.object,
+  express: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
 }
 
-export default connect(({ express, loading }) => ({ express, loading }))(Express)
+export default connect(({ app, express, loading }) => ({ app, express, loading }))(Express)

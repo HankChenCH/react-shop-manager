@@ -4,12 +4,13 @@ import { Table, Modal, Switch, Button } from 'antd'
 import classnames from 'classnames'
 import { Link } from 'dva/router'
 import ReactDragListView from 'react-drag-listview'
-import { DropOption } from '../../components'
+import { AuthSwtich, AuthDropOption } from '../../components/Auth'
+import { env, getDropdownMenuOptions } from '../../utils'
 import styles from './List.less'
 
 const confirm = Modal.confirm
 
-const List = ({ onManagerItem, onDeleteItem, onEditItem, onPullShelvesItem, onUpdateRank, location, layoutVisible, onSyncRank, onCancelRank, ...tableProps }) => {
+const List = ({ userAuth, onManagerItem, onDeleteItem, onEditItem, onPullShelvesItem, onUpdateRank, location, layoutVisible, onSyncRank, onCancelRank, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onManagerItem(record)
@@ -28,6 +29,8 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, onPullShelvesItem, onUp
   const handleSwitchChange = (record, checked) => {
     onPullShelvesItem(record.id, checked)
   }
+
+  const menuOptions = getDropdownMenuOptions([{ key: '1', name: '商品管理', auth: env.themeManagerProduct }, { key: '2', name: '更新', auth: env.themeUpdate }, { key: '3', name: '删除', auth: env.themeRemove }], userAuth)
 
   const columns = !layoutVisible ? [
     {
@@ -52,13 +55,13 @@ const List = ({ onManagerItem, onDeleteItem, onEditItem, onPullShelvesItem, onUp
       title: '精选',
       dataIndex: 'is_on',
       key: 'is_on',
-      render: (text, record) => <Switch checked={text === '1' ? true : false} checkedChildren="取消" unCheckedChildren="推荐" onChange={checked => handleSwitchChange(record, checked)}/>,
+      render: (text, record) => <AuthSwtich auth={env.themeOnOff} userAuth={userAuth} unAuthType="disabled" checked={text === '1' ? true : false} checkedChildren="取消" unCheckedChildren="推荐" onChange={checked => handleSwitchChange(record, checked)}/>,
     }, {
       title: '操作',
       key: 'operation',
       width: 100,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '商品管理' }, { key: '2', name: '更新' }, { key: '3', name: '删除'}]} />
+        return <AuthDropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
       },
     },
   ] : [

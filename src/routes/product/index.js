@@ -3,11 +3,14 @@ import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
 import { Row, Col, Button, Popconfirm } from 'antd'
+import { AuthButton } from '../../components/Auth'
+import { env } from '../../utils'
 import List from './List'
 import Filter from './Filter'
 import InfoModal from './Modal'
 
-const Product = ({ location, dispatch, product, loading }) => {
+const Product = ({ location, dispatch, app, product, loading }) => {
+  const { userAuth } = app
   const { list, pagination, currentStep, currentItem, uploadTempItem, modalVisible, modalType, selectedRowKeys } = product
   const { pageSize } = pagination
 
@@ -69,6 +72,7 @@ const Product = ({ location, dispatch, product, loading }) => {
     loading: loading.effects['product/query','product/updateCurrentItem'],
     pagination,
     location,
+    userAuth,
     currentItem,
     onChange (page) {
       const { query, pathname } = location
@@ -149,6 +153,7 @@ const Product = ({ location, dispatch, product, loading }) => {
   }
 
   const filterProps = {
+    userAuth,
     filter: {
       ...location.query,
     },
@@ -227,13 +232,13 @@ const Product = ({ location, dispatch, product, loading }) => {
              <Col>
                {`选中了 ${selectedRowKeys.length} 件商品 `}
                <Popconfirm title={'确定上架选中的商品？'} placement="bottomLeft" onConfirm={handlePullOnItems}>
-                 <Button size="small" style={{ marginLeft: 8 }}>批量上架</Button>
+                 <AuthButton auth={env.productOnOff} userAuth={userAuth} size="small" style={{ marginLeft: 8 }}>批量上架</AuthButton>
                </Popconfirm>
                <Popconfirm title={'确定下架选中的商品？'} placement="bottom" onConfirm={handlePullOffItems}>
-                 <Button size="small" style={{ marginLeft: 8 }}>批量下架</Button>
+                 <AuthButton auth={env.productOnOff} userAuth={userAuth} size="small" style={{ marginLeft: 8 }}>批量下架</AuthButton>
                </Popconfirm>
                <Popconfirm title={'确定删除选中的商品？'} placement="bottomRight" onConfirm={handleDeleteItems}>
-                 <Button type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</Button>
+                 <AuthButton auth={env.productRemove} userAuth={userAuth} type="danger" size="small" style={{ marginLeft: 8 }}>批量删除</AuthButton>
                </Popconfirm>
              </Col>
            </Row>
@@ -251,4 +256,4 @@ Product.propTypes = {
   loading: PropTypes.object,
 }
 
-export default connect(({ product, loading }) => ({ product, loading }))(Product)
+export default connect(({ app, product, loading }) => ({ app, product, loading }))(Product)

@@ -4,15 +4,16 @@ import * as ws from '../services/ws.js'
 import * as chatService from '../services/chat.js'
 import { config, hasProp, Enum } from '../utils'
 const { prefix } = config
-const { EnumChatStatus } = Enum
+const { EnumChatStatus, EnumChatType } = Enum
 
-const { queryMembers } = chatService
+const { queryMembers, queryGroups, sendMessage, queryMessage } = chatService
 
 export default modelExtend(model, {
     namespace: 'chat',
     
         state: {
-            members:[],
+            groups: [],
+            members: [],
             onlineMembers: [],
             onlineCount: 0,
             chatMessage: {},
@@ -23,35 +24,63 @@ export default modelExtend(model, {
     
         subscriptions : {
             setup({ history, dispatch }) {
-                dispatch({ type: 'queryMember' })
-                let onlineCountTimer
                 history.listen(location => {
-                    if (location.pathname !== '/login' && !onlineCountTimer) {
+                    if (location.pathname !== '/login') {
+                        dispatch({ type: 'queryMember' })
+                        dispatch({ type: 'queryGroup' })
                         //登出后重连时查询成员列表
-                        onlineCountTimer = setInterval(() => ws.trigger('manager/online/count', { userType: 'manager' }), 300000)
-                    } else {
-                        clearInterval(onlineCountTimer)
+                        // onlineCountTimer = setInterval(() => ws.trigger('manager/online/count', { userType: 'manager' }), 300000)
                     }
                 })
             },
         },
     
         effects: {
-            *queryMember({ payload }, { put, call }) {
-                const res = yield call(queryMembers)
-                if (res.success) {
-                    yield put({ type: 'updateState', payload: { members: res.data } })
-                    ws.trigger('manager/online/count')
+            *queryMember({ payload }, { put, call, select }) {
+                const { members } = yield select((_) => _.chat)
+                if (members.length === 0 || payload.reload) {
+                    const res = yield call(queryMembers)
+                    if (res.success) {
+                        yield put({ type: 'updateState', payload: { members: res.data } })
+                        ws.trigger('manager/online/count')
+                    }
                 }
             },
 
-            *loadMessage({ payload }, { put, select }) {
+            *queryGroup({ payload }, { put, call, select }) {
+                const { groups } = yield select((_) => _.chat)
+                if (groups.length === 0 || payload.reload) {
+                    const res = yield call(queryGroups)
+                    if (res.success) {
+                        yield put({ type: 'updateState', payload: { groups: res.data.groups } })
+                    }
+                }
+            },
+
+            *loadMessage({ payload }, { put, call, select }) {
                 const { chatMessage } = yield select((_) => _.chat)
                 if (!hasProp(chatMessage, payload)) {
-                    const localMessage = yield JSON.parse(localStorage.getItem(`${prefix}chat_message_${payload}`))
-                    chatMessage[payload] = localMessage || []
-                    yield put({ type: 'updateState', payload: { chatMessage: chatMessage } })
+                //     const localMessage = yield JSON.parse(localStorage.getItem(`${prefix}chat_message_${payload}`))
+                //     chatMessage[payload] = localMessage || []
+                //     yield put({ type: 'updateState', payload: { chatMessage: chatMessage } })
+                    const key = payload.split('_')
+                    const res = yield call(queryMessage, { id: key[1], to_type: key[0] })
+                    if (res.success) {
+                        const messages = res.data.map(item => ({
+                            message: item.message,
+                            from: item.sender.true_name
+                        }))
+
+                        chatMessage[payload] = messages
+                        yield put({
+                            type: 'updateState',
+                            payload: {
+                                chatMessage
+                            }
+                        })
+                    }
                 }
+
             },
 
             *membersUpdate({ payload }, { put, select }) {
@@ -114,35 +143,53 @@ export default modelExtend(model, {
                 yield put({ type: 'updateState', payload: { members, onlineMembers: newOnline, onlineCount } })
             },
 
-            *sendMessage({ payload }, { put, select }) {
+            *sendMessage({ payload }, { put, call, select }) {
                 const { uid, username } = yield select(({ app }) => app.user)
-                const { chatMessage, currentChatKey, currentChatType } = yield select((_) => _.chat)
+                const { chatMessage, currentChatKey } = yield select((_) => _.chat)
                 payload = payload.replace(/\n/g, '<br />$&')
-                if (!(chatMessage[currentChatKey] instanceof Array)) {
-                    chatMessage[currentChatKey] = []
+                const key = currentChatKey.split('_');
+                const message = {
+                    to_id: key[1],
+                    to_type: key[0],
+                    message: payload,
                 }
-                chatMessage[currentChatKey].push({ data: payload, from: username })
-                yield localStorage.setItem(`${prefix}chat_message_${currentChatKey}`, JSON.stringify(chatMessage[currentChatKey]))
-                yield put({ type: 'updateState', payload: { chatMessage } })
-                ws.sendMsg({ data: payload, from: uid, to: currentChatKey })
+
+                const res = yield call(sendMessage, message)
+                if (res.success) {
+                    if (!(chatMessage[currentChatKey] instanceof Array)) {
+                        chatMessage[currentChatKey] = []
+                    }
+                    chatMessage[currentChatKey].push({ message: payload, from: username })
+                    // yield localStorage.setItem(`${prefix}chat_message_${currentChatKey}`, JSON.stringify(chatMessage[currentChatKey]))
+                    yield put({ type: 'updateState', payload: { chatMessage } })
+                    ws.sendMsg({ message: payload, from: username, to_id: key[1], to_type: key[0] })
+                }
             },
 
             *receiveMsg({ payload }, { put, select }) {
                 const { chatMessage } = yield select((_) => _.chat)
-
+                const msgKey = payload.to_type + '_' + payload.to_id
+                if (hasProp(chatMessage, msgKey)) {
+                    chatMessage[msgKey].concat({ message: payload.message, from: payload.from })
+                    yield put({ 
+                        type: 'updateState',
+                        payload: {
+                            chatMessage
+                        }
+                    })
+                }
             },
 
             *showChatRoom({ payload }, { put, select }) {
-                const { members, onlineMembers } = yield select((_) => _.chat)
+                const { members, groups, onlineMembers } = yield select((_) => _.chat)
                 const key = payload.split('_')
                 let currentChat
                 switch (key[0]) {
-                    case 'group':
-                        if (key[1] === '0') {
-                            currentChat = '讨论组'
-                        }
+                    case EnumChatType.Group:                        
+                        yield put({ type: 'loadMessage', payload: payload })
+                        currentChat = groups.filter( item => item.id.toString() === key[1])[0].name
                         break
-                    case 'member':
+                    case EnumChatType.Member:
                         yield put({ type: 'loadMessage', payload: payload })
                         currentChat = members.filter( item => item.id.toString() === key[1])[0].true_name
                         break

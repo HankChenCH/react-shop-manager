@@ -6,8 +6,8 @@ module.exports = {
   logo: '/st.jpg',
   iconFontCSS: '/iconfont.css',
   iconFontJS: '/iconfont.js',
-  websocketURL: false ? 'ws://120.78.217.148:9502' : 'wss://ws.zsshitan.com',
-  baseURL: false ? 'http://api.c.cn/api/v1' : 'https://api.zsshitan.com/api/v1',
+  websocketURL: false ? 'ws://127.0.0.1:9502' : 'wss://ws.zsshitan.com',
+  baseURL: true ? 'http://api.c.cn/api/v1' : 'https://api.zsshitan.com/api/v1',
   YQL: ['http://www.zuimeitianqi.com'],
   CORS: ['https://api.zsshitan.com/api/vi'],
   openPages: ['/login'],
@@ -102,6 +102,10 @@ module.exports = {
       all: '/role/all',
       info: '/role/:id',
       batch: '/role/batch',
+    },
+    message: {
+      list: '/message/:id',
+      send: '/message',
     },
     image: {
       themeTopic: '/image/theme_topic_img',

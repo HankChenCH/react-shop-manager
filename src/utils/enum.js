@@ -32,6 +32,11 @@ const EnumPermissionType = {
     Private: '3',
 }
 
+const EnumChatType = {
+    Member: '1',
+    Group: '2',
+}
+
 module.exports = {
     EnumTipsType,
     EnumOrderStatus,
@@ -39,4 +44,5 @@ module.exports = {
     EnumChatStatus,
     EnumResourceType,
     EnumPermissionType,
+    EnumChatType,
 }

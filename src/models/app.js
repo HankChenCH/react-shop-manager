@@ -175,6 +175,7 @@ export default modelExtend(model, {
       const { user } = yield select((_) => _.app)
       const res = yield call(logout, {})
       if (res.success) {
+        yield put({ type: 'clearUserAuth' })
         yield put({ type: 'updateUserStatus', payload: EnumAdminStatus.LOGOUT })
         yield put({ type: 'logoutSuccess', payload:"登出成功" })
       } else {
@@ -330,11 +331,10 @@ export default modelExtend(model, {
       }
     },
 
-    clearUser(state) {
-      localStorage.removeItem(`${prefix}admin`)
+    clearUserAuth(state) {
       return {
         ...state,
-        user: {}
+        userAuth: []
       }
     },
 

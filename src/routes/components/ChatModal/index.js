@@ -8,8 +8,13 @@ const ChatModal = ({
   currentChatKey,
   currentChat,
   currentMessage,
+  currentPagination,
+  scrollBottom,
   onlineMembers,
   onOk,
+  onLoadMore,
+  confirmLoading,
+  messageLoading,
   ...ChatRoomModalProps
 }) => {
 
@@ -21,15 +26,26 @@ const ChatModal = ({
   }
 
   const modalOpts = {
-    ...ChatRoomModalProps,
     title: modalTitle,
     width: 780,
     footer: null,
+    ...ChatRoomModalProps,
+  }
+
+  const chatRoomProps = {
+    message: currentMessage,
+    pagination: currentPagination,
+    onlineCount: key[0] === 'group' ? onlineMembers.length : 0,
+    onSend: onOk,
+    onLoadMore: onLoadMore,
+    scrollBottom,
+    confirmLoading,
+    messageLoading,
   }
 
   return (
     <Modal {...modalOpts}>
-      <CommonChatRoom message={currentMessage} onlineCount={key[0] === 'group' ? onlineMembers.length : 0} onSend={onOk}/>
+      <CommonChatRoom {...chatRoomProps}/>
     </Modal>
   )
 }

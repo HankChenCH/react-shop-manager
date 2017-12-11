@@ -4,7 +4,7 @@ const { admin, group, message } = api
 
 const { members } = admin
 const { my } = group
-const { send } = message
+const { send, list } = message
 
 export async function queryMembers(params){
     return request({
@@ -26,6 +26,14 @@ export async function sendMessage(params) {
     return request({
         url: send,
         method: 'post',
+        data: params,
+    })
+}
+
+export async function queryMessage(params) {
+    return request({
+        url: list,
+        method: 'get',
         data: params,
     })
 }

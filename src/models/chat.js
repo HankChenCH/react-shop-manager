@@ -17,9 +17,11 @@ export default modelExtend(model, {
             onlineMembers: [],
             onlineCount: 0,
             chatMessage: {},
+            chatMessagePageInfo: {},
             chatRoomVisible: false,
             currentChatKey: 0,
             currentChat: null,
+            scrollBottom: true,
         },
     
         subscriptions : {
@@ -66,21 +68,48 @@ export default modelExtend(model, {
                     const key = payload.split('_')
                     const res = yield call(queryMessage, { id: key[1], to_type: key[0] })
                     if (res.success) {
-                        const messages = res.data.map(item => ({
-                            message: item.message,
-                            from: item.sender.true_name
-                        }))
-
-                        chatMessage[payload] = messages
-                        yield put({
-                            type: 'updateState',
-                            payload: {
-                                chatMessage
-                            }
-                        })
+                        yield put({ type: 'loadMessageSuccess', payload: { messages: res.data, key: payload } })
                     }
                 }
+            },
 
+            *loadMore({ payload }, { put, call, select }) {
+                const { chatMessage, chatMessagePageInfo, currentChatKey } = yield select((_) => _.chat)
+                const key = currentChatKey.split('_')
+                const res = yield call(queryMessage, { id: key[1], to_type: key[0], page: chatMessagePageInfo[currentChatKey].current + 1 })
+                if (res.success) {
+                    yield put({ type: 'loadMessageSuccess', payload: { messages: res.data, key: currentChatKey } })
+                }
+            },
+
+            *loadMessageSuccess({ payload }, { put, select }) {
+                const { chatMessage, chatMessagePageInfo } = yield select((_) => _.chat)
+                const messages = payload.messages.data.map(item => ({
+                    message: item.message,
+                    from: item.sender.true_name
+                }))
+
+                if (!(chatMessage[payload.key] instanceof Array)) {
+                    chatMessage[payload.key] = messages.reverse()
+                } else {
+                    chatMessage[payload.key] = chatMessage[payload.key].reverse().concat(messages)
+                    chatMessage[payload.key].reverse()
+                }
+
+                chatMessagePageInfo[payload.key] = {
+                    current: payload.messages.current_page,
+                    size: payload.messages.per_page,
+                    total: payload.messages.total,
+                }
+
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        scrollBottom: false,
+                        chatMessage,
+                        chatMessagePageInfo,
+                    }
+                })
             },
 
             *membersUpdate({ payload }, { put, select }) {
@@ -161,7 +190,7 @@ export default modelExtend(model, {
                     }
                     chatMessage[currentChatKey].push({ message: payload, from: username })
                     // yield localStorage.setItem(`${prefix}chat_message_${currentChatKey}`, JSON.stringify(chatMessage[currentChatKey]))
-                    yield put({ type: 'updateState', payload: { chatMessage } })
+                    yield put({ type: 'updateState', payload: { chatMessage, scrollBottom: true } })
                     ws.sendMsg({ message: payload, from: username, to_id: key[1], to_type: key[0] })
                 }
             },
@@ -170,7 +199,7 @@ export default modelExtend(model, {
                 const { chatMessage } = yield select((_) => _.chat)
                 const msgKey = payload.to_type + '_' + payload.to_id
                 if (hasProp(chatMessage, msgKey)) {
-                    chatMessage[msgKey].concat({ message: payload.message, from: payload.from })
+                    chatMessage[msgKey].push({ message: payload.message, from: payload.from })
                     yield put({ 
                         type: 'updateState',
                         payload: {

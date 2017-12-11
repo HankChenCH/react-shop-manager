@@ -13,7 +13,7 @@ export default class CommonChatRoom extends React.Component
     }
 
     render() {
-        const { className, title, onlineCount, message, onSend } = this.props
+        const { className, title, onlineCount, message, pagination, scrollBottom, onSend, onLoadMore, confirmLoading, messageLoading, } = this.props
 
         const headerProps = {
             title,
@@ -21,11 +21,16 @@ export default class CommonChatRoom extends React.Component
         }
 
         const mainProps = {
-            message, 
+            message,
+            pagination,
+            scrollBottom,
+            messageLoading,
+            onLoadMore,
         }
 
         const sendBoxProps = {
             onSend,
+            confirmLoading,
         }
 
         return (

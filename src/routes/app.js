@@ -21,7 +21,7 @@ let lastHref
 
 const App = ({ children, location, dispatch, app, chat, loading }) => {
   const { user, userAuth, siderFold, notificationCount, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys } = app
-  const { chatMessage, chatRoomVisible, currentChatKey, currentChat, onlineMembers } = chat
+  const { chatMessage, chatMessagePageInfo, chatRoomVisible, currentChatKey, currentChat, onlineMembers, scrollBottom } = chat
   const href = window.location.href
 
   if (lastHref !== href) {
@@ -85,15 +85,23 @@ const App = ({ children, location, dispatch, app, chat, loading }) => {
     onlineMembers,
     currentChatKey,
     currentMessage: chatMessage[currentChatKey] || [],
+    currentPagination: chatMessagePageInfo[currentChatKey] || {},
+    scrollBottom,
     visible: chatRoomVisible,
     maskCloseable: true,
     confirmLoading: loading.effects['chat/sendMessage'],
+    messageLoading: loading.effects['chat/loadMessage', 'chat/loadMore', 'chat/loadMessageSuccess'],
     title: chatRoomVisible ? currentChat : '',
     wrapClassName: 'vertical-center-modal',
     onOk(data) {
       dispatch({
         type: 'chat/sendMessage',
         payload: data
+      })
+    },
+    onLoadMore() {
+      dispatch({
+        type: 'chat/loadMore',
       })
     },
     onCancel() {

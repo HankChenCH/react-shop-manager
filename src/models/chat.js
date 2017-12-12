@@ -249,7 +249,9 @@ export default modelExtend(model, {
             },
 
             *showChatRoom({ payload }, { put, select }) {
-                const { members, groups, onlineMembers } = yield select((_) => _.chat)
+                yield put({ type: 'clearNewCount', payload: payload })
+
+                const { members, groups, onlineMembers, chatMessageNewCount } = yield select((_) => _.chat)
                 const key = payload.split('_')
                 let currentChat
                 switch (key[0]) {
@@ -265,8 +267,14 @@ export default modelExtend(model, {
                         currentChat = ''
                         break
                 }
-                yield put({ type: 'clearNewCount', payload: payload })
-                yield put({ type: 'app/clearRadioCount', payload: 1 })
+
+                const newCountValue = Object.values(chatMessageNewCount)
+                const newCounts = newCountValue.reduce((pre, cur) => pre + cur, 0)
+                
+                if (newCounts === 0) {
+                    yield put({ type: 'app/clearRadioCount', payload: 1 })
+                }
+
                 yield put({ 
                     type: 'updateState', 
                     payload: { 

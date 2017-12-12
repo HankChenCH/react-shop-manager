@@ -196,27 +196,25 @@ export default modelExtend(model, {
                     chatMessage[currentChatKey].push({ message: payload, from: username, send_time: res.data.create_time })
                     // yield localStorage.setItem(`${prefix}chat_message_${currentChatKey}`, JSON.stringify(chatMessage[currentChatKey]))
                     yield put({ type: 'updateState', payload: { chatMessage, scrollBottom: true } })
-                    ws.sendMsg({ message: payload, from: username, to_id: key[1], to_type: key[0], send_time: res.data.create_time })
+                    ws.sendMsg({ message: payload, from: username, from_id: uid,  to_id: key[1], to_type: key[0], send_time: res.data.create_time })
                 }
             },
 
             *receiveMsg({ payload }, { put, select }) {
                 const { chatMessage, groups } = yield select((_) => _.chat)
-                const msgKey = payload.to_type + '_' + payload.to_id
                 const groupIds = groups.map(item => item.id)
-
                 if (payload.to_type === EnumChatType.Group && groupIds.indexOf(payload.to_id) === -1) {
                     return false
                 }
 
-                const message = { message: payload.message, from: payload.from, send_time: payload.send_time }
+                const msgKey = payload.to_type + '_' + payload.to_type === EnumChatType.Group ? payload.to_id : payload.from_id
 
-                if (hasProp(chatMessage, msgKey)) {
-                    chatMessage[msgKey].push(message)
-                } else {
-                    chatMessage[msgKey] = [message]
+                console.log(chatMessage[msgKey])
+                if (hasProp(chatMessage, msgKey) && chatMessage[msgKey] instanceof Array) {
+                    chatMessage[msgKey].concat({ message: payload.message, from: payload.from, send_time: payload.send_time })
                 }
 
+                
                 yield put({
                     type: 'updateState',
                     payload: {
@@ -255,12 +253,12 @@ export default modelExtend(model, {
     
         reducers: {
     
-            receiveMsg(state, { payload }) {
-                return {
-                    ...state,
-                    chatMessage: state.chatMessage.concat({ data: payload.data, from: payload.from })
-                }
-            },
+            // receiveMsg(state, { payload }) {
+            //     return {
+            //         ...state,
+            //         chatMessage: state.chatMessage.concat({ data: payload.data, from: payload.from })
+            //     }
+            // },
 
             hideChatRoom(state) {
                 return {

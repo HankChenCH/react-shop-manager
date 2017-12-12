@@ -22,7 +22,7 @@ export default class ChatRoomContent extends React.Component
         const { current, size, total } = pagination
 
         const msgList = message.map( (item, key) => <li key={key}>
-            <div className={styles.sender}>{item.from}:</div>
+            <div className={styles.sender}>{item.from} {item.send_time}:</div>
             <div className={styles.msg} dangerouslySetInnerHTML={{__html: item.message}} />
         </li>)
 

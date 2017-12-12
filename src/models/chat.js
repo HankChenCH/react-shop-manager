@@ -69,6 +69,8 @@ export default modelExtend(model, {
                     const res = yield call(queryMessage, { id: key[1], to_type: key[0] })
                     if (res.success) {
                         yield put({ type: 'loadMessageSuccess', payload: { messages: res.data, key: payload } })
+                    } else {
+                        throw res
                     }
                 }
             },
@@ -79,6 +81,8 @@ export default modelExtend(model, {
                 const res = yield call(queryMessage, { id: key[1], to_type: key[0], page: chatMessagePageInfo[currentChatKey].current + 1 })
                 if (res.success) {
                     yield put({ type: 'loadMessageSuccess', payload: { messages: res.data, key: currentChatKey } })
+                } else {
+                    throw res
                 }
             },
 
@@ -86,10 +90,11 @@ export default modelExtend(model, {
                 const { chatMessage, chatMessagePageInfo } = yield select((_) => _.chat)
                 const messages = payload.messages.data.map(item => ({
                     message: item.message,
-                    from: item.sender.true_name
+                    from: item.sender.true_name,
+                    send_time: item.create_time,
                 }))
 
-                if (!(chatMessage[payload.key] instanceof Array)) {
+                if (!hasProp(chatMessage, payload.key)) {
                     chatMessage[payload.key] = messages.reverse()
                 } else {
                     chatMessage[payload.key] = chatMessage[payload.key].reverse().concat(messages)
@@ -188,25 +193,36 @@ export default modelExtend(model, {
                     if (!(chatMessage[currentChatKey] instanceof Array)) {
                         chatMessage[currentChatKey] = []
                     }
-                    chatMessage[currentChatKey].push({ message: payload, from: username })
+                    chatMessage[currentChatKey].push({ message: payload, from: username, send_time: res.data.create_time })
                     // yield localStorage.setItem(`${prefix}chat_message_${currentChatKey}`, JSON.stringify(chatMessage[currentChatKey]))
                     yield put({ type: 'updateState', payload: { chatMessage, scrollBottom: true } })
-                    ws.sendMsg({ message: payload, from: username, to_id: key[1], to_type: key[0] })
+                    ws.sendMsg({ message: payload, from: username, to_id: key[1], to_type: key[0], send_time: res.data.create_time })
                 }
             },
 
             *receiveMsg({ payload }, { put, select }) {
-                const { chatMessage } = yield select((_) => _.chat)
+                const { chatMessage, groups } = yield select((_) => _.chat)
                 const msgKey = payload.to_type + '_' + payload.to_id
-                if (hasProp(chatMessage, msgKey)) {
-                    chatMessage[msgKey].push({ message: payload.message, from: payload.from })
-                    yield put({ 
-                        type: 'updateState',
-                        payload: {
-                            chatMessage
-                        }
-                    })
+                const groupIds = groups.map(item => item.id)
+
+                if (payload.to_type === EnumChatType.Group && groupIds.indexOf(payload.to_id) === -1) {
+                    return false
                 }
+
+                const message = { message: payload.message, from: payload.from, send_time: payload.send_time }
+
+                if (hasProp(chatMessage, msgKey)) {
+                    chatMessage[msgKey].push(message)
+                } else {
+                    chatMessage[msgKey] = [message]
+                }
+
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        chatMessage
+                    }
+                })
             },
 
             *showChatRoom({ payload }, { put, select }) {

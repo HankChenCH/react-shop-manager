@@ -15,7 +15,7 @@ export default modelExtend(pageModel, {
     allotModalVisible: false,
     selectedRowKeys: [],
     modalType: 'create',
-    myList: [],
+    // myList: [],
   },
 
   subscriptions: {
@@ -28,9 +28,9 @@ export default modelExtend(pageModel, {
           })
         }
 
-        dispatch({
-          type: 'querySelf',
-        })
+        // dispatch({
+        //   type: 'querySelf',
+        // })
       })
     },
   },
@@ -57,20 +57,20 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *querySelf({ payload }, { call, put, select }) {
-      const res = yield call(queryMy)
-      if (res.success) {
-        const { data } = res
-        yield put({
-          type: 'updateState',
-          payload: {
-            myList: data
-          }
-        })
-      } else {
-        throw res
-      }
-    },
+    // *querySelf({ payload }, { call, put, select }) {
+    //   const res = yield call(queryMy)
+    //   if (res.success) {
+    //     const { data } = res
+    //     yield put({
+    //       type: 'updateState',
+    //       payload: {
+    //         myList: data
+    //       }
+    //     })
+    //   } else {
+    //     throw res
+    //   }
+    // },
 
     *'delete' ({ payload }, { call, put, select }) {
       const res = yield call(remove, { id: payload })

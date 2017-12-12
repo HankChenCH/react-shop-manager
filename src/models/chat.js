@@ -17,9 +17,10 @@ export default modelExtend(model, {
             onlineMembers: [],
             onlineCount: 0,
             chatMessage: {},
+            chatMessageNewCount: {},
             chatMessagePageInfo: {},
             chatRoomVisible: false,
-            currentChatKey: 0,
+            currentChatKey: "0_0",
             currentChat: null,
             scrollBottom: true,
         },
@@ -201,26 +202,50 @@ export default modelExtend(model, {
             },
 
             *receiveMsg({ payload }, { put, select }) {
-                const { chatMessage, groups } = yield select((_) => _.chat)
+                const { chatMessage, chatMessageNewCount, groups } = yield select((_) => _.chat)
                 const groupIds = groups.map(item => item.id)
                 if (payload.to_type === EnumChatType.Group && groupIds.indexOf(payload.to_id) === -1) {
                     return false
                 }
 
-                const msgKey = payload.to_type + '_' + payload.to_type === EnumChatType.Group ? payload.to_id : payload.from_id
+                const msgKey = payload.to_type + '_' + (payload.to_type === EnumChatType.Group ? payload.to_id : payload.from_id)
 
-                console.log(chatMessage[msgKey])
                 if (hasProp(chatMessage, msgKey) && chatMessage[msgKey] instanceof Array) {
-                    chatMessage[msgKey].concat({ message: payload.message, from: payload.from, send_time: payload.send_time })
+                    chatMessage[msgKey].push({ message: payload.message, from: payload.from, send_time: payload.send_time })
                 }
 
+                yield put({
+                    type: 'addNewCount',
+                    payload: msgKey,
+                })
                 
                 yield put({
                     type: 'updateState',
                     payload: {
-                        chatMessage
+                        chatMessage,
+                        scrollBottom: true,
                     }
                 })
+            },
+
+            *addNewCount({ payload }, { put, select }) {
+                const { chatMessageNewCount, currentChatKey } = yield select((_) => _.chat)
+
+                if (currentChatKey !== payload) {
+
+                    if (hasProp(chatMessageNewCount, payload)) {
+                        ++chatMessageNewCount[payload]
+                    } else {
+                        chatMessageNewCount[payload] = 1
+                    }
+
+                    yield put({
+                        type: 'updateState',
+                        payload: {
+                            chatMessageNewCount
+                        }
+                    })
+                }
             },
 
             *showChatRoom({ payload }, { put, select }) {
@@ -232,14 +257,16 @@ export default modelExtend(model, {
                         yield put({ type: 'loadMessage', payload: payload })
                         currentChat = groups.filter( item => item.id.toString() === key[1])[0].name
                         break
-                    case EnumChatType.Member:
+                        case EnumChatType.Member:
                         yield put({ type: 'loadMessage', payload: payload })
                         currentChat = members.filter( item => item.id.toString() === key[1])[0].true_name
                         break
-                    default:
+                        default:
                         currentChat = ''
                         break
                 }
+                yield put({ type: 'clearNewCount', payload: payload })
+                yield put({ type: 'app/clearRadioCount', payload: 1 })
                 yield put({ 
                     type: 'updateState', 
                     payload: { 
@@ -252,20 +279,22 @@ export default modelExtend(model, {
         },
     
         reducers: {
-    
-            // receiveMsg(state, { payload }) {
-            //     return {
-            //         ...state,
-            //         chatMessage: state.chatMessage.concat({ data: payload.data, from: payload.from })
-            //     }
-            // },
+
+            clearNewCount(state, { payload }) {
+                const { chatMessageNewCount } = state
+                chatMessageNewCount[payload] = 0
+                return {
+                    ...state,
+                    chatMessageNewCount,
+                }
+            },
 
             hideChatRoom(state) {
                 return {
                     ...state,
                     chatRoomVisible: false,
                     currentChat: '',
-                    currentChatKey: 0,
+                    currentChatKey: "0_0",
                 }
             }
         }

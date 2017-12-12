@@ -240,22 +240,10 @@ export default modelExtend(model, {
       yield put({ type: 'updateState', payload: { msgCenterRadios: newMsgCenterRadios } })
     },
 
-    *showMsgContent ({ payload }, { put, select }) {
-      yield localStorage.setItem(`${prefix}msgContentValue`, payload)
-      const { msgCenterRadios } = yield select((_) => _.app)
-      const newMsgCenterRadios = msgCenterRadios.map(item => {
-        if (item.key === payload) {
-          return {
-            ...item,
-            count: 0,
-          }
-        } else {
-          return item
-        }
-      })
-      
-      yield put({ type: 'updateState', payload: { msgCenterRadios: newMsgCenterRadios, contentValue: payload } })
-    },
+    // *showMsgContent ({ payload }, { put, select }) {
+    //   yield localStorage.setItem(`${prefix}msgContentValue`, payload)
+    //   yield put({ type: 'updateState', payload: { contentValue: payload } })
+    // },
   },
   reducers: {
     switchSider (state) {
@@ -292,6 +280,14 @@ export default modelExtend(model, {
       return {
         ...state,
         ...navOpenKeys,
+      }
+    },
+
+    showMsgContent (state, { payload }) {
+      localStorage.setItem(`${prefix}msgContentValue`, payload)
+      return {
+        ...state,
+        contentValue: payload
       }
     },
 

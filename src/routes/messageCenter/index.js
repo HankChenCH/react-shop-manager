@@ -24,6 +24,13 @@ const MessageCenter = ({ dispatch, app, message }) => {
         })
     }
 
+    const handleMsgRadioClick = (index) => {
+        dispatch({
+            type: 'app/clearRadioCount',
+            payload: index
+        })
+    }
+
     const noticeListProps = {
         onRemoveNotice(key) {
             dispatch({
@@ -38,7 +45,7 @@ const MessageCenter = ({ dispatch, app, message }) => {
             <Row>
                 <Col span={24} style={{ textAlign: 'center', marginTop: 30 }}>
                     <RadioGroup defaultValue={contentValue} onChange={handleMsgRadioChange}>
-                        {msgCenterRadios.map((item) => <RadioButton key={item.key} value={item.key}><Badge key={`badge-${item.key}`} count={item.count}>{item.value}</Badge></RadioButton>)}
+                        {msgCenterRadios.map((item, idx) => <RadioButton key={item.key} value={item.key} onClick={() => handleMsgRadioClick(idx)}><Badge key={`badge-${item.key}`} dot={item.count ? true : false} >{item.value}</Badge></RadioButton>)}
                     </RadioGroup>
                 </Col>
             </Row>

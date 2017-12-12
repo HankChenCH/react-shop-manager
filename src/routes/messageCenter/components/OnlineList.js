@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Tree } from 'antd'
-import { Enum } from '../../../utils'
+import { Tree, Badge } from 'antd'
+import { Enum, hasProp } from '../../../utils'
 
 const TreeNode = Tree.TreeNode
 const { EnumChatType } = Enum
@@ -22,22 +22,25 @@ class OnlineList extends React.Component
     }
 
     render() {
-        const { members, groups, onlineMembers, onlineCount } = this.props.chat
+        const { members, groups, onlineMembers, onlineCount, chatMessageNewCount } = this.props.chat
 
         const memberOnlineNumber = `成员(${onlineCount}/${members.length})`
         const groupNumber = `群组(${groups.length})`
 
         const memberList = members.map(item => {
             const is_online = (onlineMembers.indexOf(item.id) !== -1) ? '在线' : '离线'
-            const nodeTitle = `${item.true_name}(${is_online})`
+            const key = `${EnumChatType.Member}_${item.id}`
+            const nodeTitle = <Badge key={`badge-${item.id}`} count={chatMessageNewCount[key] || 0}>{item.true_name}({is_online})</Badge>
             return (
-                <TreeNode title={nodeTitle} key={`${EnumChatType.Member}_${item.id}`} />
+                <TreeNode title={nodeTitle} key={key} />
             )
         })
 
         const groupList = groups.map(item => {
+            const key = `${EnumChatType.Group}_${item.id}`
+            const nodeTitle = <Badge key={`badge-${item.id}`} count={chatMessageNewCount[key] || 0}>{item.name}</Badge>
             return (
-                <TreeNode title={item.name} key={`${EnumChatType.Group}_${item.id}`} />
+                <TreeNode title={item.name} key={key} />
             )
         })
 

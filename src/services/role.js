@@ -1,10 +1,18 @@
 import { request, config } from '../utils'
 const { api } = config
-const { list, all, info, batch } = api.role
+const { list, my, all, info, batch } = api.role
 
 export async function query(params) {
     return request({
         url: list,
+        method: 'get',
+        data: params,
+    })
+}
+
+export async function queryMy(params) {
+    return request({
+        url: my,
         method: 'get',
         data: params,
     })

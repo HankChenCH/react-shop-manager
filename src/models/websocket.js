@@ -70,6 +70,13 @@ export default modelExtend(model, {
                 dispatch({ type: 'app/addNoticeCount', payload: '2' })
                 dispatch({ type: 'chat/receiveMsg', payload: res })
             })
+            //manager通知
+            ws.on('manager/admin/permission_reload', (res) => {
+                dispatch({ type: 'app/fetchUserAuth', payload: { reload: true } })
+            })
+            ws.on('manager/admin/group_reload', (res) => {
+                dispatch({ type: 'chat/queryGroup', payload: { reload: true } })
+            })
         },
     },
 

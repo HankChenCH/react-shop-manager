@@ -33,7 +33,8 @@ const PriceModal = ({
       const data = {
         ...getFieldsValue(),
       }
-      onOk(data)
+      // console.log(data)
+      // onOk(data)
     })
   }
 

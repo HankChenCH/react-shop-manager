@@ -25,7 +25,8 @@ export default class ModalForm extends React.Component
         const { item, modalType, onOk, express, form, ...modalProps } = this.props
 
         const handleOk = () => {
-            const { validateFields, getFieldsValue } = this.refs.infoForm
+            // console.log(this)
+            const { validateFields, getFieldsValue } = this.formRef.props.form
             
             validateFields((errors) => {
               if (errors) {
@@ -34,6 +35,7 @@ export default class ModalForm extends React.Component
               const data = {
                 ...getFieldsValue(),
               }
+            //   console.log(data)
               
               onOk(data)
             })
@@ -49,7 +51,9 @@ export default class ModalForm extends React.Component
             item,
             modalType,
             express,
-            ref: 'infoForm',
+            wrappedComponentRef: (inst) => {
+                return this.formRef = inst
+            },
             formItemLayout,
         }
 

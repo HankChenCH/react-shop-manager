@@ -77,4 +77,4 @@ DeliveryForm.propTypes = {
   item: PropTypes.object,
 }
 
-export default Form.create()(DeliveryForm)
+export default Form.create({ wrappedComponentRef: true })(DeliveryForm)

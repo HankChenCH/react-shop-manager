@@ -29,10 +29,9 @@ export async function connect(from) {
         }
         client.onmessage = (res) => {
             const message = JSON.parse(res.data)
-            // console.log(message)
             const { event } = message
+            // console.log(message, event)
             if (eventListener[event] instanceof Function && deleteProps(message, ['event'])) {
-                // console.log(event)
                 eventListener[event](message)
             }
         }

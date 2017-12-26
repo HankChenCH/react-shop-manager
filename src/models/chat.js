@@ -33,6 +33,8 @@ export default modelExtend(model, {
                         dispatch({ type: 'queryGroup' })
                         //登出后重连时查询成员列表
                         // onlineCountTimer = setInterval(() => ws.trigger('manager/online/count', { userType: 'manager' }), 300000)
+                    } else {
+                        dispatch({ type: 'initData' })
                     }
                 })
             },
@@ -204,7 +206,8 @@ export default modelExtend(model, {
             *receiveMsg({ payload }, { put, select }) {
                 const { chatMessage, chatMessageNewCount, groups } = yield select((_) => _.chat)
                 const groupIds = groups.map(item => item.id)
-                if (payload.to_type === EnumChatType.Group && groupIds.indexOf(payload.to_id) === -1) {
+                
+                if (payload.to_type === EnumChatType.Group && groupIds.indexOf(parseInt(payload.to_id)) === -1) {
                     return false
                 }
 
@@ -303,6 +306,22 @@ export default modelExtend(model, {
                     chatRoomVisible: false,
                     currentChat: '',
                     currentChatKey: "0_0",
+                }
+            },
+
+            initData(state) {
+                return {
+                    groups: [],
+                    members: [],
+                    onlineMembers: [],
+                    onlineCount: 0,
+                    chatMessage: {},
+                    chatMessageNewCount: {},
+                    chatMessagePageInfo: {},
+                    chatRoomVisible: false,
+                    currentChatKey: "0_0",
+                    currentChat: null,
+                    scrollBottom: true,
                 }
             }
         }

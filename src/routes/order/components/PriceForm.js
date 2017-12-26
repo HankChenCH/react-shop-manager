@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber } from 'antd'
-import { ProductCardList } from '../../../components/ProductCardList'
+import ProductPriceInput from './ProductPriceInput'
 import styles from '../Modal.css'
 
 const FormItem = Form.Item;
@@ -10,21 +10,38 @@ const FormItem = Form.Item;
 class PriceForm extends React.Component
 {
 	constructor(props) {
-		super(props)
-	}
+        super(props)
+        const total = this.snapItemsTotalPrice(this.props.item.snap_items)
+        this.state = {
+            total
+        }
+    }
+    
+    handleProductPriceChange = (value) => {
+        const total = this.snapItemsTotalPrice(value.snap_items)
+        this.setState({
+            total
+        })
+    }
+
+    snapItemsTotalPrice = (snapItems) => snapItems.reduce((preValue, curValue) => {
+        return (preValue * 100 + curValue.totalPrice * 100) / 100
+    }, 0)
+
+    getSnapItems = (e) => {
+        return e.snap_items.map(item => 
+            ({ 
+                id: item.id, 
+                counts: item.counts, 
+                price: parseFloat(item.price), 
+                totalPrice: parseFloat(item.totalPrice) 
+            })
+        )
+    }
 	
 	render() {
         const { item, modalType, formItemLayout, form } = this.props
         const { getFieldDecorator } = form
-        
-        
-        const orderItems = item.snap_items.map( goods => {
-            return {
-            img_url: goods.main_img_url,
-            title: goods.name,
-            description: <div><p>已购 {goods.counts} 件</p><p>共 ￥ {goods.price * goods.counts} 元</p></div>
-            }
-        })
 
 		return (
 			<div className={styles.steps_content}>
@@ -33,21 +50,30 @@ class PriceForm extends React.Component
                         {item.order_no}
                     </FormItem>
                     <FormItem label="订单原价" {...formItemLayout}>
-                        ￥ {item.discount_price || item.total_price}
+                        ￥ {item.total_price}
                     </FormItem>
-                    <FormItem label="订单快照" {...formItemLayout}>
-                        <ProductCardList data={orderItems} />
+                    <FormItem label="商品价格" {...formItemLayout}>
+                        {getFieldDecorator('product_price', {
+                            initialValue: item.snap_items,
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '请输入商品价格'
+                                }
+                            ],
+                            getValueFromEvent: this.getSnapItems
+                        })(<ProductPriceInput onChange={this.handleProductPriceChange}/>)}
                     </FormItem>
                     <FormItem label="订单价格" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('discount_price', {
-                            initialValue: item.discount_price || item.total_price,
+                            initialValue: this.state.total,
                             rules: [
                                 {
-                                required: true,
-                                message: '请输入订单总价'
+                                    required: true,
+                                    message: '请输入订单总价'
                                 },
                             ],
-                        })(<InputNumber min={0} step={0.5} />)}
+                        })(<InputNumber min={0} step={0.01} disabled />)}
                     </FormItem>
                     <FormItem label="改价原因" hasFeedback {...formItemLayout}>
                         {getFieldDecorator('reason', {
@@ -71,4 +97,4 @@ PriceForm.propTypes = {
   item: PropTypes.object,
 }
 
-export default Form.create()(PriceForm)
+export default Form.create({ wrappedComponentRef: true })(PriceForm)

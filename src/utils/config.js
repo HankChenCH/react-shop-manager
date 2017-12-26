@@ -99,6 +99,7 @@ module.exports = {
     },
     role: {
       list: '/role',
+      my: '/role/my',
       all: '/role/all',
       info: '/role/:id',
       batch: '/role/batch',

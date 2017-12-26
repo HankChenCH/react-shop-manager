@@ -1,7 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { Base64 } from 'js-base64'
 import { query, queryProductAll, logout, reToken } from '../services/app'
-import { queryMy } from '../services/resource'
+import { queryMy as queryMyResource } from '../services/resource'
+import { queryMy as queryMyRole } from '../services/role'
 import * as ws from '../services/ws'
 import { model } from './common'
 import { routerRedux } from 'dva/router'
@@ -16,6 +17,7 @@ export default modelExtend(model, {
   namespace: 'app',
   state: {
     user: {},
+    userRole: [],
     userAuth: [],
     productAll: [],
     menuPopoverVisible: false,
@@ -112,12 +114,20 @@ export default modelExtend(model, {
     },
 
     *fetchUserAuth({ payload }, { call, put, select }) {
-      const { userAuth } = yield select(({ app }) => app)
+      const { userRole, userAuth } = yield select(({ app }) => app)
       if (userAuth.length === 0 || payload.reload) {
-        const res = yield call(queryMy);
+        const res = yield call(queryMyResource);
         if (res.success) {
-          const view = res.data[EnumResourceType.View] || []
-          yield put({ type: 'injectUserAuth', payload: view })
+          const views = res.data[EnumResourceType.View] || []
+          yield put({ type: 'injectUserAuth', payload: views })
+        }
+      }
+
+      if (userRole.length === 0 || payload.reload) {
+        const res = yield call(queryMyRole);
+        if (res.success) {
+          const roles = res.data || []
+          yield put({ type: 'injectUserRole', payload: roles })
         }
       }
     },

@@ -40,7 +40,7 @@ export default class InfoModal extends React.Component
     const { item } = this.props
 
     const handleParamsOk = () => {
-      const { validateFields, getFieldsValue } = this.refs.infoForm
+      const { validateFields, getFieldsValue } = this.formRef.props.form
       validateFields((errors) => {
         if (errors) {
           return
@@ -60,7 +60,7 @@ export default class InfoModal extends React.Component
     }
 
     const handleNext = () => {
-      const { validateFields, getFieldsValue } = this.refs.infoForm
+      const { validateFields, getFieldsValue } = this.formRef.props.form
       validateFields((errors) => {
           if (errors) {
               return
@@ -110,7 +110,9 @@ export default class InfoModal extends React.Component
     const baseFormProps = {
       item,
       modalType,
-      ref: 'infoForm',
+      wrappedComponentRef: (inst) => {
+          return this.formRef = inst
+      },
       formItemLayout,
       onUploadSuccess,
       onOk
@@ -119,7 +121,9 @@ export default class InfoModal extends React.Component
     const detailFormProps = {
       item,
       formItemLayout,
-      ref: 'infoForm',
+      wrappedComponentRef: (inst) => {
+          return this.formRef = inst
+      },
       onDetailsOk,
       onChangeStep
     }
@@ -128,7 +132,9 @@ export default class InfoModal extends React.Component
       item,
       formItemLayout,
       formItemLayoutWithOutLabel,
-      ref: 'infoForm',
+      wrappedComponentRef: (inst) => {
+          return this.formRef = inst
+      },
       onOk,
       onChangeStep
     }
